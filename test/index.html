@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <script src="../node_modules/d3/dist/d3.js"></script>
+    <script src="../dist/index.browser.js"></script>
+    <style>
+      svg {
+        border: 1px solid gray;
+      }
+    </style>
+  </head>
+  <body>
+    <audio id="example" src="./example.mp3" controls />
+
+    <script>
+      let audio = document.querySelector('#example')
+
+      let webAudioWave = new WebAudioWave('bar', audio, {
+        frameRate: 60,
+        fftSize: 512,
+        svgWidth: '1200px',
+        height: '800px',
+        viewBoxWidth: 1200,
+        viewBoxHeight: 800
+      })
+      document.body.append(webAudioWave.svg)
+      webAudioWave.config({
+        color: 'skyblue',
+        gradientColor: ['#ff00ff', '#ff0000'],
+        // gap: 1,
+        mirrorX: true,
+        mirrorY: true,
+        reverseX: true,
+        reverseY: true
+      })
+
+      audio.addEventListener('play', () => {
+        webAudioWave.play()
+      })
+    </script>
+  </body>
+</html>
