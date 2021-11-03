@@ -15,7 +15,7 @@
     </style>
   </head>
   <body>
-    <audio id="example" src="./example.mp3" controls />
+    <audio id="example" src="./audio/come-sweet-death.mp3" controls />
 
     <script>
       let audio = document.querySelector('#example')
@@ -23,6 +23,7 @@
       let webAudioWave = new WebAudioWave('bar', audio, {
         frameRate: 60,
         fftSize: 512,
+        pow: 2,
         svgWidth: '1200px',
         height: '800px',
         viewBoxWidth: 1200,
@@ -32,11 +33,12 @@
       webAudioWave.config({
         color: 'skyblue',
         gradientColor: ['#ff00ff', '#ff0000'],
-        // gap: 1,
+        gradientNumber: 100,
+        gap: 1,
         mirrorX: true,
-        mirrorY: true,
-        reverseX: true,
-        reverseY: true
+        mirrorY: true
+        // reverseX: true,
+        // reverseY: true
       })
 
       audio.addEventListener('play', () => {

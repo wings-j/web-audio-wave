@@ -9,6 +9,7 @@ import { Context } from '../core/context'
  */
 class Fft {
   private size: number
+  private pow: number
   private analyser: AnalyserNode
 
   /**
@@ -18,6 +19,7 @@ class Fft {
    */
   constructor(context: Context) {
     this.size = context.fftSize
+    this.pow = context.pow
 
     let audioContext = new AudioContext()
     let source = audioContext.createMediaElementSource(context.audio!)
@@ -36,7 +38,15 @@ class Fft {
     this.analyser.getByteFrequencyData(data)
 
     const max = 256 // 2**8
-    let output = Array.from(data).map(a => a / max)
+    let output = Array.from(data).map(a => {
+      a = a / max
+
+      if (this.pow !== 1) {
+        a = a ** this.pow
+      }
+
+      return a
+    })
 
     return output
   }
