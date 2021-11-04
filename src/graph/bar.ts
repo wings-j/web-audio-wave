@@ -30,6 +30,9 @@ class Bar extends Graph<Option> {
 
   /**
    * 构造方法
+   * @param root 根元素
+   * @param width 宽度
+   * @param height 高度
    */
   constructor(root: ConstructorParameters<typeof Graph>[0], width?: ConstructorParameters<typeof Graph>[1], height?: ConstructorParameters<typeof Graph>[2]) {
     super(root, width, height)
