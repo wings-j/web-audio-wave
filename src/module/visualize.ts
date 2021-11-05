@@ -6,8 +6,9 @@ import { Context } from '../core/context'
 import * as D3 from 'd3'
 import Graph from '../type/graph'
 import Bar, { Option as BarOption } from '../graph/bar'
+import Curve, { Option as CurveOption } from '../graph/curve'
 
-type Option = Partial<BarOption>
+type Option = Partial<BarOption | CurveOption>
 
 /**
  * 类
@@ -19,9 +20,7 @@ class Visualize {
 
   /**
    * 构造方法
-   * @param type 类型
-   * @param width 宽度
-   * @param height 高度
+   * @param context 上下文
    */
   constructor(context: Context) {
     let svg = D3.create('svg')
@@ -35,6 +34,8 @@ class Visualize {
 
     if (context.type === 'bar') {
       this.graph = new Bar(this.root, context.viewBoxWidth, context.viewBoxHeight)
+    } else if (context.type === 'curve') {
+      this.graph = new Curve(this.root, context.viewBoxWidth, context.viewBoxHeight)
     }
   }
 

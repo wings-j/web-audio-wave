@@ -6,6 +6,7 @@ import Graph from '../type/graph'
 import * as D3 from 'd3'
 
 const option = {
+  style: 'line',
   color: 'hsl(0,0%,0%)',
   reverse: false
 }
@@ -13,11 +14,38 @@ const option = {
 type Option = typeof option
 
 /**
+ * 直线
+ * @param x 横坐标
+ * @param y 纵坐标
+ */
+function line(x: number, y: number) {
+  return `L ${x},${y}`
+}
+/**
+ * 贝赛尔曲线
+ * @param x 横坐标
+ * @param y 纵坐标
+ */
+const bezier = (() => {
+  let lastX = 0
+  let lastY = 0
+
+  return function (x: number, y: number) {
+    let s = `Q ${(lastX + x) / 2},${(lastY + y) / 2} ${x},${y}`
+
+    lastX = x
+    lastY = y
+
+    return s
+  }
+})()
+
+/**
  * 类
  */
-class Curve extends Graph {
-  option: Option
-  path: D3.Selection<SVGPathElement, any, any, any>
+class Curve extends Graph<Option> {
+  private path: D3.Selection<SVGPathElement, any, any, any>
+  private styles: { [index: string]: (x: number, y: number) => void } = { line, bezier }
 
   /**
    * 构造方法
@@ -28,7 +56,7 @@ class Curve extends Graph {
   constructor(root: ConstructorParameters<typeof Graph>[0], width?: ConstructorParameters<typeof Graph>[1], height?: ConstructorParameters<typeof Graph>[2]) {
     super(root, width, height)
 
-    this.path = root.append('path')
+    this.path = root.append('path').attr('fill', 'none')
 
     this.option = Object.assign({}, option)
   }
@@ -48,10 +76,15 @@ class Curve extends Graph {
 
     let dw = this.width / d.length
     let halfHeight = this.height / 2
+    let startX = -this.width / 2
     let direction = 1
-    let pathD = `M ${-this.width / 2},0`
-    for (let a of d) {
-      pathD += ` l ${dw},${direction * a * halfHeight}`
+    let pathD = `M ${startX},0`
+    let style = this.styles[this.option.style]
+    for (let i = 0, l = d.length; i < l; i++) {
+      let x = startX + dw * i
+      let y = direction * d[i] * halfHeight
+
+      pathD += ` ${style(x, y)}`
       direction *= -1
     }
 
@@ -61,7 +94,11 @@ class Curve extends Graph {
    * 配置
    * @param option 选项
    */
-  config(option: Record<string, unknown>) {}
+  config(option: Option) {
+    Object.assign(this.option, option)
+
+    this.path.attr('stroke', option.color)
+  }
 }
 
 export default Curve

@@ -24,9 +24,9 @@ type Option = typeof option
  * 类
  */
 class Bar extends Graph<Option> {
-  up: D3.Selection<SVGGElement, any, any, any>
-  down: D3.Selection<SVGGElement, any, any, any>
-  gradientColorList: string[] | null = null
+  private up: D3.Selection<SVGGElement, any, any, any>
+  private down: D3.Selection<SVGGElement, any, any, any>
+  private gradientColorList: string[] | null = null
 
   /**
    * 构造方法

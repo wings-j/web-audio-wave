@@ -22,10 +22,10 @@
     <script>
       let audio = document.querySelector('#example')
 
-      let webAudioWave = new WebAudioWave('bar', audio, {
+      let webAudioWave = new WebAudioWave('curve', audio, {
         frameRate: 60,
         fftSize: 512,
-        pow: 2,
+        // pow: 2,
         svgWidth: '1200px',
         height: '800px',
         viewBoxWidth: 1200,
@@ -33,12 +33,16 @@
       })
       document.body.append(webAudioWave.svg)
       webAudioWave.config({
+        style: 'bezier',
         color: 'skyblue',
-        gradientColor: ['#ff00ff', '#ff0000'],
-        gradientNumber: 100,
-        gap: 1,
-        mirrorX: true,
-        mirrorY: true
+        reverse: true
+        // gradientColor: ['#ff00ff', '#ff0000'],
+        // gradientNumber: 100,
+        // gap: 1,
+        // mirrorX: true,
+        // mirrorY: true
+        // reverseX: true,
+        // reverseY: true
       })
 
       audio.addEventListener('play', () => {
