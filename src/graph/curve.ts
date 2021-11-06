@@ -4,48 +4,27 @@
 
 import Graph from '../type/graph'
 import * as D3 from 'd3'
+import GradientColor from '../util/gradient-color'
 
 const option = {
-  style: 'line',
   color: 'hsl(0,0%,0%)',
-  reverse: false
+  gradientColor: null as [string, string] | null,
+  gradientNumber: 10,
+  gradientType: 'amplitude' as 'frequency' | 'amplitude',
+  reverse: false,
+  width: 1
 }
+const linearGradientId = 'web-audio-wave_curve_linear-gradient'
 
 type Option = typeof option
-
-/**
- * 直线
- * @param x 横坐标
- * @param y 纵坐标
- */
-function line(x: number, y: number) {
-  return `L ${x},${y}`
-}
-/**
- * 贝赛尔曲线
- * @param x 横坐标
- * @param y 纵坐标
- */
-const bezier = (() => {
-  let lastX = 0
-  let lastY = 0
-
-  return function (x: number, y: number) {
-    let s = `Q ${(lastX + x) / 2},${(lastY + y) / 2} ${x},${y}`
-
-    lastX = x
-    lastY = y
-
-    return s
-  }
-})()
 
 /**
  * 类
  */
 class Curve extends Graph<Option> {
   private path: D3.Selection<SVGPathElement, any, any, any>
-  private styles: { [index: string]: (x: number, y: number) => void } = { line, bezier }
+  private linearGradient: D3.Selection<SVGLinearGradientElement, any, any, any>
+  private gradientColorList: string[] | null = null
 
   /**
    * 构造方法
@@ -57,6 +36,14 @@ class Curve extends Graph<Option> {
     super(root, width, height)
 
     this.path = root.append('path').attr('fill', 'none')
+    this.linearGradient = root
+      .append('defs')
+      .append('linearGradient')
+      .attr('id', linearGradientId)
+      .attr('x1', '0%')
+      .attr('y1', '0%')
+      .attr('x2', '100%')
+      .attr('y2', '0%')
 
     this.option = Object.assign({}, option)
   }
@@ -79,16 +66,20 @@ class Curve extends Graph<Option> {
     let startX = -this.width / 2
     let direction = 1
     let pathD = `M ${startX},0`
-    let style = this.styles[this.option.style]
+    let sum = 0
     for (let i = 0, l = d.length; i < l; i++) {
       let x = startX + dw * i
       let y = direction * d[i] * halfHeight
 
-      pathD += ` ${style(x, y)}`
+      pathD += ` L ${x},${y}`
       direction *= -1
+      sum += d[i]
     }
 
     this.path.attr('d', pathD)
+    if (this.option.gradientType === 'amplitude' && this.gradientColorList) {
+      this.path.attr('stroke', this.gradientColorList[Math.floor((sum / d.length) * this.option.gradientNumber)])
+    }
   }
   /**
    * 配置
@@ -97,7 +88,27 @@ class Curve extends Graph<Option> {
   config(option: Option) {
     Object.assign(this.option, option)
 
-    this.path.attr('stroke', option.color)
+    if (option.gradientColor) {
+      this.gradientColorList = GradientColor(...option.gradientColor, this.option.gradientNumber)
+
+      this.linearGradient.selectChildren().remove()
+      this.linearGradient
+        .append('stop')
+        .attr('stop-color', this.option.gradientColor?.[0] ?? this.option.color)
+        .attr('offset', '0%')
+      this.linearGradient
+        .append('stop')
+        .attr('stop-color', this.option.gradientColor?.[1] ?? this.option.color)
+        .attr('offset', '100%')
+    }
+
+    this.path.attr('stroke', this.option.color) // default
+
+    if (option.gradientColor && option.gradientType === 'frequency') {
+      this.path.attr('stroke', `url(#${linearGradientId})`)
+    }
+
+    this.path.attr('stroke-width', this.option.width)
   }
 }
 
