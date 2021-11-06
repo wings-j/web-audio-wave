@@ -7,7 +7,7 @@ import * as D3 from 'd3'
 import GradientColor from '../util/gradient-color'
 
 const option = {
-  color: 'hsl(0,0%,0%)',
+  color: '#000000',
   gradientColor: null as [string, string] | null,
   gradientNumber: 10,
   gradientType: 'amplitude' as 'frequency' | 'amplitude',

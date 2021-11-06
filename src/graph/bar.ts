@@ -7,11 +7,10 @@ import * as D3 from 'd3'
 import GradientColor from '../util/gradient-color'
 
 const option = {
-  color: 'hsl(0,0%,0%)',
+  color: '#000000',
   gradientColor: null as [string, string] | null,
   gradientNumber: 10,
   gap: 0,
-  height: 0,
   mirrorX: false,
   mirrorY: false,
   reverseX: false,
@@ -60,7 +59,7 @@ class Bar extends Graph<Option> {
 
     let gap = this.option.gap
     let dw = this.width / d.length - gap
-    let mh = this.option.height || this.height / 2
+    let mh = this.height / 2
 
     const render = (d: number[], g: D3.Selection<SVGGElement, any, any, any>) => {
       g.selectAll('rect')
