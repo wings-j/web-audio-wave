@@ -113,4 +113,4 @@ option：可视化配置
 | gradientNumber | 渐变颜色分段数量                           | number                   | 10          |
 | gradientType   | 渐变类型。amplitude：幅度，frequency：频率 | "amplitude"\|"frequency" | "amplitude" |
 | reverse        | 反转                                       | boolean                  | false       |
-| width          | 线宽                                       | number                   | 1           |
+| strokeWidth    | 线宽                                       | number                   | 1           |

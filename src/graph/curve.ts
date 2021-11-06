@@ -12,7 +12,7 @@ const option = {
   gradientNumber: 10,
   gradientType: 'amplitude' as 'frequency' | 'amplitude',
   reverse: false,
-  width: 1
+  strokeWidth: 1
 }
 const linearGradientId = 'web-audio-wave_curve_linear-gradient'
 
@@ -33,9 +33,9 @@ class Curve extends Graph<Option> {
    * @param height 高度
    */
   constructor(root: ConstructorParameters<typeof Graph>[0], width?: ConstructorParameters<typeof Graph>[1], height?: ConstructorParameters<typeof Graph>[2]) {
-    super(root, width, height)
+    super(root, width, height, option)
 
-    this.path = root.append('path').attr('fill', 'none')
+    this.path = root.append('path').attr('fill', 'none').attr('stroke-width', this.option.strokeWidth)
     this.linearGradient = root
       .append('defs')
       .append('linearGradient')
@@ -44,8 +44,6 @@ class Curve extends Graph<Option> {
       .attr('y1', '0%')
       .attr('x2', '100%')
       .attr('y2', '0%')
-
-    this.option = Object.assign({}, option)
   }
 
   /**
@@ -85,11 +83,11 @@ class Curve extends Graph<Option> {
    * 配置
    * @param option 选项
    */
-  config(option: Option) {
+  config(option: Partial<Option>) {
     Object.assign(this.option, option)
 
-    if (option.gradientColor) {
-      this.gradientColorList = GradientColor(...option.gradientColor, this.option.gradientNumber)
+    if (this.option.gradientColor) {
+      this.gradientColorList = GradientColor(...this.option.gradientColor, this.option.gradientNumber)
 
       this.linearGradient.selectChildren().remove()
       this.linearGradient
@@ -104,11 +102,11 @@ class Curve extends Graph<Option> {
 
     this.path.attr('stroke', this.option.color) // default
 
-    if (option.gradientColor && option.gradientType === 'frequency') {
+    if (this.option.gradientColor && this.option.gradientType === 'frequency') {
       this.path.attr('stroke', `url(#${linearGradientId})`)
     }
 
-    this.path.attr('stroke-width', this.option.width)
+    this.path.attr('stroke-width', this.option.strokeWidth)
   }
 }
 

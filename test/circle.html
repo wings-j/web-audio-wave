@@ -22,7 +22,7 @@
     <script>
       let audio = document.querySelector('#example')
 
-      let webAudioWave = new WebAudioWave('curve', audio, {
+      let webAudioWave = new WebAudioWave('circle', audio, {
         frameRate: 60,
         fftSize: 512,
         svgWidth: '1200px',
@@ -33,10 +33,10 @@
       document.body.append(webAudioWave.svg)
       webAudioWave.config({
         color: 'skyblue',
+        number: 2,
+
         gradientColor: ['#0000ff', '#ff0000'],
         gradientNumber: 100,
-        gradientType: 'frequency',
-        reverse: true,
         strokeWidth: 2
       })
 

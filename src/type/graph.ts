@@ -18,10 +18,12 @@ abstract class Graph<O extends Record<string, any> = {}> {
    * 构造方法
    * @param 根元素
    */
-  constructor(root: D3.Selection<SVGGElement, any, any, any>, width?: number, height?: number) {
+  constructor(root: D3.Selection<SVGGElement, any, any, any>, width?: number, height?: number, option?: O) {
     this.root = root
     width && (this.width = width)
     height && (this.height = height)
+
+    this.option = Object.assign({}, option)
   }
 
   /**

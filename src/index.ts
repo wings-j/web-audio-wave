@@ -8,7 +8,6 @@ import Visualize, { Option as VisualizeOption } from './module/visualize'
 /**
  * 类
  */
-
 class WebAudioWave {
   private context: Context
   private animate: Animate

@@ -34,12 +34,10 @@ class Bar extends Graph<Option> {
    * @param height 高度
    */
   constructor(root: ConstructorParameters<typeof Graph>[0], width?: ConstructorParameters<typeof Graph>[1], height?: ConstructorParameters<typeof Graph>[2]) {
-    super(root, width, height)
+    super(root, width, height, option)
 
     this.up = this.root.append('g').classed('web-audio-wave_bar_up', true)
     this.down = this.root.append('g').classed('web-audio-wave_bar_up', true).attr('transform', 'scale(1,-1)').style('display', 'none')
-
-    this.option = Object.assign({}, option)
   }
 
   /**
@@ -99,18 +97,18 @@ class Bar extends Graph<Option> {
   config(option: Partial<Option>) {
     Object.assign(this.option, option)
 
-    if (option.gradientColor) {
-      this.gradientColorList = GradientColor(...option.gradientColor, this.option.gradientNumber)
+    if (this.option.gradientColor) {
+      this.gradientColorList = GradientColor(...this.option.gradientColor, this.option.gradientNumber)
     } else {
       this.gradientColorList = null
     }
 
-    if (option.mirrorY) {
+    if (this.option.mirrorY) {
       this.down.style('display', 'block')
     } else {
       this.down.style('display', 'none')
     }
-    if (option.reverseY) {
+    if (this.option.reverseY) {
       this.up.attr('transform', `translate(0,${this.height / 2}) scale(1,-1)`)
       this.down.attr('transform', `translate(0,${-this.height / 2}) scale(1,1)`)
     } else {

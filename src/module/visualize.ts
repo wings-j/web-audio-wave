@@ -7,8 +7,9 @@ import * as D3 from 'd3'
 import Graph from '../type/graph'
 import Bar, { Option as BarOption } from '../graph/bar'
 import Curve, { Option as CurveOption } from '../graph/curve'
+import Circle, { Option as CircleOption } from '../graph/circle'
 
-type Option = Partial<BarOption | CurveOption>
+type Option = Partial<BarOption | CurveOption | CircleOption>
 
 /**
  * 类
@@ -36,6 +37,8 @@ class Visualize {
       this.graph = new Bar(this.root, context.viewBoxWidth, context.viewBoxHeight)
     } else if (context.type === 'curve') {
       this.graph = new Curve(this.root, context.viewBoxWidth, context.viewBoxHeight)
+    } else if (context.type === 'circle') {
+      this.graph = new Circle(this.root, context.viewBoxWidth, context.viewBoxHeight)
     }
   }
 
