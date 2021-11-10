@@ -105,6 +105,8 @@ option：可视化配置
 | reverseX            | 横向反转         | boolean          | false     |
 | reverseY            | 纵向反转         | boolean          | false     |
 
+![](./docs/bar.png)
+
 #### curve
 
 | 名称                | 说明                                       | 类型                     | 默认值      |
@@ -115,6 +117,8 @@ option：可视化配置
 | gradientType        | 渐变类型。amplitude：幅度，frequency：频率 | "amplitude"\|"frequency" | "amplitude" |
 | reverse             | 反转                                       | boolean                  | false       |
 | strokeWidth         | 线宽                                       | number                   | 1           |
+
+![](./docs/curve.png)
 
 #### circle
 
@@ -128,3 +132,5 @@ option：可视化配置
 | strokeWidth               | 线宽                                   | number           | 1         |
 | gradientStrokeWidth       | 渐变线宽                               | [number, number] | null      |
 | gradientStrokeWidthNumber | 渐变线宽分段数量                       | number           | 10        |
+
+![](./docs/circle.png)

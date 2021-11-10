@@ -24,7 +24,7 @@
 
       let webAudioWave = new WebAudioWave('bar', audio, {
         frameRate: 60,
-        fftSize: 512,
+        fftSize: 128,
         pow: 2,
         svgWidth: '1200px',
         height: '800px',
@@ -34,11 +34,9 @@
       document.body.append(webAudioWave.svg)
       webAudioWave.config({
         color: 'skyblue',
-        gradientColor: ['#ff00ff', '#ff0000'],
+        gradientColor: ['#00ffff', '#ff00f0'],
         gradientNumber: 100,
-        gap: 1,
-        mirrorX: true,
-        mirrorY: true
+        gap: 1
       })
 
       audio.addEventListener('play', () => {
