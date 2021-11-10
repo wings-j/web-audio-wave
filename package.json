@@ -1,6 +1,6 @@
 {
   "name": "@wings-j/web-audio-wave",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Web audio wave",
   "keywords": [
     "web",
@@ -17,7 +17,7 @@
     "dev": "rollup -c -w",
     "test": "jest",
     "build": "rollup -c",
-    "upload": "npm publish"
+    "upload": "npm publish --access=public"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
