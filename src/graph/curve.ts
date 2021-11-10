@@ -9,7 +9,7 @@ import GradientColor from '../util/gradient-color'
 const option = {
   color: '#000000',
   gradientColor: null as [string, string] | null,
-  gradientNumber: 10,
+  gradientColorNumber: 10,
   gradientType: 'amplitude' as 'frequency' | 'amplitude',
   reverse: false,
   strokeWidth: 1
@@ -76,7 +76,7 @@ class Curve extends Graph<Option> {
 
     this.path.attr('d', pathD)
     if (this.option.gradientType === 'amplitude' && this.gradientColorList) {
-      this.path.attr('stroke', this.gradientColorList[Math.floor((sum / d.length) * this.option.gradientNumber)])
+      this.path.attr('stroke', this.gradientColorList[Math.floor((sum / d.length) * this.option.gradientColorNumber)])
     }
   }
   /**
@@ -87,7 +87,7 @@ class Curve extends Graph<Option> {
     Object.assign(this.option, option)
 
     if (this.option.gradientColor) {
-      this.gradientColorList = GradientColor(...this.option.gradientColor, this.option.gradientNumber)
+      this.gradientColorList = GradientColor(...this.option.gradientColor, this.option.gradientColorNumber)
 
       this.linearGradient.selectChildren().remove()
       this.linearGradient

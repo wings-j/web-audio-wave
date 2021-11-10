@@ -33,11 +33,12 @@
       document.body.append(webAudioWave.svg)
       webAudioWave.config({
         color: 'skyblue',
-        number: 2,
-
+        number: 20,
         gradientColor: ['#0000ff', '#ff0000'],
         gradientNumber: 100,
-        strokeWidth: 2
+        colorType: 'stroke',
+        strokeWidth: 1,
+        gradientStrokeWidth: [10, 0]
       })
 
       audio.addEventListener('play', () => {

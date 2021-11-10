@@ -9,7 +9,7 @@ import GradientColor from '../util/gradient-color'
 const option = {
   color: '#000000',
   gradientColor: null as [string, string] | null,
-  gradientNumber: 10,
+  gradientColorNumber: 10,
   gap: 0,
   mirrorX: false,
   mirrorY: false,
@@ -76,7 +76,7 @@ class Bar extends Graph<Option> {
               .attr('height', d => d * mh)
               .attr('fill', d => {
                 if (this.gradientColorList) {
-                  return this.gradientColorList[Math.floor(d * this.option.gradientNumber)]
+                  return this.gradientColorList[Math.floor(d * this.option.gradientColorNumber)]
                 } else {
                   return this.option.color
                 }
@@ -98,7 +98,7 @@ class Bar extends Graph<Option> {
     Object.assign(this.option, option)
 
     if (this.option.gradientColor) {
-      this.gradientColorList = GradientColor(...this.option.gradientColor, this.option.gradientNumber)
+      this.gradientColorList = GradientColor(...this.option.gradientColor, this.option.gradientColorNumber)
     } else {
       this.gradientColorList = null
     }
