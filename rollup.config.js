@@ -1,7 +1,6 @@
 import Path from 'path'
-import RollupPluginBabel, { getBabelOutputPlugin } from '@rollup/plugin-babel'
+import RollupPluginBabel from '@rollup/plugin-babel'
 import RollupPluginNodeResolve from '@rollup/plugin-node-resolve'
-import RollupPluginCommonjs from '@rollup/plugin-commonjs'
 import RollupPluginTypescript2 from 'rollup-plugin-typescript2'
 import PackageJson from './package.json'
 
@@ -10,10 +9,11 @@ export default [
     input: Path.resolve(__dirname, './src/index.ts'),
     external: Object.keys(PackageJson.dependencies || {}),
     plugins: [
-      RollupPluginTypescript2(),
       RollupPluginNodeResolve(),
-      RollupPluginCommonjs(),
-      getBabelOutputPlugin({ configFile: Path.resolve(__dirname, './babel.config.js') })
+      RollupPluginTypescript2(),
+      RollupPluginBabel({
+        babelHelpers: 'bundled'
+      })
     ],
     output: [
       {
@@ -27,9 +27,8 @@ export default [
     input: Path.resolve(__dirname, './src/index.ts'),
     external: ['d3'],
     plugins: [
-      RollupPluginCommonjs(),
-      RollupPluginTypescript2(),
       RollupPluginNodeResolve(),
+      RollupPluginTypescript2(),
       RollupPluginBabel({
         babelHelpers: 'bundled'
       })

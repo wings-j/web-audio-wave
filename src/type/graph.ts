@@ -2,24 +2,25 @@
  * 图形
  */
 
-import * as D3 from 'd3'
-import Context from '../core/context'
+import Context from './context'
 
 /**
  * 类
  */
-abstract class Graph<O extends Record<string, any> = {}> {
-  root: D3.Selection<SVGGElement, any, any, any>
-  width: number = Context.viewBoxWidth
-  height: number = Context.viewBoxHeight
-  option = {} as O
+abstract class Graph<Option extends Record<string, any> = {}> {
+  c: CanvasRenderingContext2D
+  width: number = Context.width
+  height: number = Context.height
+  option = {} as Option
 
   /**
    * 构造方法
-   * @param 根元素
+   * @param c 绘图环境
+   * @param width 宽度
+   * @param height 高度
    */
-  constructor(root: D3.Selection<SVGGElement, any, any, any>, width?: number, height?: number, option?: O) {
-    this.root = root
+  constructor(c: CanvasRenderingContext2D, width?: number, height?: number, option?: Option) {
+    this.c = c
     width && (this.width = width)
     height && (this.height = height)
 
@@ -38,12 +39,4 @@ abstract class Graph<O extends Record<string, any> = {}> {
   abstract config(option: Record<string, unknown>): void
 }
 
-/**
- * 类型
- */
-enum Type {
-  bar = 'bar'
-}
-
 export default Graph
-export { Type }

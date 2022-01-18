@@ -1,6 +1,4 @@
-import Option from './type/option'
-import context, { Context } from './core/context'
-import { Type } from './type/graph'
+import context, { Context, Option } from './type/context'
 import Fft from './module/fft'
 import Animate from './module/animate'
 import Visualize, { Option as VisualizeOption } from './module/visualize'
@@ -14,8 +12,8 @@ class WebAudioWave {
   private visualize: Visualize
   private fft: Fft | null = null
 
-  get svg() {
-    return this.visualize.svg
+  get canvas() {
+    return this.visualize.canvas
   }
 
   /**
@@ -24,7 +22,7 @@ class WebAudioWave {
    * @param audio 音频组件
    * @param option 选项
    */
-  constructor(type: Type, audio: HTMLAudioElement, option?: Option) {
+  constructor(type: string, audio: HTMLAudioElement, option?: Option) {
     if (!type) {
       throw new Error('Missing parameter: type')
     }

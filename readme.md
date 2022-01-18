@@ -1,6 +1,6 @@
 # Web 音频波形
 
-音频频域可视化，基于 SVG 和 D3。
+音频频域可视化，基于 Canvas。
 
 ## 安装
 
@@ -16,23 +16,17 @@ import WebAudioWave from '@wings-j/web-audio-wave'
 let audio = document.querySelector('audio')
 
 let webAudioWave = new WebAudioWave('bar', audio, {
-  frameRate: 60,
-  fftSize: 512,
-  svgWidth: '1200px',
-  height: '800px',
-  viewBoxWidth: 1200,
-  viewBoxHeight: 800
+  rate: 60,
+  size: 512,
+  width: 1200,
+  height: 800
 })
-document.body.append(webAudioWave.svg)
 webAudioWave.config({
   color: 'skyblue',
-  gradientColor: ['#ff00ff', '#ff0000'],
-  gradientNumber: 100,
-  gap: 1,
-  mirrorX: true,
-  mirrorY: true
+  gap: 1
 })
 
+document.body.append(webAudioWave.canvas)
 audio.addEventListener('play', () => {
   webAudioWave.play()
 })
@@ -82,11 +76,11 @@ option：可视化配置
 
 | 名称          | 说明                    | 类型   | 默认值 |
 | ------------- | ----------------------- | ------ | ------ |
-| frameRate     | 帧率                    | number | 60     |
-| fftSize       | FFT 长度                | number | 512    |
+| rate          | 帧率                    | number | 60     |
+| size          | FFT 长度                | number | 512    |
 | pow           | 对 FFT 的值做幂运算的幂 | number | 1      |
-| svgWidth      | SVG 宽度                | string | "100%" |
-| svgHeight     | SVG 高度                | string | "100%" |
+| width         | SVG 宽度                | string | "100%" |
+| height        | SVG 高度                | string | "100%" |
 | viewBoxWidth  | ViewBox 宽度            | number | 1000   |
 | viewBoxHeight | ViewBox 高度            | number | 1000   |
 
@@ -105,8 +99,6 @@ option：可视化配置
 | reverseX            | 横向反转         | boolean          | false     |
 | reverseY            | 纵向反转         | boolean          | false     |
 
-![](./docs/bar.png)
-
 #### curve
 
 | 名称                | 说明                                       | 类型                     | 默认值      |
@@ -117,8 +109,6 @@ option：可视化配置
 | gradientType        | 渐变类型。amplitude：幅度，frequency：频率 | "amplitude"\|"frequency" | "amplitude" |
 | reverse             | 反转                                       | boolean                  | false       |
 | strokeWidth         | 线宽                                       | number                   | 1           |
-
-![](./docs/curve.png)
 
 #### circle
 
@@ -132,5 +122,3 @@ option：可视化配置
 | strokeWidth               | 线宽                                   | number           | 1         |
 | gradientStrokeWidth       | 渐变线宽                               | [number, number] | null      |
 | gradientStrokeWidthNumber | 渐变线宽分段数量                       | number           | 10        |
-
-![](./docs/circle.png)

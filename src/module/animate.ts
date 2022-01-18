@@ -2,7 +2,7 @@
  * 动画控制
  */
 
-import { Context } from '../core/context'
+import { Context } from '../type/context'
 
 /**
  * 状态
@@ -32,7 +32,7 @@ class Animate {
    */
   constructor(callback: (time: number) => void, context: Context) {
     this.callback = callback
-    this.duration = Math.floor(1000 / context.frameRate)
+    this.duration = Math.floor(1000 / context.rate)
   }
 
   /**

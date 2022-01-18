@@ -2,7 +2,9 @@
  * FFT
  */
 
-import { Context } from '../core/context'
+import { Context } from '../type/context'
+
+const max = 256 // 2**8
 
 /**
  * 类
@@ -18,7 +20,7 @@ class Fft {
    * @param size 采样宽度。2的幂
    */
   constructor(context: Context) {
-    this.size = context.fftSize
+    this.size = context.size
     this.pow = context.pow
 
     let audioContext = new AudioContext()
@@ -27,7 +29,7 @@ class Fft {
     this.analyser = analyser
     source.connect(analyser)
     analyser.connect(audioContext.destination)
-    analyser.fftSize = context.fftSize
+    analyser.fftSize = context.size
   }
 
   /**
@@ -36,17 +38,7 @@ class Fft {
   get() {
     let data = new Uint8Array(this.size)
     this.analyser.getByteFrequencyData(data)
-
-    const max = 256 // 2**8
-    let output = Array.from(data).map(a => {
-      a = a / max
-
-      if (this.pow !== 1) {
-        a = a ** this.pow
-      }
-
-      return a
-    })
+    let output = Array.from(data).map(a => (a / max) ** this.pow)
 
     return output
   }
