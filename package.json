@@ -2,11 +2,6 @@
   "name": "@wings-j/web-audio-wave",
   "version": "1.0.1",
   "description": "Web音频波形",
-  "keywords": [
-    "web",
-    "audio",
-    "visualization"
-  ],
   "author": "wings-j",
   "license": "GPL-3.0-or-later",
   "type": "module",
@@ -15,7 +10,6 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "dev": "rollup -c -w",
-    "test": "jest",
     "build": "rollup -c",
     "release": "npm publish --access=public"
   },
