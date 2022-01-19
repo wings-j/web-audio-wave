@@ -3,7 +3,6 @@
  */
 
 import Graph from '../type/graph'
-import GradientColor from '../util/gradient-color'
 
 const option = {
   color: '#000000',
@@ -13,7 +12,7 @@ const option = {
   reverseX: false,
   reverseY: false,
   gradientColor: null as [string, string] | null,
-  gradientColorNumber: 10
+  gradientNumber: 10
 }
 
 type Option = typeof option
@@ -36,7 +35,33 @@ class Bar extends Graph<Option> {
    * 绘制
    * @name data 数据
    */
-  draw(data: number[]) {}
+  draw(data: number[]) {
+    if (this.option.reverseX) {
+      data.reverse()
+    }
+    if (this.option.mirrorX) {
+      data = data.concat(Array.from(data).reverse())
+    }
+
+    let length = data.length
+    let width = Math.floor(this.width / length)
+    for (let i = 0; i < length; i++) {
+      let x = -this.width / 2 + i * width
+      let y = 0
+      let w = width - this.option.gap
+      let h = -(data[i] * this.height) / 2
+
+      if (this.option.reverseY) {
+        h = -h
+      }
+      if (this.option.mirrorY) {
+        y -= h
+        h *= 2
+      }
+
+      this.c.fillRect(x, y, w, h)
+    }
+  }
   /**
    * 配置
    * @param option 选项

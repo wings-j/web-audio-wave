@@ -4,15 +4,20 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>Bar</title>
 
-    <script src="../node_modules/d3/dist/d3.js"></script>
-    <script src="../dist/index.browser.js"></script>
     <style>
-      svg {
-        border: 1px solid gray;
+      body {
+        overflow: hidden;
+        margin: 0;
+      }
+      audio {
+        position: fixed;
+        right: 0;
+        bottom: 0;
       }
     </style>
+    <script src="../dist/index.iife.js"></script>
   </head>
   <body>
     <div>
@@ -26,17 +31,19 @@
         rate: 60,
         size: 128,
         pow: 2,
-        width: '1200px',
-        height: '800px',
-        viewBoxWidth: 1200,
-        viewBoxHeight: 800
+        width: window.innerWidth,
+        height: window.innerHeight
       })
-      document.body.append(webAudioWave.svg)
+      document.body.append(webAudioWave.canvas)
       webAudioWave.config({
         color: 'skyblue',
+        gap: 1,
+        reverseX: true,
+        mirrorX: true,
+        reverseY: true,
+        mirrorY: true,
         gradientColor: ['#00ffff', '#ff00f0'],
-        gradientNumber: 100,
-        gap: 1
+        gradientNumber: 100
       })
 
       audio.addEventListener('play', () => {

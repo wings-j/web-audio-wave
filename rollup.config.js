@@ -20,27 +20,11 @@ export default [
         file: PackageJson.module,
         format: 'esm',
         sourcemap: true
-      }
-    ]
-  },
-  {
-    input: Path.resolve(__dirname, './src/index.ts'),
-    external: ['d3'],
-    plugins: [
-      RollupPluginNodeResolve(),
-      RollupPluginTypescript2(),
-      RollupPluginBabel({
-        babelHelpers: 'bundled'
-      })
-    ],
-    output: [
+      },
       {
-        file: Path.resolve(__dirname, './dist/index.browser.js'),
+        file: PackageJson.browser,
         format: 'iife',
-        name: 'WebAudioWave',
-        globals: {
-          d3: 'd3'
-        }
+        name: 'WebAudioWave'
       }
     ]
   }

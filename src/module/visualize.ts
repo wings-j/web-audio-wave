@@ -17,6 +17,7 @@ class Visualize {
   graph?: Graph
   canvas: HTMLCanvasElement
   c: CanvasRenderingContext2D
+  wrap: [number, number, number, number]
 
   /**
    * 构造方法
@@ -25,9 +26,11 @@ class Visualize {
   constructor(context: Context) {
     this.canvas = document.createElement('canvas')
     this.c = this.canvas.getContext('2d')!
+    this.wrap = [-context.width / 2, -context.height / 2, context.width, context.height]
 
     this.canvas.setAttribute('width', context.width.toString())
     this.canvas.setAttribute('height', context.height.toString())
+    this.c.translate(context.width / 2, context.height / 2)
 
     if (context.type === 'bar') {
       this.graph = new Bar(this.c, context.width, context.height)
@@ -43,6 +46,7 @@ class Visualize {
    * @param data 数据
    */
   update(data: number[]) {
+    this.c.clearRect(...this.wrap)
     this.graph?.draw(data.slice(0, Math.floor(data.length / 2)))
   }
   /**
