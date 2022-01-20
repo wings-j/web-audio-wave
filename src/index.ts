@@ -2,6 +2,7 @@ import context, { Context, Option } from './type/context'
 import Fft from './module/fft'
 import Animate from './module/animate'
 import Visualize, { Option as VisualizeOption } from './module/visualize'
+import _merge from 'lodash-es/merge'
 
 /**
  * 类
@@ -30,7 +31,7 @@ class WebAudioWave {
       throw new Error('Missing parameter: audio')
     }
 
-    this.context = Object.assign({}, context, option)
+    this.context = _merge({}, context, option)
     this.context.type = type
     this.context.audio = audio
 

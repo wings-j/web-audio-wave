@@ -11,10 +11,13 @@ declare type Option = Partial<BarOption | CurveOption | CircleOption>;
  * 类
  */
 declare class Visualize {
-    graph?: Graph;
+    context: Context;
+    wrap: [number, number, number, number];
     canvas: HTMLCanvasElement;
     c: CanvasRenderingContext2D;
-    wrap: [number, number, number, number];
+    offscreen: HTMLCanvasElement;
+    o: CanvasRenderingContext2D;
+    graph?: Graph;
     /**
      * 构造方法
      * @param context 上下文

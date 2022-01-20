@@ -68,6 +68,8 @@ class Bar extends Graph<Option> {
    */
   config(option: Partial<Option>) {
     Object.assign(this.option, option)
+
+    this.c.fillStyle = this.option.color
   }
 }
 

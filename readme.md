@@ -1,14 +1,12 @@
-# Web 音频波形
-
 音频频域可视化，基于 Canvas。
 
-## 安装
+# 安装
 
 ```bash
 npm install @wings-j/web-audio-wave
 ```
 
-## 使用
+# 使用
 
 ```js
 import WebAudioWave from '@wings-j/web-audio-wave'
@@ -32,9 +30,9 @@ audio.addEventListener('play', () => {
 })
 ```
 
-## API
+# API
 
-### 类
+## 类
 
 ```ts
 WebAudioWave(type: string, audio: HTMLAudioElement, option?: Option)
@@ -44,19 +42,19 @@ WebAudioWave(type: string, audio: HTMLAudioElement, option?: Option)
 - audio：音频元素
 - option：通用选项
 
-### 播放
+## 播放
 
 ```ts
 WebAudioWave.prototype.play()
 ```
 
-### 停止
+## 停止
 
 ```ts
 WebAudioWave.prototype.stop()
 ```
 
-### 配置类型
+## 配置类型
 
 ```ts
 WebAudioWave.prototype.config(option: VisualizeOption)
@@ -64,29 +62,28 @@ WebAudioWave.prototype.config(option: VisualizeOption)
 
 option：可视化配置
 
-## 配置
+# 配置
 
-### 类型
+## 类型
 
 - bar：柱形
 - curve：曲线
 - circle：圆环
 
-### 通用配置（Option）
+## 通用配置（Option）
 
-| 名称          | 说明                    | 类型   | 默认值 |
-| ------------- | ----------------------- | ------ | ------ |
-| rate          | 帧率                    | number | 60     |
-| size          | FFT 长度                | number | 512    |
-| pow           | 对 FFT 的值做幂运算的幂 | number | 1      |
-| width         | SVG 宽度                | string | "100%" |
-| height        | SVG 高度                | string | "100%" |
-| viewBoxWidth  | ViewBox 宽度            | number | 1000   |
-| viewBoxHeight | ViewBox 高度            | number | 1000   |
+| 名称         | 说明                    | 类型   | 默认值 |
+| ------------ | ----------------------- | ------ | ------ |
+| rate         | 帧率                    | number | 60     |
+| size         | FFT 长度                | number | 512    |
+| pow          | 对 FFT 的值做幂运算的幂 | number | 1      |
+| width        | SVG 宽度                | number | 1024   |
+| height       | SVG 高度                | number | 1024   |
+| effect.trace | 轨迹。[0,1]             | number | 1      |
 
-### 类型配置（VisualizeOption）
+## 类型配置（VisualizeOption）
 
-#### bar
+### bar
 
 | 名称                | 说明             | 类型             | 默认值    |
 | ------------------- | ---------------- | ---------------- | --------- |
@@ -99,7 +96,7 @@ option：可视化配置
 | reverseX            | 横向反转         | boolean          | false     |
 | reverseY            | 纵向反转         | boolean          | false     |
 
-#### curve
+### curve
 
 | 名称                | 说明                                       | 类型                     | 默认值      |
 | ------------------- | ------------------------------------------ | ------------------------ | ----------- |
@@ -110,7 +107,7 @@ option：可视化配置
 | reverse             | 反转                                       | boolean                  | false       |
 | strokeWidth         | 线宽                                       | number                   | 1           |
 
-#### circle
+### circle
 
 | 名称                      | 说明                                   | 类型             | 默认值    |
 | ------------------------- | -------------------------------------- | ---------------- | --------- |
