@@ -9,6 +9,7 @@ declare abstract class Graph<Option extends Record<string, any> = {}> {
     width: number;
     height: number;
     option: Option;
+    wrap: [number, number, number, number];
     /**
      * 构造方法
      * @param c 绘图环境

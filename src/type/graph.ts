@@ -12,6 +12,7 @@ abstract class Graph<Option extends Record<string, any> = {}> {
   width: number = Context.width
   height: number = Context.height
   option = {} as Option
+  wrap: [number, number, number, number]
 
   /**
    * 构造方法
@@ -23,6 +24,7 @@ abstract class Graph<Option extends Record<string, any> = {}> {
     this.c = c
     width && (this.width = width)
     height && (this.height = height)
+    this.wrap = [-this.width / 2, -this.height / 2, this.width, this.height]
 
     this.option = Object.assign({}, option)
   }

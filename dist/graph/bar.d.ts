@@ -9,8 +9,8 @@ declare const option: {
     mirrorY: boolean;
     reverseX: boolean;
     reverseY: boolean;
-    gradientColor: [string, string] | null;
-    gradientNumber: number;
+    gradientColor: string[];
+    dynamicColor: [string, string] | null;
 };
 declare type Option = typeof option;
 /**

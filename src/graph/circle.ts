@@ -3,7 +3,6 @@
  */
 
 import Graph from '../type/graph'
-import GradientColor from '../util/gradient-color'
 
 const option = {
   color: '#000000',

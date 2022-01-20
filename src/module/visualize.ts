@@ -14,13 +14,16 @@ type Option = Partial<BarOption | CurveOption | CircleOption>
  * 类
  */
 class Visualize {
-  context: Context
-  wrap: [number, number, number, number]
+  private context: Context
+  private c: CanvasRenderingContext2D
+  private offscreen: HTMLCanvasElement
+  private o: CanvasRenderingContext2D
+  private graph?: Graph
   canvas: HTMLCanvasElement
-  c: CanvasRenderingContext2D
-  offscreen: HTMLCanvasElement
-  o: CanvasRenderingContext2D
-  graph?: Graph
+
+  private get wrap() {
+    return this.graph?.wrap || [-this.context.width / 2, -this.context.height / 2, this.context.width, this.context.height]
+  }
 
   /**
    * 构造方法
@@ -28,7 +31,6 @@ class Visualize {
    */
   constructor(context: Context) {
     this.context = context
-    this.wrap = [-context.width / 2, -context.height / 2, context.width, context.height]
     this.canvas = document.createElement('canvas')
     this.c = this.canvas.getContext('2d')!
     this.offscreen = document.createElement('canvas')

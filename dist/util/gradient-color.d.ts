@@ -8,5 +8,5 @@
  * @param n 阶段数量
  * @return 颜色数组
  */
-declare function gradientColor(start: string, end: string, n: number): string[];
-export default gradientColor;
+declare function calcGradientColor(start: string, end: string, n: number): string[];
+export default calcGradientColor;

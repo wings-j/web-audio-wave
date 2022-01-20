@@ -85,35 +85,33 @@ option：可视化配置
 
 ### bar
 
-| 名称                | 说明             | 类型             | 默认值    |
-| ------------------- | ---------------- | ---------------- | --------- |
-| color               | 颜色             | string           | "#000000" |
-| gradientColor       | 渐变颜色         | [string, string] | null      |
-| gradientColorNumber | 渐变颜色分段数量 | number           | 10        |
-| gap                 | 柱形间距         | number           | 0         |
-| mirrorX             | 横向镜像         | boolean          | false     |
-| mirrorY             | 纵向镜像         | boolean          | false     |
-| reverseX            | 横向反转         | boolean          | false     |
-| reverseY            | 纵向反转         | boolean          | false     |
+| 名称          | 说明     | 类型                     | 默认值    |
+| ------------- | -------- | ------------------------ | --------- |
+| color         | 颜色     | string                   | "#000000" |
+| gradientColor | 渐变颜色 | string[]                 | []        |
+| dynamicColor  | 动态颜色 | [string, string] \| null | null      |
+| gap           | 柱形间距 | number                   | 0         |
+| mirrorX       | 横向镜像 | boolean                  | false     |
+| mirrorY       | 纵向镜像 | boolean                  | false     |
+| reverseX      | 横向反转 | boolean                  | false     |
+| reverseY      | 纵向反转 | boolean                  | false     |
 
 ### curve
 
-| 名称                | 说明                                       | 类型                     | 默认值      |
-| ------------------- | ------------------------------------------ | ------------------------ | ----------- |
-| color               | 颜色                                       | string                   | "#000000"   |
-| gradientColor       | 渐变颜色                                   | [string, string]         | null        |
-| gradientColorNumber | 渐变颜色分段数量                           | number                   | 10          |
-| gradientType        | 渐变类型。amplitude：幅度，frequency：频率 | "amplitude"\|"frequency" | "amplitude" |
-| reverse             | 反转                                       | boolean                  | false       |
-| strokeWidth         | 线宽                                       | number                   | 1           |
+| 名称          | 说明                                       | 类型                     | 默认值      |
+| ------------- | ------------------------------------------ | ------------------------ | ----------- |
+| color         | 颜色                                       | string                   | "#000000"   |
+| gradientColor | 渐变颜色                                   | string[]                 | []          |
+| gradientType  | 渐变类型。amplitude：幅度，frequency：频率 | "amplitude"\|"frequency" | "amplitude" |
+| reverse       | 反转                                       | boolean                  | false       |
+| strokeWidth   | 线宽                                       | number                   | 1           |
 
 ### circle
 
 | 名称                      | 说明                                   | 类型             | 默认值    |
 | ------------------------- | -------------------------------------- | ---------------- | --------- |
 | color                     | 颜色                                   | string           | "#000000" |
-| gradientColor             | 渐变颜色                               | [string, string] | null      |
-| gradientColorNumber       | 渐变颜色分段数量                       | number           | 10        |
+| gradientColor             | 渐变颜色                               | string[]         | []]       |
 | colorType                 | 颜色显示方式。stroke：轮廓，fill：填充 | "stroke"\|"fill" | "stroke"  |
 | number                    | 圆环数量                               | number           | 1         |
 | strokeWidth               | 线宽                                   | number           | 1         |

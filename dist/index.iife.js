@@ -145,6 +145,7 @@ var WebAudioWave = (function () {
       width = context.width;
       height = context.height;
       option = {};
+      wrap;
       /**
        * 构造方法
        * @param c 绘图环境
@@ -155,8 +156,39 @@ var WebAudioWave = (function () {
           this.c = c;
           width && (this.width = width);
           height && (this.height = height);
+          this.wrap = [-this.width / 2, -this.height / 2, this.width, this.height];
           this.option = Object.assign({}, option);
       }
+  }
+
+  /**
+   * 计算中间颜色
+   */
+  /**
+   * 方法
+   * @param start 起始颜色
+   * @param end 停止颜色
+   * @param delta 变化比例
+   * @return 颜色
+   */
+  function calcDeltaColor(start, end, delta) {
+      let sr = parseInt(start.slice(1, 3), 16);
+      let sg = parseInt(start.slice(3, 5), 16);
+      let sb = parseInt(start.slice(5, 7), 16);
+      let er = parseInt(end.slice(1, 3), 16);
+      let eg = parseInt(end.slice(3, 5), 16);
+      let eb = parseInt(end.slice(5, 7), 16);
+      let dr = er - sr;
+      let dg = eg - sg;
+      let db = eb - sb;
+      let result = `#${Math.round(sr + delta * dr)
+        .toString(16)
+        .padStart(2, '0')}${Math.round(sg + delta * dg)
+        .toString(16)
+        .padStart(2, '0')}${Math.round(sb + delta * db)
+        .toString(16)
+        .padStart(2, '0')}`;
+      return result;
   }
 
   /**
@@ -169,8 +201,8 @@ var WebAudioWave = (function () {
       mirrorY: false,
       reverseX: false,
       reverseY: false,
-      gradientColor: null,
-      gradientNumber: 10
+      gradientColor: [],
+      dynamicColor: null
   };
   /**
    * 类
@@ -190,19 +222,24 @@ var WebAudioWave = (function () {
        * @name data 数据
        */
       draw(data) {
+          let d = Array.from(data);
           if (this.option.reverseX) {
-              data.reverse();
+              d.reverse();
           }
           if (this.option.mirrorX) {
-              data = data.concat(Array.from(data).reverse());
+              d = d.concat(Array.from(d).reverse());
           }
-          let length = data.length;
+          if (this.option.dynamicColor) {
+              let average = data.reduce((p, c) => p + c, 0) / data.length;
+              this.c.fillStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
+          }
+          let length = d.length;
           let width = Math.floor(this.width / length);
           for (let i = 0; i < length; i++) {
               let x = -this.width / 2 + i * width;
               let y = 0;
               let w = width - this.option.gap;
-              let h = -(data[i] * this.height) / 2;
+              let h = -(d[i] * this.height) / 2;
               if (this.option.reverseY) {
                   h = -h;
               }
@@ -220,6 +257,13 @@ var WebAudioWave = (function () {
       config(option) {
           Object.assign(this.option, option);
           this.c.fillStyle = this.option.color;
+          if (this.option.gradientColor.length) {
+              let linearGradient = this.c.createLinearGradient(this.wrap[0], 0, this.wrap[0] + this.wrap[2], 0);
+              for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
+                  linearGradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i]);
+              }
+              this.c.fillStyle = linearGradient;
+          }
       }
   }
 
@@ -309,19 +353,20 @@ var WebAudioWave = (function () {
    */
   class Visualize {
       context;
-      wrap;
-      canvas;
       c;
       offscreen;
       o;
       graph;
+      canvas;
+      get wrap() {
+          return this.graph?.wrap || [-this.context.width / 2, -this.context.height / 2, this.context.width, this.context.height];
+      }
       /**
        * 构造方法
        * @param context 上下文
        */
       constructor(context) {
           this.context = context;
-          this.wrap = [-context.width / 2, -context.height / 2, context.width, context.height];
           this.canvas = document.createElement('canvas');
           this.c = this.canvas.getContext('2d');
           this.offscreen = document.createElement('canvas');

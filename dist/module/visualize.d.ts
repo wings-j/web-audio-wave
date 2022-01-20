@@ -2,7 +2,6 @@
  * 可视化
  */
 import { Context } from '../type/context';
-import Graph from '../type/graph';
 import { Option as BarOption } from '../graph/bar';
 import { Option as CurveOption } from '../graph/curve';
 import { Option as CircleOption } from '../graph/circle';
@@ -11,13 +10,13 @@ declare type Option = Partial<BarOption | CurveOption | CircleOption>;
  * 类
  */
 declare class Visualize {
-    context: Context;
-    wrap: [number, number, number, number];
+    private context;
+    private c;
+    private offscreen;
+    private o;
+    private graph?;
     canvas: HTMLCanvasElement;
-    c: CanvasRenderingContext2D;
-    offscreen: HTMLCanvasElement;
-    o: CanvasRenderingContext2D;
-    graph?: Graph;
+    private get wrap();
     /**
      * 构造方法
      * @param context 上下文
