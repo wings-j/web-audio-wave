@@ -26,7 +26,7 @@ abstract class Graph<Option extends Record<string, any> = {}> {
     height && (this.height = height)
     this.wrap = [-this.width / 2, -this.height / 2, this.width, this.height]
 
-    this.option = Object.assign({}, option)
+    this.config(option)
   }
 
   /**
@@ -38,7 +38,9 @@ abstract class Graph<Option extends Record<string, any> = {}> {
    * 配置
    * @param option 选项
    */
-  abstract config(option: Record<string, unknown>): void
+  config(option?: Record<string, unknown>): void {
+    Object.assign(this.option, option)
+  }
 }
 
 export default Graph

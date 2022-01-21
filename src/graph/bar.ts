@@ -12,7 +12,7 @@ const option = {
   mirrorY: false,
   reverseX: false,
   reverseY: false,
-  gradientColor: [] as string[],
+  gradientColor: null as string[] | null,
   dynamicColor: null as [string, string] | null
 }
 
@@ -38,6 +38,7 @@ class Bar extends Graph<Option> {
    */
   draw(data: number[]) {
     let d = Array.from(data)
+
     if (this.option.reverseX) {
       d.reverse()
     }
@@ -45,13 +46,13 @@ class Bar extends Graph<Option> {
       d = d.concat(Array.from(d).reverse())
     }
 
-    if (this.option.dynamicColor) {
+    if (this.option.dynamicColor?.length === 2) {
       let average = data.reduce((p, c) => p + c, 0) / data.length
       this.c.fillStyle = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average)
     }
 
     let length = d.length
-    let width = Math.floor(this.width / length)
+    let width = this.width / length
     for (let i = 0; i < length; i++) {
       let x = -this.width / 2 + i * width
       let y = 0
@@ -73,18 +74,18 @@ class Bar extends Graph<Option> {
    * 配置
    * @param option 选项
    */
-  config(option: Partial<Option>) {
-    Object.assign(this.option, option)
+  config(option?: Partial<Option>) {
+    super.config(option)
 
     this.c.fillStyle = this.option.color
 
-    if (this.option.gradientColor.length) {
-      let linearGradient = this.c.createLinearGradient(this.wrap[0], 0, this.wrap[0] + this.wrap[2], 0)
+    if (this.option.gradientColor?.length) {
+      let gradient = this.c.createLinearGradient(this.wrap[0], 0, this.wrap[0] + this.wrap[2], 0)
       for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
-        linearGradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i])
+        gradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i])
       }
 
-      this.c.fillStyle = linearGradient
+      this.c.fillStyle = gradient
     }
   }
 }

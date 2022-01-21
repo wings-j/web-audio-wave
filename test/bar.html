@@ -18,35 +18,21 @@
       }
     </style>
     <script src="../dist/index.iife.js"></script>
-  </head>
-  <body>
-    <div>
-      <audio id="example" src="./audio/come-sweet-death.mp3" controls />
-    </div>
-
+    <script src="./scripts/index.js"></script>
     <script>
-      let audio = document.querySelector('#example')
-
-      let webAudioWave = new WebAudioWave('bar', audio, {
-        rate: 60,
-        size: 128,
-        width: window.innerWidth,
-        height: window.innerHeight
-      })
-      document.body.append(webAudioWave.canvas)
-      webAudioWave.config({
-        color: 'skyblue',
-        gap: 1,
-        reverseX: true,
-        mirrorX: true,
-        reverseY: true,
-        mirrorY: true,
-        dynamicColor: ['#00ffff', '#ff00f0']
-      })
-
-      audio.addEventListener('play', () => {
-        webAudioWave.play()
+      document.addEventListener('DOMContentLoaded', () => {
+        initiate(
+          'bar',
+          { size: 128 },
+          {
+            gap: 1,
+            dynamicColor: ['#00ffff', '#ff00f0']
+          }
+        )
       })
     </script>
+  </head>
+  <body>
+    <audio src="./audio/come-sweet-death.mp3" controls />
   </body>
 </html>

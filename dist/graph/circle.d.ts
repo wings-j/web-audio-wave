@@ -4,21 +4,17 @@
 import Graph from '../type/graph';
 declare const option: {
     color: string;
-    colorType: "stroke" | "fill";
-    number: number;
-    strokeWidth: number;
-    gradientStrokeWidth: [number, number] | null;
-    gradientStrokeWidthNumber: number;
-    gradientColor: [string, string] | null;
-    gradientColorNumber: number;
+    fill: boolean;
+    width: number;
+    gradientColor: string[] | null;
+    dynamicColor: [string, string] | null;
 };
 declare type Option = typeof option;
 /**
  * 类
  */
 declare class Circle extends Graph<Option> {
-    private gradientColorList;
-    private gradientStrokeWidthList;
+    get maxRadius(): number;
     /**
      * 构造方法
      * @param c 绘图环境
@@ -35,7 +31,7 @@ declare class Circle extends Graph<Option> {
      * 配置
      * @param option 选项
      */
-    config(option: Partial<Option>): void;
+    config(option?: Partial<Option>): void;
 }
 export default Circle;
 export { Option };

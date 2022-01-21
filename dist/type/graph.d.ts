@@ -26,6 +26,6 @@ declare abstract class Graph<Option extends Record<string, any> = {}> {
      * 配置
      * @param option 选项
      */
-    abstract config(option: Record<string, unknown>): void;
+    config(option?: Record<string, unknown>): void;
 }
 export default Graph;

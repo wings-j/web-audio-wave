@@ -6,44 +6,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Circle</title>
 
-    <script src="../node_modules/d3/dist/d3.js"></script>
-    <script src="../dist/index.browser.js"></script>
     <style>
-      svg {
-        border: 1px solid gray;
+      body {
+        overflow: hidden;
+        margin: 0;
+      }
+      audio {
+        position: fixed;
+        right: 0;
+        bottom: 0;
       }
     </style>
-  </head>
-  <body>
-    <div>
-      <audio id="example" src="./audio/come-sweet-death.mp3" controls />
-    </div>
-
+    <script src="../dist/index.iife.js"></script>
+    <script src="./scripts/index.js"></script>
     <script>
-      let audio = document.querySelector('#example')
-
-      let webAudioWave = new WebAudioWave('circle', audio, {
-        rate: 60,
-        size: 512,
-        width: '1200px',
-        height: '800px',
-        viewBoxWidth: 1200,
-        viewBoxHeight: 800
-      })
-      document.body.append(webAudioWave.svg)
-      webAudioWave.config({
-        color: 'skyblue',
-        number: 100,
-        gradientColor: ['#0000ff', '#ff0000'],
-        gradientNumber: 100,
-        colorType: 'stroke',
-        strokeWidth: 1,
-        gradientStrokeWidth: [10, 0]
-      })
-
-      audio.addEventListener('play', () => {
-        webAudioWave.play()
+      document.addEventListener('DOMContentLoaded', () => {
+        initiate(
+          'circle',
+          { size: 128 },
+          {
+            color: 'blue',
+            width: 3,
+            dynamicColor: ['#ff00f0', '#00ffff'],
+            fill: true
+          }
+        )
       })
     </script>
+  </head>
+  <body>
+    <audio src="./audio/come-sweet-death.mp3" controls />
   </body>
 </html>

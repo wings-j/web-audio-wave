@@ -4,11 +4,11 @@
 import Graph from '../type/graph';
 declare const option: {
     color: string;
-    strokeWidth: number;
+    width: number;
+    mirror: boolean;
     reverse: boolean;
-    gradientColor: [string, string] | null;
-    gradientColorNumber: number;
-    gradientType: "amplitude" | "frequency";
+    gradientColor: string[] | null;
+    dynamicColor: [string, string] | null;
 };
 declare type Option = typeof option;
 /**

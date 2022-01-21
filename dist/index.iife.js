@@ -157,7 +157,14 @@ var WebAudioWave = (function () {
           width && (this.width = width);
           height && (this.height = height);
           this.wrap = [-this.width / 2, -this.height / 2, this.width, this.height];
-          this.option = Object.assign({}, option);
+          this.config(option);
+      }
+      /**
+       * 配置
+       * @param option 选项
+       */
+      config(option) {
+          Object.assign(this.option, option);
       }
   }
 
@@ -201,7 +208,7 @@ var WebAudioWave = (function () {
       mirrorY: false,
       reverseX: false,
       reverseY: false,
-      gradientColor: [],
+      gradientColor: null,
       dynamicColor: null
   };
   /**
@@ -229,12 +236,12 @@ var WebAudioWave = (function () {
           if (this.option.mirrorX) {
               d = d.concat(Array.from(d).reverse());
           }
-          if (this.option.dynamicColor) {
+          if (this.option.dynamicColor?.length === 2) {
               let average = data.reduce((p, c) => p + c, 0) / data.length;
               this.c.fillStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
           }
           let length = d.length;
-          let width = Math.floor(this.width / length);
+          let width = this.width / length;
           for (let i = 0; i < length; i++) {
               let x = -this.width / 2 + i * width;
               let y = 0;
@@ -255,14 +262,14 @@ var WebAudioWave = (function () {
        * @param option 选项
        */
       config(option) {
-          Object.assign(this.option, option);
+          super.config(option);
           this.c.fillStyle = this.option.color;
-          if (this.option.gradientColor.length) {
-              let linearGradient = this.c.createLinearGradient(this.wrap[0], 0, this.wrap[0] + this.wrap[2], 0);
+          if (this.option.gradientColor?.length) {
+              let gradient = this.c.createLinearGradient(this.wrap[0], 0, this.wrap[0] + this.wrap[2], 0);
               for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
-                  linearGradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i]);
+                  gradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i]);
               }
-              this.c.fillStyle = linearGradient;
+              this.c.fillStyle = gradient;
           }
       }
   }
@@ -272,11 +279,11 @@ var WebAudioWave = (function () {
    */
   const option$1 = {
       color: '#000000',
-      strokeWidth: 1,
+      width: 1,
+      mirror: false,
       reverse: false,
       gradientColor: null,
-      gradientColorNumber: 10,
-      gradientType: 'amplitude'
+      dynamicColor: null
   };
   /**
    * 类
@@ -295,12 +302,48 @@ var WebAudioWave = (function () {
        * 绘制
        * @param data 数据。归一化
        */
-      draw(data) { }
+      draw(data) {
+          let d = Array.from(data);
+          if (this.option.reverse) {
+              d.reverse();
+          }
+          if (this.option.mirror) {
+              d = d.concat(Array.from(d).reverse());
+          }
+          if (this.option.dynamicColor?.length === 2) {
+              let average = data.reduce((p, c) => p + c, 0) / data.length;
+              this.c.strokeStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
+          }
+          let dw = this.width / d.length;
+          let startX = -this.width / 2;
+          let direction = 1;
+          let path2D = `M ${startX},0`;
+          let sum = 0;
+          for (let i = 0, l = d.length; i < l; i++) {
+              let x = startX + dw * i;
+              let y = (direction * d[i] * this.height) / 2;
+              path2D += ` L ${x},${y}`;
+              direction *= -1;
+              sum += d[i];
+          }
+          this.c.stroke(new Path2D(path2D));
+      }
       /**
        * 配置
        * @param option 选项
        */
-      config(option) { }
+      config(option) {
+          super.config(option);
+          this.c.strokeStyle = this.option.color;
+          this.c.lineWidth = this.option.width;
+          if (this.option.gradientColor?.length) {
+              let gradient = this.c.createLinearGradient(this.wrap[0], 0, this.wrap[0] + this.wrap[2], 0);
+              for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
+                  gradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i]);
+              }
+              this.c.strokeStyle = gradient;
+          }
+      }
   }
 
   /**
@@ -308,20 +351,18 @@ var WebAudioWave = (function () {
    */
   const option = {
       color: '#000000',
-      colorType: 'stroke',
-      number: 1,
-      strokeWidth: 1,
-      gradientStrokeWidth: null,
-      gradientStrokeWidthNumber: 10,
+      fill: false,
+      width: 1,
       gradientColor: null,
-      gradientColorNumber: 10
+      dynamicColor: null
   };
   /**
    * 类
    */
   class Circle extends Graph {
-      gradientColorList = null;
-      gradientStrokeWidthList = null;
+      get maxRadius() {
+          return Math.min(this.width, this.height) / 2;
+      }
       /**
        * 构造方法
        * @param c 绘图环境
@@ -335,13 +376,51 @@ var WebAudioWave = (function () {
        * 绘制
        * @param data 数据。归一化
        */
-      draw(data) { }
+      draw(data) {
+          if (this.option.fill) {
+              for (let a of data) {
+                  this.c.beginPath();
+                  this.c.moveTo(this.maxRadius * a, 0);
+                  this.c.arc(0, 0, this.maxRadius * a, 0, 360);
+                  this.c.closePath();
+                  if (this.option.dynamicColor?.length === 2) {
+                      let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a);
+                      this.c.fillStyle = color;
+                  }
+                  this.c.fill();
+              }
+          }
+          else {
+              if (this.option.dynamicColor?.length === 2) {
+                  let average = data.reduce((p, c) => p + c, 0) / data.length;
+                  let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
+                  this.c.strokeStyle = color;
+              }
+              this.c.beginPath();
+              for (let a of data) {
+                  this.c.moveTo(this.maxRadius * a, 0);
+                  this.c.arc(0, 0, this.maxRadius * a, 0, 360);
+              }
+              this.c.closePath();
+              this.c.stroke();
+          }
+      }
       /**
        * 配置
        * @param option 选项
        */
       config(option) {
-          Object.assign(this.option, option);
+          super.config(option);
+          this.c.strokeStyle = this.option.color;
+          this.c.lineWidth = this.option.width;
+          if (this.option.gradientColor?.length) {
+              let gradient = this.c.createRadialGradient(0, 0, 0, 0, 0, this.maxRadius);
+              for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
+                  gradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i]);
+              }
+              this.c.strokeStyle = gradient;
+              this.c.fillStyle = gradient;
+          }
       }
   }
 

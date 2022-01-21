@@ -9,7 +9,7 @@ declare const option: {
     mirrorY: boolean;
     reverseX: boolean;
     reverseY: boolean;
-    gradientColor: string[];
+    gradientColor: string[] | null;
     dynamicColor: [string, string] | null;
 };
 declare type Option = typeof option;
@@ -33,7 +33,7 @@ declare class Bar extends Graph<Option> {
      * 配置
      * @param option 选项
      */
-    config(option: Partial<Option>): void;
+    config(option?: Partial<Option>): void;
 }
 export default Bar;
 export { Option };

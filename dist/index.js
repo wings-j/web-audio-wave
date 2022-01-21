@@ -158,7 +158,6 @@ var Fft = /*#__PURE__*/ (function () {
  */
 
 var State
-
 ;(function (State) {
   State[(State['stop'] = 0)] = 'stop'
   State[(State['play'] = 1)] = 'play'
@@ -391,7 +390,7 @@ var Bar = /*#__PURE__*/ (function (_Graph) {
 
 var option$1 = {
   color: '#000000',
-  strokeWidth: 1,
+  width: 1,
   reverse: false,
   gradientColor: null,
   gradientColorNumber: 10,
@@ -447,7 +446,7 @@ var option = {
   color: '#000000',
   colorType: 'stroke',
   number: 1,
-  strokeWidth: 1,
+  width: 1,
   gradientStrokeWidth: null,
   gradientStrokeWidthNumber: 10,
   gradientColor: null,
@@ -566,14 +565,12 @@ var Visualize = /*#__PURE__*/ (function () {
       key: 'update',
       value: function update(data) {
         var _this$o, _this$graph, _this$c, _this$c2, _context4
-
         ;(_this$o = this.o).clearRect.apply(_this$o, _toConsumableArray(this.wrap))
 
         if (this.context.effect.trace < 1) {
           var _this$o2, _context3
 
           this.o.globalAlpha = this.context.effect.trace
-
           ;(_this$o2 = this.o).drawImage.apply(_this$o2, _concatInstanceProperty((_context3 = [this.canvas])).call(_context3, _toConsumableArray(this.wrap)))
 
           this.o.globalAlpha = 1
@@ -582,9 +579,7 @@ var Visualize = /*#__PURE__*/ (function () {
         ;(_this$graph = this.graph) === null || _this$graph === void 0
           ? void 0
           : _this$graph.draw(_sliceInstanceProperty(data).call(data, 0, Math.floor(data.length / 2)))
-
         ;(_this$c = this.c).clearRect.apply(_this$c, _toConsumableArray(this.wrap))
-
         ;(_this$c2 = this.c).drawImage.apply(_this$c2, _concatInstanceProperty((_context4 = [this.offscreen])).call(_context4, _toConsumableArray(this.wrap)))
       }
       /**
@@ -596,7 +591,6 @@ var Visualize = /*#__PURE__*/ (function () {
       key: 'config',
       value: function config(option) {
         var _this$graph2
-
         ;(_this$graph2 = this.graph) === null || _this$graph2 === void 0 ? void 0 : _this$graph2.config(option)
       }
     }
