@@ -3,12 +3,13 @@ import RollupPluginNodeResolve from '@rollup/plugin-node-resolve'
 import RollupPluginTypescript2 from 'rollup-plugin-typescript2'
 import PackageJson from './package.json'
 import { getBabelOutputPlugin } from '@rollup/plugin-babel'
+import RollupPluginCommonjs from '@rollup/plugin-commonjs'
 
 let config
 if (process.argv.includes('-w')) {
   config = {
     input: Path.resolve(__dirname, './src/index.ts'),
-    plugins: [RollupPluginNodeResolve(), RollupPluginTypescript2()],
+    plugins: [RollupPluginNodeResolve(), RollupPluginCommonjs(), RollupPluginTypescript2()],
     output: {
       file: PackageJson.browser,
       format: 'iife',
@@ -21,8 +22,7 @@ if (process.argv.includes('-w')) {
     external: Object.keys(PackageJson.dependencies || {}),
     plugins: [RollupPluginNodeResolve(), RollupPluginTypescript2(), getBabelOutputPlugin({ configFile: Path.resolve(__dirname, 'babel.config.js') })],
     output: {
-      file: PackageJson.module,
-      format: 'esm'
+      file: PackageJson.module
     }
   }
 }

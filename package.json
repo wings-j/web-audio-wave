@@ -1,6 +1,6 @@
 {
   "name": "@wings-j/web-audio-wave",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Web音频波形",
   "author": "wings-j",
   "license": "GPL-3.0-or-later",
@@ -9,6 +9,10 @@
   "module": "dist/index.js",
   "browser": "dist/index.iife.js",
   "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wings-j/web-audio-wave"
+  },
   "scripts": {
     "dev": "rollup -c -w",
     "build": "rollup -c",
@@ -16,10 +20,10 @@
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
-    "@babel/plugin-transform-modules-commonjs": "^7.15.4",
     "@babel/plugin-transform-runtime": "^7.15.8",
     "@babel/preset-env": "^7.5.5",
     "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^21.0.1",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.4",
     "@types/jest": "^27.0.2",
@@ -35,6 +39,7 @@
   },
   "dependencies": {
     "@babel/runtime-corejs3": "^7.15.4",
+    "@wings-j/web-sdk": "^2.0.0",
     "core-js": "^3.18.2",
     "lodash-es": "^4.17.21"
   }

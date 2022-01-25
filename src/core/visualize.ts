@@ -4,9 +4,9 @@
 
 import { Context } from '../type/context'
 import Graph from '../type/graph'
-import Bar, { Option as BarOption } from '../graph/bar'
-import Curve, { Option as CurveOption } from '../graph/curve'
-import Circle, { Option as CircleOption } from '../graph/circle'
+import Bar, { Option as BarOption } from '../module/bar'
+import Curve, { Option as CurveOption } from '../module/curve'
+import Circle, { Option as CircleOption } from '../module/circle'
 
 type Option = Partial<BarOption | CurveOption | CircleOption>
 

@@ -1,5 +1,8 @@
+/**
+ * index
+ */
 import { Option } from './type/context';
-import { Option as VisualizeOption } from './module/visualize';
+import { Option as VisualizeOption } from './core/visualize';
 /**
  * 类
  */

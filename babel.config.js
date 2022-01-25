@@ -5,10 +5,7 @@ export default {
       {
         modules: false,
         useBuiltIns: 'usage',
-        corejs: 3,
-        targets: {
-          browsers: ['> 1%', 'last 2 versions', 'not dead']
-        }
+        corejs: 3
       }
     ]
   ],

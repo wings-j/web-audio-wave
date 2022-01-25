@@ -1,8 +1,11 @@
+/**
+ * index
+ */
+
 import context, { Context, Option } from './type/context'
-import Fft from './module/fft'
-import Animate from './module/animate'
-import Visualize, { Option as VisualizeOption } from './module/visualize'
 import _merge from 'lodash-es/merge'
+import { AudioFft, Animate } from '@wings-j/web-sdk'
+import Visualize, { Option as VisualizeOption } from './core/visualize'
 
 /**
  * 类
@@ -11,7 +14,7 @@ class WebAudioWave {
   private context: Context
   private animate: Animate
   private visualize: Visualize
-  private fft: Fft | null = null
+  private fft: AudioFft | null = null
 
   get canvas() {
     return this.visualize.canvas
@@ -36,7 +39,7 @@ class WebAudioWave {
     this.context.audio = audio
 
     this.visualize = new Visualize(this.context)
-    this.animate = new Animate(this.callback.bind(this), this.context)
+    this.animate = new Animate(60, this.callback.bind(this))
   }
 
   /**
@@ -50,8 +53,8 @@ class WebAudioWave {
    * 播放
    */
   play() {
-    if (!this.fft) {
-      this.fft = new Fft(this.context) // 因为浏览器的音频权限策略，延迟初始化
+    if (!this.fft && this.context.audio) {
+      this.fft = new AudioFft(this.context.audio, this.context.size) // 因为浏览器的音频权限策略，延迟初始化
     }
 
     this.animate.play()

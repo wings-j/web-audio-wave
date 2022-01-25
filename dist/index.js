@@ -1,8 +1,6 @@
-import "core-js/modules/es.function.name.js";
 import _Reflect$construct from "@babel/runtime-corejs3/core-js-stable/reflect/construct";
 import _Symbol2 from "@babel/runtime-corejs3/core-js-stable/symbol";
 import _getIteratorMethod from "@babel/runtime-corejs3/core-js/get-iterator-method";
-import _typeof from "@babel/runtime-corejs3/helpers/typeof";
 import _toConsumableArray from "@babel/runtime-corejs3/helpers/toConsumableArray";
 import _get from "@babel/runtime-corejs3/helpers/get";
 import _inherits from "@babel/runtime-corejs3/helpers/inherits";
@@ -11,10 +9,11 @@ import _getPrototypeOf from "@babel/runtime-corejs3/helpers/getPrototypeOf";
 import _classCallCheck from "@babel/runtime-corejs3/helpers/classCallCheck";
 import _createClass from "@babel/runtime-corejs3/helpers/createClass";
 import _defineProperty from "@babel/runtime-corejs3/helpers/defineProperty";
+import _typeof from "@babel/runtime-corejs3/helpers/typeof";
 
-function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof _Symbol2 !== "undefined" && _getIteratorMethod(o) || o["@@iterator"]; if (!it) { if (_Array$isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof _Symbol2 !== "undefined" && _getIteratorMethod(o) || o["@@iterator"]; if (!it) { if (_Array$isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
-function _unsupportedIterableToArray(o, minLen) { var _context14; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = _sliceInstanceProperty(_context14 = Object.prototype.toString.call(o)).call(_context14, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return _Array$from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _unsupportedIterableToArray(o, minLen) { var _context13; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = _sliceInstanceProperty(_context13 = Object.prototype.toString.call(o)).call(_context13, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return _Array$from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
@@ -22,58 +21,36 @@ function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflec
 
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !_Reflect$construct) return false; if (_Reflect$construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(_Reflect$construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
 
-import "core-js/modules/es.array.iterator.js";
+import "core-js/modules/es.date.to-string.js";
 import "core-js/modules/es.object.to-string.js";
-import "core-js/modules/es.typed-array.uint8-array.js";
-import "core-js/modules/es.typed-array.copy-within.js";
-import "core-js/modules/es.typed-array.every.js";
-import "core-js/modules/es.typed-array.fill.js";
-import "core-js/modules/es.typed-array.filter.js";
-import "core-js/modules/es.typed-array.find.js";
-import "core-js/modules/es.typed-array.find-index.js";
-import "core-js/modules/es.typed-array.for-each.js";
-import "core-js/modules/es.typed-array.includes.js";
-import "core-js/modules/es.typed-array.index-of.js";
-import "core-js/modules/es.typed-array.iterator.js";
-import "core-js/modules/es.typed-array.join.js";
-import "core-js/modules/es.typed-array.last-index-of.js";
-import "core-js/modules/es.typed-array.map.js";
-import "core-js/modules/es.typed-array.reduce.js";
-import "core-js/modules/es.typed-array.reduce-right.js";
-import "core-js/modules/es.typed-array.reverse.js";
-import "core-js/modules/es.typed-array.set.js";
-import "core-js/modules/es.typed-array.slice.js";
-import "core-js/modules/es.typed-array.some.js";
-import "core-js/modules/es.typed-array.sort.js";
-import "core-js/modules/es.typed-array.subarray.js";
-import "core-js/modules/es.typed-array.to-locale-string.js";
-import "core-js/modules/es.typed-array.to-string.js";
 import "core-js/modules/es.regexp.to-string.js";
 import "core-js/modules/es.regexp.exec.js";
 import "core-js/modules/es.regexp.constructor.js";
 import "core-js/modules/es.string.replace.js";
+import "core-js/modules/es.function.name.js";
 import _Object$freeze from "@babel/runtime-corejs3/core-js-stable/object/freeze";
-import _mapInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/map";
-import _Array$from from "@babel/runtime-corejs3/core-js-stable/array/from";
-import _Object$assign from "@babel/runtime-corejs3/core-js-stable/object/assign";
-import _parseInt from "@babel/runtime-corejs3/core-js-stable/parse-int";
-import _sliceInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/slice";
-import _concatInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/concat";
-import _padStartInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/pad-start";
-import _reverseInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/reverse";
-import _reduceInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/reduce";
-import _fillInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/fill";
 import _spliceInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/splice";
 import _keysInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/keys";
+import _mapInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/map";
+import _sliceInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/slice";
 import _Object$create from "@babel/runtime-corejs3/core-js-stable/object/create";
 import _Object$getPrototypeOf from "@babel/runtime-corejs3/core-js-stable/object/get-prototype-of";
 import _Array$isArray from "@babel/runtime-corejs3/core-js-stable/array/is-array";
 import _Date$now from "@babel/runtime-corejs3/core-js-stable/date/now";
+import _Object$assign from "@babel/runtime-corejs3/core-js-stable/object/assign";
+import _parseInt from "@babel/runtime-corejs3/core-js-stable/parse-int";
+import _concatInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/concat";
+import _padStartInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/pad-start";
+import _Array$from from "@babel/runtime-corejs3/core-js-stable/array/from";
+import _reverseInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/reverse";
+import _reduceInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/reduce";
+import _fillInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/fill";
 import _bindInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/bind";
-
+import { Animate, AudioFft } from '@wings-j/web-sdk';
 /**
  * 上下文
  */
+
 var context = {
   type: '',
   audio: null,
@@ -88,727 +65,6 @@ var context = {
 };
 
 _Object$freeze(context);
-/**
- * FFT
- */
-
-
-var max = 256; // 2**8
-
-/**
- * 类
- */
-
-var Fft = /*#__PURE__*/function () {
-  /**
-   * 构造方法
-   * @param audio 音频组件
-   * @param size 采样宽度。2的幂
-   */
-  function Fft(context) {
-    _classCallCheck(this, Fft);
-
-    _defineProperty(this, "size", void 0);
-
-    _defineProperty(this, "pow", void 0);
-
-    _defineProperty(this, "analyser", void 0);
-
-    this.size = context.size;
-    this.pow = context.pow;
-    var audioContext = new AudioContext();
-    var source = audioContext.createMediaElementSource(context.audio);
-    var analyser = audioContext.createAnalyser();
-    this.analyser = analyser;
-    source.connect(analyser);
-    analyser.connect(audioContext.destination);
-    analyser.fftSize = context.size;
-  }
-  /**
-   * 获取数据
-   */
-
-
-  _createClass(Fft, [{
-    key: "get",
-    value: function get() {
-      var _context,
-          _this = this;
-
-      var data = new Uint8Array(this.size);
-      this.analyser.getByteFrequencyData(data);
-
-      var output = _mapInstanceProperty(_context = _Array$from(data)).call(_context, function (a) {
-        return Math.pow(a / max, _this.pow);
-      });
-
-      return output;
-    }
-  }]);
-
-  return Fft;
-}();
-/**
- * 动画控制
- */
-
-/**
- * 状态
- */
-
-
-var State;
-
-(function (State) {
-  State[State["stop"] = 0] = "stop";
-  State[State["play"] = 1] = "play";
-  State[State["pause"] = 2] = "pause";
-})(State || (State = {}));
-/**
- * 类
- */
-
-
-var Animate = /*#__PURE__*/function () {
-  /**
-   * 构造方法
-   * @param callback 回调
-   * @param option 选项
-   */
-  function Animate(callback, context) {
-    _classCallCheck(this, Animate);
-
-    _defineProperty(this, "callback", void 0);
-
-    _defineProperty(this, "duration", void 0);
-
-    _defineProperty(this, "currentTime", 0);
-
-    _defineProperty(this, "accumulateTime", 0);
-
-    _defineProperty(this, "lastTime", 0);
-
-    _defineProperty(this, "state", State.stop);
-
-    _defineProperty(this, "timer", 0);
-
-    this.callback = callback;
-    this.duration = Math.floor(1000 / context.rate);
-  }
-  /**
-   * 运行
-   */
-
-
-  _createClass(Animate, [{
-    key: "run",
-    value: function run() {
-      var _this2 = this;
-
-      if (this.state === State.play) {
-        this.timer = window.requestAnimationFrame(function (time) {
-          if (_this2.lastTime !== 0) {
-            var delta = time - _this2.lastTime;
-            _this2.currentTime += delta;
-            _this2.accumulateTime += delta;
-
-            if (_this2.accumulateTime >= _this2.duration) {
-              _this2.accumulateTime %= _this2.duration;
-
-              _this2.callback(_this2.currentTime);
-            }
-          }
-
-          _this2.lastTime = time;
-
-          _this2.run();
-        });
-      }
-    }
-    /**
-     * 开始
-     */
-
-  }, {
-    key: "play",
-    value: function play() {
-      this.state = State.play;
-      this.run();
-    }
-    /**
-     * 暂停
-     */
-
-  }, {
-    key: "pause",
-    value: function pause() {
-      this.state = State.pause;
-      window.cancelAnimationFrame(this.timer);
-    }
-    /**
-     * 停止
-     */
-
-  }, {
-    key: "stop",
-    value: function stop() {
-      this.state = State.stop;
-      window.cancelAnimationFrame(this.timer);
-      this.currentTime = 0;
-      this.accumulateTime = 0;
-      this.lastTime = 0;
-    }
-  }]);
-
-  return Animate;
-}();
-/**
- * 图形
- */
-
-/**
- * 类
- */
-
-
-var Graph = /*#__PURE__*/function () {
-  /**
-   * 构造方法
-   * @param c 绘图环境
-   * @param width 宽度
-   * @param height 高度
-   */
-  function Graph(c, width, height, option) {
-    _classCallCheck(this, Graph);
-
-    _defineProperty(this, "c", void 0);
-
-    _defineProperty(this, "width", context.width);
-
-    _defineProperty(this, "height", context.height);
-
-    _defineProperty(this, "option", {});
-
-    _defineProperty(this, "wrap", void 0);
-
-    this.c = c;
-    width && (this.width = width);
-    height && (this.height = height);
-    this.wrap = [-this.width / 2, -this.height / 2, this.width, this.height];
-    this.config(option);
-  }
-  /**
-   * 配置
-   * @param option 选项
-   */
-
-
-  _createClass(Graph, [{
-    key: "config",
-    value: function config(option) {
-      _Object$assign(this.option, option);
-    }
-  }]);
-
-  return Graph;
-}();
-/**
- * 计算中间颜色
- */
-
-/**
- * 方法
- * @param start 起始颜色
- * @param end 停止颜色
- * @param delta 变化比例
- * @return 颜色
- */
-
-
-function calcDeltaColor(start, end, delta) {
-  var _context2, _context3, _context4, _context5, _context6;
-
-  var sr = _parseInt(_sliceInstanceProperty(start).call(start, 1, 3), 16);
-
-  var sg = _parseInt(_sliceInstanceProperty(start).call(start, 3, 5), 16);
-
-  var sb = _parseInt(_sliceInstanceProperty(start).call(start, 5, 7), 16);
-
-  var er = _parseInt(_sliceInstanceProperty(end).call(end, 1, 3), 16);
-
-  var eg = _parseInt(_sliceInstanceProperty(end).call(end, 3, 5), 16);
-
-  var eb = _parseInt(_sliceInstanceProperty(end).call(end, 5, 7), 16);
-
-  var dr = er - sr;
-  var dg = eg - sg;
-  var db = eb - sb;
-
-  var result = _concatInstanceProperty(_context2 = _concatInstanceProperty(_context3 = "#".concat(_padStartInstanceProperty(_context4 = Math.round(sr + delta * dr).toString(16)).call(_context4, 2, '0'))).call(_context3, _padStartInstanceProperty(_context5 = Math.round(sg + delta * dg).toString(16)).call(_context5, 2, '0'))).call(_context2, _padStartInstanceProperty(_context6 = Math.round(sb + delta * db).toString(16)).call(_context6, 2, '0'));
-
-  return result;
-}
-/**
- * 柱形
- */
-
-
-var option$2 = {
-  color: '#000000',
-  gap: 0,
-  mirrorX: false,
-  mirrorY: false,
-  reverseX: false,
-  reverseY: false,
-  gradientColor: null,
-  dynamicColor: null
-};
-/**
- * 类
- */
-
-var Bar = /*#__PURE__*/function (_Graph) {
-  _inherits(Bar, _Graph);
-
-  var _super = _createSuper(Bar);
-
-  /**
-   * 构造方法
-   * @param c 绘图环境
-   * @param width 宽度
-   * @param height 高度
-   */
-  function Bar(c, width, height) {
-    _classCallCheck(this, Bar);
-
-    return _super.call(this, c, width, height, option$2);
-  }
-  /**
-   * 绘制
-   * @name data 数据
-   */
-
-
-  _createClass(Bar, [{
-    key: "draw",
-    value: function draw(data) {
-      var _this$option$dynamicC;
-
-      var d = _Array$from(data);
-
-      if (this.option.reverseX) {
-        _reverseInstanceProperty(d).call(d);
-      }
-
-      if (this.option.mirrorX) {
-        var _context7;
-
-        d = _concatInstanceProperty(d).call(d, _reverseInstanceProperty(_context7 = _Array$from(d)).call(_context7));
-      }
-
-      if (((_this$option$dynamicC = this.option.dynamicColor) === null || _this$option$dynamicC === void 0 ? void 0 : _this$option$dynamicC.length) === 2) {
-        var average = _reduceInstanceProperty(data).call(data, function (p, c) {
-          return p + c;
-        }, 0) / data.length;
-        this.c.fillStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
-      }
-
-      var length = d.length;
-      var width = this.width / length;
-
-      for (var i = 0; i < length; i++) {
-        var x = -this.width / 2 + i * width;
-        var y = 0;
-        var w = width - this.option.gap;
-        var h = -(d[i] * this.height) / 2;
-
-        if (this.option.reverseY) {
-          h = -h;
-        }
-
-        if (this.option.mirrorY) {
-          y -= h;
-          h *= 2;
-        }
-
-        this.c.fillRect(x, y, w, h);
-      }
-    }
-    /**
-     * 配置
-     * @param option 选项
-     */
-
-  }, {
-    key: "config",
-    value: function config(option) {
-      var _this$option$gradient;
-
-      _get(_getPrototypeOf(Bar.prototype), "config", this).call(this, option);
-
-      this.c.fillStyle = this.option.color;
-
-      if ((_this$option$gradient = this.option.gradientColor) !== null && _this$option$gradient !== void 0 && _this$option$gradient.length) {
-        var gradient = this.c.createLinearGradient(this.wrap[0], 0, this.wrap[0] + this.wrap[2], 0);
-
-        for (var i = 0, l = this.option.gradientColor.length; i < l; i++) {
-          gradient.addColorStop(1 / (l - 1) * i, this.option.gradientColor[i]);
-        }
-
-        this.c.fillStyle = gradient;
-      }
-    }
-  }]);
-
-  return Bar;
-}(Graph);
-/**
- * 曲线
- */
-
-
-var option$1 = {
-  color: '#000000',
-  width: 1,
-  mirror: false,
-  reverse: false,
-  gradientColor: null,
-  dynamicColor: null
-};
-/**
- * 类
- */
-
-var Curve = /*#__PURE__*/function (_Graph2) {
-  _inherits(Curve, _Graph2);
-
-  var _super2 = _createSuper(Curve);
-
-  /**
-   * 构造方法
-   * @param c 绘图环境
-   * @param width 宽度
-   * @param height 高度
-   */
-  function Curve(c, width, height) {
-    _classCallCheck(this, Curve);
-
-    return _super2.call(this, c, width, height, option$1);
-  }
-  /**
-   * 绘制
-   * @param data 数据。归一化
-   */
-
-
-  _createClass(Curve, [{
-    key: "draw",
-    value: function draw(data) {
-      var _this$option$dynamicC2;
-
-      var d = _Array$from(data);
-
-      if (_reverseInstanceProperty(this.option)) {
-        _reverseInstanceProperty(d).call(d);
-      }
-
-      if (this.option.mirror) {
-        var _context8;
-
-        d = _concatInstanceProperty(d).call(d, _reverseInstanceProperty(_context8 = _Array$from(d)).call(_context8));
-      }
-
-      if (((_this$option$dynamicC2 = this.option.dynamicColor) === null || _this$option$dynamicC2 === void 0 ? void 0 : _this$option$dynamicC2.length) === 2) {
-        var average = _reduceInstanceProperty(data).call(data, function (p, c) {
-          return p + c;
-        }, 0) / data.length;
-        this.c.strokeStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
-      }
-
-      var dw = this.width / d.length;
-      var startX = -this.width / 2;
-      var direction = 1;
-      var path2D = "M ".concat(startX, ",0");
-      var sum = 0;
-
-      for (var i = 0, l = d.length; i < l; i++) {
-        var _context9;
-
-        var x = startX + dw * i;
-        var y = direction * d[i] * this.height / 2;
-        path2D += _concatInstanceProperty(_context9 = " L ".concat(x, ",")).call(_context9, y);
-        direction *= -1;
-        sum += d[i];
-      }
-
-      this.c.stroke(new Path2D(path2D));
-    }
-    /**
-     * 配置
-     * @param option 选项
-     */
-
-  }, {
-    key: "config",
-    value: function config(option) {
-      var _this$option$gradient2;
-
-      _get(_getPrototypeOf(Curve.prototype), "config", this).call(this, option);
-
-      this.c.strokeStyle = this.option.color;
-      this.c.lineWidth = this.option.width;
-
-      if ((_this$option$gradient2 = this.option.gradientColor) !== null && _this$option$gradient2 !== void 0 && _this$option$gradient2.length) {
-        var gradient = this.c.createLinearGradient(this.wrap[0], 0, this.wrap[0] + this.wrap[2], 0);
-
-        for (var i = 0, l = this.option.gradientColor.length; i < l; i++) {
-          gradient.addColorStop(1 / (l - 1) * i, this.option.gradientColor[i]);
-        }
-
-        this.c.strokeStyle = gradient;
-      }
-    }
-  }]);
-
-  return Curve;
-}(Graph);
-/**
- * 圆形
- */
-
-
-var option = {
-  color: '#000000',
-  fill: false,
-  width: 1,
-  gradientColor: null,
-  dynamicColor: null
-};
-/**
- * 类
- */
-
-var Circle = /*#__PURE__*/function (_Graph3) {
-  _inherits(Circle, _Graph3);
-
-  var _super3 = _createSuper(Circle);
-
-  /**
-   * 构造方法
-   * @param c 绘图环境
-   * @param width 宽度
-   * @param height 高度
-   */
-  function Circle(c, width, height) {
-    _classCallCheck(this, Circle);
-
-    return _super3.call(this, c, width, height, option);
-  }
-  /**
-   * 绘制
-   * @param data 数据。归一化
-   */
-
-
-  _createClass(Circle, [{
-    key: "maxRadius",
-    get: function get() {
-      return Math.min(this.width, this.height) / 2;
-    }
-  }, {
-    key: "draw",
-    value: function draw(data) {
-      if (_fillInstanceProperty(this.option)) {
-        var _iterator = _createForOfIteratorHelper(data),
-            _step;
-
-        try {
-          for (_iterator.s(); !(_step = _iterator.n()).done;) {
-            var _this$option$dynamicC3, _context10;
-
-            var a = _step.value;
-            this.c.beginPath();
-            this.c.moveTo(this.maxRadius * a, 0);
-            this.c.arc(0, 0, this.maxRadius * a, 0, 360);
-            this.c.closePath();
-
-            if (((_this$option$dynamicC3 = this.option.dynamicColor) === null || _this$option$dynamicC3 === void 0 ? void 0 : _this$option$dynamicC3.length) === 2) {
-              var color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a);
-              this.c.fillStyle = color;
-            }
-
-            _fillInstanceProperty(_context10 = this.c).call(_context10);
-          }
-        } catch (err) {
-          _iterator.e(err);
-        } finally {
-          _iterator.f();
-        }
-      } else {
-        var _this$option$dynamicC4;
-
-        if (((_this$option$dynamicC4 = this.option.dynamicColor) === null || _this$option$dynamicC4 === void 0 ? void 0 : _this$option$dynamicC4.length) === 2) {
-          var average = _reduceInstanceProperty(data).call(data, function (p, c) {
-            return p + c;
-          }, 0) / data.length;
-
-          var _color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
-
-          this.c.strokeStyle = _color;
-        }
-
-        this.c.beginPath();
-
-        var _iterator2 = _createForOfIteratorHelper(data),
-            _step2;
-
-        try {
-          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-            var _a = _step2.value;
-            this.c.moveTo(this.maxRadius * _a, 0);
-            this.c.arc(0, 0, this.maxRadius * _a, 0, 360);
-          }
-        } catch (err) {
-          _iterator2.e(err);
-        } finally {
-          _iterator2.f();
-        }
-
-        this.c.closePath();
-        this.c.stroke();
-      }
-    }
-    /**
-     * 配置
-     * @param option 选项
-     */
-
-  }, {
-    key: "config",
-    value: function config(option) {
-      var _this$option$gradient3;
-
-      _get(_getPrototypeOf(Circle.prototype), "config", this).call(this, option);
-
-      this.c.strokeStyle = this.option.color;
-      this.c.lineWidth = this.option.width;
-
-      if ((_this$option$gradient3 = this.option.gradientColor) !== null && _this$option$gradient3 !== void 0 && _this$option$gradient3.length) {
-        var gradient = this.c.createRadialGradient(0, 0, 0, 0, 0, this.maxRadius);
-
-        for (var i = 0, l = this.option.gradientColor.length; i < l; i++) {
-          gradient.addColorStop(1 / (l - 1) * i, this.option.gradientColor[i]);
-        }
-
-        this.c.strokeStyle = gradient;
-        this.c.fillStyle = gradient;
-      }
-    }
-  }]);
-
-  return Circle;
-}(Graph);
-/**
- * 可视化
- */
-
-/**
- * 类
- */
-
-
-var Visualize = /*#__PURE__*/function () {
-  /**
-   * 构造方法
-   * @param context 上下文
-   */
-  function Visualize(context) {
-    _classCallCheck(this, Visualize);
-
-    _defineProperty(this, "context", void 0);
-
-    _defineProperty(this, "c", void 0);
-
-    _defineProperty(this, "offscreen", void 0);
-
-    _defineProperty(this, "o", void 0);
-
-    _defineProperty(this, "graph", void 0);
-
-    _defineProperty(this, "canvas", void 0);
-
-    this.context = context;
-    this.canvas = document.createElement('canvas');
-    this.c = this.canvas.getContext('2d');
-    this.offscreen = document.createElement('canvas');
-    this.o = this.offscreen.getContext('2d');
-    this.canvas.setAttribute('width', context.width.toString());
-    this.canvas.setAttribute('height', context.height.toString());
-    this.c.translate(context.width / 2, context.height / 2);
-    this.offscreen.setAttribute('width', context.width.toString());
-    this.offscreen.setAttribute('height', context.height.toString());
-    this.o.translate(context.width / 2, context.height / 2);
-
-    if (context.type === 'bar') {
-      this.graph = new Bar(this.o, context.width, context.height);
-    } else if (context.type === 'curve') {
-      this.graph = new Curve(this.o, context.width, context.height);
-    } else if (context.type === 'circle') {
-      this.graph = new Circle(this.o, context.width, context.height);
-    }
-  }
-  /**
-   * 更新
-   * @param data 数据
-   */
-
-
-  _createClass(Visualize, [{
-    key: "wrap",
-    get: function get() {
-      var _this$graph;
-
-      return ((_this$graph = this.graph) === null || _this$graph === void 0 ? void 0 : _this$graph.wrap) || [-this.context.width / 2, -this.context.height / 2, this.context.width, this.context.height];
-    }
-  }, {
-    key: "update",
-    value: function update(data) {
-      var _this$o, _this$graph2, _this$c, _this$c2, _context12;
-
-      (_this$o = this.o).clearRect.apply(_this$o, _toConsumableArray(this.wrap));
-
-      if (this.context.effect.trace < 1) {
-        var _this$o2, _context11;
-
-        this.o.globalAlpha = this.context.effect.trace;
-
-        (_this$o2 = this.o).drawImage.apply(_this$o2, _concatInstanceProperty(_context11 = [this.canvas]).call(_context11, _toConsumableArray(this.wrap)));
-
-        this.o.globalAlpha = 1;
-      }
-
-      (_this$graph2 = this.graph) === null || _this$graph2 === void 0 ? void 0 : _this$graph2.draw(_sliceInstanceProperty(data).call(data, 0, Math.floor(data.length / 2)));
-
-      (_this$c = this.c).clearRect.apply(_this$c, _toConsumableArray(this.wrap));
-
-      (_this$c2 = this.c).drawImage.apply(_this$c2, _concatInstanceProperty(_context12 = [this.offscreen]).call(_context12, _toConsumableArray(this.wrap)));
-    }
-    /**
-     * 配置
-     * @param option 选项
-     */
-
-  }, {
-    key: "config",
-    value: function config(option) {
-      var _this$graph3;
-
-      (_this$graph3 = this.graph) === null || _this$graph3 === void 0 ? void 0 : _this$graph3.config(option);
-    }
-  }]);
-
-  return Visualize;
-}();
 /**
  * Removes all key-value entries from the list cache.
  *
@@ -1793,8 +1049,8 @@ function cloneBuffer(buffer, isDeep) {
 /** Built-in value references. */
 
 
-var Uint8Array$1 = root$1.Uint8Array;
-var Uint8Array$2 = Uint8Array$1;
+var Uint8Array = root$1.Uint8Array;
+var Uint8Array$1 = Uint8Array;
 /**
  * Creates a clone of `arrayBuffer`.
  *
@@ -1805,7 +1061,7 @@ var Uint8Array$2 = Uint8Array$1;
 
 function cloneArrayBuffer(arrayBuffer) {
   var result = new arrayBuffer.constructor(arrayBuffer.byteLength);
-  new Uint8Array$2(result).set(new Uint8Array$2(arrayBuffer));
+  new Uint8Array$1(result).set(new Uint8Array$1(arrayBuffer));
   return result;
 }
 /**
@@ -3010,8 +2266,559 @@ var merge = createAssigner(function (object, source, srcIndex) {
 });
 var _merge = merge;
 /**
+ * 图形
+ */
+
+/**
  * 类
  */
+
+var Graph = /*#__PURE__*/function () {
+  /**
+   * 构造方法
+   * @param c 绘图环境
+   * @param width 宽度
+   * @param height 高度
+   */
+  function Graph(c, width, height, option) {
+    _classCallCheck(this, Graph);
+
+    _defineProperty(this, "c", void 0);
+
+    _defineProperty(this, "width", context.width);
+
+    _defineProperty(this, "height", context.height);
+
+    _defineProperty(this, "option", {});
+
+    _defineProperty(this, "wrap", void 0);
+
+    this.c = c;
+    width && (this.width = width);
+    height && (this.height = height);
+    this.wrap = [-this.width / 2, -this.height / 2, this.width, this.height];
+    this.config(option);
+  }
+  /**
+   * 配置
+   * @param option 选项
+   */
+
+
+  _createClass(Graph, [{
+    key: "config",
+    value: function config(option) {
+      _Object$assign(this.option, option);
+    }
+  }]);
+
+  return Graph;
+}();
+/**
+ * 计算中间颜色
+ */
+
+/**
+ * 方法
+ * @param start 起始颜色
+ * @param end 停止颜色
+ * @param delta 变化比例
+ * @return 颜色
+ */
+
+
+function calcDeltaColor(start, end, delta) {
+  var _context, _context2, _context3, _context4, _context5;
+
+  var sr = _parseInt(_sliceInstanceProperty(start).call(start, 1, 3), 16);
+
+  var sg = _parseInt(_sliceInstanceProperty(start).call(start, 3, 5), 16);
+
+  var sb = _parseInt(_sliceInstanceProperty(start).call(start, 5, 7), 16);
+
+  var er = _parseInt(_sliceInstanceProperty(end).call(end, 1, 3), 16);
+
+  var eg = _parseInt(_sliceInstanceProperty(end).call(end, 3, 5), 16);
+
+  var eb = _parseInt(_sliceInstanceProperty(end).call(end, 5, 7), 16);
+
+  var dr = er - sr;
+  var dg = eg - sg;
+  var db = eb - sb;
+
+  var result = _concatInstanceProperty(_context = _concatInstanceProperty(_context2 = "#".concat(_padStartInstanceProperty(_context3 = Math.round(sr + delta * dr).toString(16)).call(_context3, 2, '0'))).call(_context2, _padStartInstanceProperty(_context4 = Math.round(sg + delta * dg).toString(16)).call(_context4, 2, '0'))).call(_context, _padStartInstanceProperty(_context5 = Math.round(sb + delta * db).toString(16)).call(_context5, 2, '0'));
+
+  return result;
+}
+/**
+ * 柱形
+ */
+
+
+var option$2 = {
+  color: '#000000',
+  gap: 0,
+  mirrorX: false,
+  mirrorY: false,
+  reverseX: false,
+  reverseY: false,
+  gradientColor: null,
+  dynamicColor: null
+};
+/**
+ * 类
+ */
+
+var Bar = /*#__PURE__*/function (_Graph) {
+  _inherits(Bar, _Graph);
+
+  var _super = _createSuper(Bar);
+
+  /**
+   * 构造方法
+   * @param c 绘图环境
+   * @param width 宽度
+   * @param height 高度
+   */
+  function Bar(c, width, height) {
+    _classCallCheck(this, Bar);
+
+    return _super.call(this, c, width, height, option$2);
+  }
+  /**
+   * 绘制
+   * @name data 数据
+   */
+
+
+  _createClass(Bar, [{
+    key: "draw",
+    value: function draw(data) {
+      var _this$option$dynamicC;
+
+      var d = _Array$from(data);
+
+      if (this.option.reverseX) {
+        _reverseInstanceProperty(d).call(d);
+      }
+
+      if (this.option.mirrorX) {
+        var _context6;
+
+        d = _concatInstanceProperty(d).call(d, _reverseInstanceProperty(_context6 = _Array$from(d)).call(_context6));
+      }
+
+      if (((_this$option$dynamicC = this.option.dynamicColor) === null || _this$option$dynamicC === void 0 ? void 0 : _this$option$dynamicC.length) === 2) {
+        var average = _reduceInstanceProperty(data).call(data, function (p, c) {
+          return p + c;
+        }, 0) / data.length;
+        this.c.fillStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
+      }
+
+      var length = d.length;
+      var width = this.width / length;
+
+      for (var i = 0; i < length; i++) {
+        var x = -this.width / 2 + i * width;
+        var y = 0;
+        var w = width - this.option.gap;
+        var h = -(d[i] * this.height) / 2;
+
+        if (this.option.reverseY) {
+          h = -h;
+        }
+
+        if (this.option.mirrorY) {
+          y -= h;
+          h *= 2;
+        }
+
+        this.c.fillRect(x, y, w, h);
+      }
+    }
+    /**
+     * 配置
+     * @param option 选项
+     */
+
+  }, {
+    key: "config",
+    value: function config(option) {
+      var _this$option$gradient;
+
+      _get(_getPrototypeOf(Bar.prototype), "config", this).call(this, option);
+
+      this.c.fillStyle = this.option.color;
+
+      if ((_this$option$gradient = this.option.gradientColor) !== null && _this$option$gradient !== void 0 && _this$option$gradient.length) {
+        var gradient = this.c.createLinearGradient(this.wrap[0], 0, this.wrap[0] + this.wrap[2], 0);
+
+        for (var i = 0, l = this.option.gradientColor.length; i < l; i++) {
+          gradient.addColorStop(1 / (l - 1) * i, this.option.gradientColor[i]);
+        }
+
+        this.c.fillStyle = gradient;
+      }
+    }
+  }]);
+
+  return Bar;
+}(Graph);
+/**
+ * 曲线
+ */
+
+
+var option$1 = {
+  color: '#000000',
+  width: 1,
+  mirror: false,
+  reverse: false,
+  gradientColor: null,
+  dynamicColor: null
+};
+/**
+ * 类
+ */
+
+var Curve = /*#__PURE__*/function (_Graph2) {
+  _inherits(Curve, _Graph2);
+
+  var _super2 = _createSuper(Curve);
+
+  /**
+   * 构造方法
+   * @param c 绘图环境
+   * @param width 宽度
+   * @param height 高度
+   */
+  function Curve(c, width, height) {
+    _classCallCheck(this, Curve);
+
+    return _super2.call(this, c, width, height, option$1);
+  }
+  /**
+   * 绘制
+   * @param data 数据。归一化
+   */
+
+
+  _createClass(Curve, [{
+    key: "draw",
+    value: function draw(data) {
+      var _this$option$dynamicC2;
+
+      var d = _Array$from(data);
+
+      if (_reverseInstanceProperty(this.option)) {
+        _reverseInstanceProperty(d).call(d);
+      }
+
+      if (this.option.mirror) {
+        var _context7;
+
+        d = _concatInstanceProperty(d).call(d, _reverseInstanceProperty(_context7 = _Array$from(d)).call(_context7));
+      }
+
+      if (((_this$option$dynamicC2 = this.option.dynamicColor) === null || _this$option$dynamicC2 === void 0 ? void 0 : _this$option$dynamicC2.length) === 2) {
+        var average = _reduceInstanceProperty(data).call(data, function (p, c) {
+          return p + c;
+        }, 0) / data.length;
+        this.c.strokeStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
+      }
+
+      var dw = this.width / d.length;
+      var startX = -this.width / 2;
+      var direction = 1;
+      var path2D = "M ".concat(startX, ",0");
+      var sum = 0;
+
+      for (var i = 0, l = d.length; i < l; i++) {
+        var _context8;
+
+        var x = startX + dw * i;
+        var y = direction * d[i] * this.height / 2;
+        path2D += _concatInstanceProperty(_context8 = " L ".concat(x, ",")).call(_context8, y);
+        direction *= -1;
+        sum += d[i];
+      }
+
+      this.c.stroke(new Path2D(path2D));
+    }
+    /**
+     * 配置
+     * @param option 选项
+     */
+
+  }, {
+    key: "config",
+    value: function config(option) {
+      var _this$option$gradient2;
+
+      _get(_getPrototypeOf(Curve.prototype), "config", this).call(this, option);
+
+      this.c.strokeStyle = this.option.color;
+      this.c.lineWidth = this.option.width;
+
+      if ((_this$option$gradient2 = this.option.gradientColor) !== null && _this$option$gradient2 !== void 0 && _this$option$gradient2.length) {
+        var gradient = this.c.createLinearGradient(this.wrap[0], 0, this.wrap[0] + this.wrap[2], 0);
+
+        for (var i = 0, l = this.option.gradientColor.length; i < l; i++) {
+          gradient.addColorStop(1 / (l - 1) * i, this.option.gradientColor[i]);
+        }
+
+        this.c.strokeStyle = gradient;
+      }
+    }
+  }]);
+
+  return Curve;
+}(Graph);
+/**
+ * 圆形
+ */
+
+
+var option = {
+  color: '#000000',
+  fill: false,
+  width: 1,
+  gradientColor: null,
+  dynamicColor: null
+};
+/**
+ * 类
+ */
+
+var Circle = /*#__PURE__*/function (_Graph3) {
+  _inherits(Circle, _Graph3);
+
+  var _super3 = _createSuper(Circle);
+
+  /**
+   * 构造方法
+   * @param c 绘图环境
+   * @param width 宽度
+   * @param height 高度
+   */
+  function Circle(c, width, height) {
+    _classCallCheck(this, Circle);
+
+    return _super3.call(this, c, width, height, option);
+  }
+  /**
+   * 绘制
+   * @param data 数据。归一化
+   */
+
+
+  _createClass(Circle, [{
+    key: "maxRadius",
+    get: function get() {
+      return Math.min(this.width, this.height) / 2;
+    }
+  }, {
+    key: "draw",
+    value: function draw(data) {
+      if (_fillInstanceProperty(this.option)) {
+        var _iterator = _createForOfIteratorHelper(data),
+            _step;
+
+        try {
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var _this$option$dynamicC3, _context9;
+
+            var a = _step.value;
+            this.c.beginPath();
+            this.c.moveTo(this.maxRadius * a, 0);
+            this.c.arc(0, 0, this.maxRadius * a, 0, 360);
+            this.c.closePath();
+
+            if (((_this$option$dynamicC3 = this.option.dynamicColor) === null || _this$option$dynamicC3 === void 0 ? void 0 : _this$option$dynamicC3.length) === 2) {
+              var color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a);
+              this.c.fillStyle = color;
+            }
+
+            _fillInstanceProperty(_context9 = this.c).call(_context9);
+          }
+        } catch (err) {
+          _iterator.e(err);
+        } finally {
+          _iterator.f();
+        }
+      } else {
+        var _this$option$dynamicC4;
+
+        if (((_this$option$dynamicC4 = this.option.dynamicColor) === null || _this$option$dynamicC4 === void 0 ? void 0 : _this$option$dynamicC4.length) === 2) {
+          var average = _reduceInstanceProperty(data).call(data, function (p, c) {
+            return p + c;
+          }, 0) / data.length;
+
+          var _color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
+
+          this.c.strokeStyle = _color;
+        }
+
+        this.c.beginPath();
+
+        var _iterator2 = _createForOfIteratorHelper(data),
+            _step2;
+
+        try {
+          for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+            var _a = _step2.value;
+            this.c.moveTo(this.maxRadius * _a, 0);
+            this.c.arc(0, 0, this.maxRadius * _a, 0, 360);
+          }
+        } catch (err) {
+          _iterator2.e(err);
+        } finally {
+          _iterator2.f();
+        }
+
+        this.c.closePath();
+        this.c.stroke();
+      }
+    }
+    /**
+     * 配置
+     * @param option 选项
+     */
+
+  }, {
+    key: "config",
+    value: function config(option) {
+      var _this$option$gradient3;
+
+      _get(_getPrototypeOf(Circle.prototype), "config", this).call(this, option);
+
+      this.c.strokeStyle = this.option.color;
+      this.c.lineWidth = this.option.width;
+
+      if ((_this$option$gradient3 = this.option.gradientColor) !== null && _this$option$gradient3 !== void 0 && _this$option$gradient3.length) {
+        var gradient = this.c.createRadialGradient(0, 0, 0, 0, 0, this.maxRadius);
+
+        for (var i = 0, l = this.option.gradientColor.length; i < l; i++) {
+          gradient.addColorStop(1 / (l - 1) * i, this.option.gradientColor[i]);
+        }
+
+        this.c.strokeStyle = gradient;
+        this.c.fillStyle = gradient;
+      }
+    }
+  }]);
+
+  return Circle;
+}(Graph);
+/**
+ * 可视化
+ */
+
+/**
+ * 类
+ */
+
+
+var Visualize = /*#__PURE__*/function () {
+  /**
+   * 构造方法
+   * @param context 上下文
+   */
+  function Visualize(context) {
+    _classCallCheck(this, Visualize);
+
+    _defineProperty(this, "context", void 0);
+
+    _defineProperty(this, "c", void 0);
+
+    _defineProperty(this, "offscreen", void 0);
+
+    _defineProperty(this, "o", void 0);
+
+    _defineProperty(this, "graph", void 0);
+
+    _defineProperty(this, "canvas", void 0);
+
+    this.context = context;
+    this.canvas = document.createElement('canvas');
+    this.c = this.canvas.getContext('2d');
+    this.offscreen = document.createElement('canvas');
+    this.o = this.offscreen.getContext('2d');
+    this.canvas.setAttribute('width', context.width.toString());
+    this.canvas.setAttribute('height', context.height.toString());
+    this.c.translate(context.width / 2, context.height / 2);
+    this.offscreen.setAttribute('width', context.width.toString());
+    this.offscreen.setAttribute('height', context.height.toString());
+    this.o.translate(context.width / 2, context.height / 2);
+
+    if (context.type === 'bar') {
+      this.graph = new Bar(this.o, context.width, context.height);
+    } else if (context.type === 'curve') {
+      this.graph = new Curve(this.o, context.width, context.height);
+    } else if (context.type === 'circle') {
+      this.graph = new Circle(this.o, context.width, context.height);
+    }
+  }
+  /**
+   * 更新
+   * @param data 数据
+   */
+
+
+  _createClass(Visualize, [{
+    key: "wrap",
+    get: function get() {
+      var _this$graph;
+
+      return ((_this$graph = this.graph) === null || _this$graph === void 0 ? void 0 : _this$graph.wrap) || [-this.context.width / 2, -this.context.height / 2, this.context.width, this.context.height];
+    }
+  }, {
+    key: "update",
+    value: function update(data) {
+      var _this$o, _this$graph2, _this$c, _this$c2, _context11;
+
+      (_this$o = this.o).clearRect.apply(_this$o, _toConsumableArray(this.wrap));
+
+      if (this.context.effect.trace < 1) {
+        var _this$o2, _context10;
+
+        this.o.globalAlpha = this.context.effect.trace;
+
+        (_this$o2 = this.o).drawImage.apply(_this$o2, _concatInstanceProperty(_context10 = [this.canvas]).call(_context10, _toConsumableArray(this.wrap)));
+
+        this.o.globalAlpha = 1;
+      }
+
+      (_this$graph2 = this.graph) === null || _this$graph2 === void 0 ? void 0 : _this$graph2.draw(_sliceInstanceProperty(data).call(data, 0, Math.floor(data.length / 2)));
+
+      (_this$c = this.c).clearRect.apply(_this$c, _toConsumableArray(this.wrap));
+
+      (_this$c2 = this.c).drawImage.apply(_this$c2, _concatInstanceProperty(_context11 = [this.offscreen]).call(_context11, _toConsumableArray(this.wrap)));
+    }
+    /**
+     * 配置
+     * @param option 选项
+     */
+
+  }, {
+    key: "config",
+    value: function config(option) {
+      var _this$graph3;
+
+      (_this$graph3 = this.graph) === null || _this$graph3 === void 0 ? void 0 : _this$graph3.config(option);
+    }
+  }]);
+
+  return Visualize;
+}();
+/**
+ * index
+ */
+
+/**
+ * 类
+ */
+
 
 var WebAudioWave = /*#__PURE__*/function () {
   /**
@@ -3021,7 +2828,7 @@ var WebAudioWave = /*#__PURE__*/function () {
    * @param option 选项
    */
   function WebAudioWave(type, audio, option) {
-    var _context13;
+    var _context12;
 
     _classCallCheck(this, WebAudioWave);
 
@@ -3045,7 +2852,7 @@ var WebAudioWave = /*#__PURE__*/function () {
     this.context.type = type;
     this.context.audio = audio;
     this.visualize = new Visualize(this.context);
-    this.animate = new Animate(_bindInstanceProperty(_context13 = this.callback).call(_context13, this), this.context);
+    this.animate = new Animate(60, _bindInstanceProperty(_context12 = this.callback).call(_context12, this));
   }
   /**
    * 回调方法
@@ -3071,8 +2878,8 @@ var WebAudioWave = /*#__PURE__*/function () {
   }, {
     key: "play",
     value: function play() {
-      if (!this.fft) {
-        this.fft = new Fft(this.context); // 因为浏览器的音频权限策略，延迟初始化
+      if (!this.fft && this.context.audio) {
+        this.fft = new AudioFft(this.context.audio, this.context.size); // 因为浏览器的音频权限策略，延迟初始化
       }
 
       this.animate.play();
