@@ -2852,7 +2852,7 @@ var WebAudioWave = /*#__PURE__*/function () {
     this.context.type = type;
     this.context.audio = audio;
     this.visualize = new Visualize(this.context);
-    this.animate = new Animate(60, _bindInstanceProperty(_context12 = this.callback).call(_context12, this));
+    this.animate = new Animate(_bindInstanceProperty(_context12 = this.callback).call(_context12, this), 60);
   }
   /**
    * 回调方法
