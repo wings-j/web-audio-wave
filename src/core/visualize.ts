@@ -44,11 +44,11 @@ class Visualize {
     this.o.translate(context.width / 2, context.height / 2)
 
     if (context.type === 'bar') {
-      this.graph = new Bar(this.o, context.width, context.height)
+      this.graph = new Bar(this.o, context)
     } else if (context.type === 'curve') {
-      this.graph = new Curve(this.o, context.width, context.height)
+      this.graph = new Curve(this.o, context)
     } else if (context.type === 'circle') {
-      this.graph = new Circle(this.o, context.width, context.height)
+      this.graph = new Circle(this.o, context)
     }
   }
 

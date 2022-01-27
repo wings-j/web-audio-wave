@@ -2,17 +2,25 @@
  * 图形
  */
 
-import Context from './context'
+import { Context } from './context'
 
 /**
  * 类
  */
 abstract class Graph<Option extends Record<string, any> = {}> {
   c: CanvasRenderingContext2D
-  width: number = Context.width
-  height: number = Context.height
+  context: Context
   option = {} as Option
-  wrap: [number, number, number, number]
+
+  get width() {
+    return this.context.width
+  }
+  get height() {
+    return this.context.height
+  }
+  get wrap(): [number, number, number, number] {
+    return [-this.width / 2, -this.height / 2, this.width, this.height]
+  }
 
   /**
    * 构造方法
@@ -20,11 +28,9 @@ abstract class Graph<Option extends Record<string, any> = {}> {
    * @param width 宽度
    * @param height 高度
    */
-  constructor(c: CanvasRenderingContext2D, width?: number, height?: number, option?: Option) {
+  constructor(c: CanvasRenderingContext2D, context: Context, option?: Option) {
     this.c = c
-    width && (this.width = width)
-    height && (this.height = height)
-    this.wrap = [-this.width / 2, -this.height / 2, this.width, this.height]
+    this.context = context
 
     this.config(option)
   }
