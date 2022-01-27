@@ -39,7 +39,7 @@ class WebAudioWave {
     this.context.audio = audio
 
     this.visualize = new Visualize(this.context)
-    this.animate = new Animate(60, this.callback.bind(this))
+    this.animate = new Animate(this.callback.bind(this), 60)
   }
 
   /**
