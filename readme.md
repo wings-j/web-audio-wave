@@ -95,10 +95,6 @@ option：可视化配置
 | ------------- | -------- | ------------------------ | --------- |
 | color         | 颜色     | string                   | "#000000" |
 | gap           | 柱形间距 | number                   | 0         |
-| mirrorX       | 横向镜像 | boolean                  | false     |
-| mirrorY       | 纵向镜像 | boolean                  | false     |
-| reverseX      | 横向反转 | boolean                  | false     |
-| reverseY      | 纵向反转 | boolean                  | false     |
 | gradientColor | 渐变颜色 | string[] \| null         | null      |
 | dynamicColor  | 动态颜色 | [string, string] \| null | null      |
 

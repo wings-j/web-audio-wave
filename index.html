@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Web Audio Wave - WingsJ</title>
+
+    <style>
+      html {
+        font-family: 'Microsoft Jhenghei';
+      }
+      a {
+        color: #888888;
+        text-decoration: none;
+      }
+      .card {
+        display: block;
+        overflow: hidden;
+        border-radius: 10px;
+        background: #f5f5f5;
+        box-shadow: 5px 5px 12px #bdbdbd, -5px -5px 12px #ffffff;
+      }
+    </style>
+  </head>
+  <body style="display: flex; flex-direction: column; align-items: center">
+    <div style="margin-top: 100px; font-size: 24px">Web 音频波形</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 50px; margin-top: 50px">
+      <a class="card" href="./test/bar.html">
+        <img style="width: 200px; height: auto" src="./docs/bar.png" />
+        <div style="margin: 10px auto; text-align: center">柱形</div>
+      </a>
+      <a class="card" href="./test/curve.html">
+        <img style="width: 200px; height: auto" src="./docs/curve.png" />
+        <div style="margin: 10px auto; text-align: center">曲线</div>
+      </a>
+      <a class="card" href="./test/circle.html">
+        <img style="width: 200px; height: auto" src="./docs/circle.png" />
+        <div style="margin: 10px auto; text-align: center">圆环</div>
+      </a>
+    </div>
+  </body>
+</html>

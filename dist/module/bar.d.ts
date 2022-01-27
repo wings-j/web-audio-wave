@@ -5,10 +5,6 @@ import Graph from '../type/graph';
 declare const option: {
     color: string;
     gap: number;
-    mirrorX: boolean;
-    mirrorY: boolean;
-    reverseX: boolean;
-    reverseY: boolean;
     gradientColor: string[] | null;
     dynamicColor: [string, string] | null;
 };

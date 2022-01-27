@@ -12804,10 +12804,6 @@ var WebAudioWave = (function () {
   const option$2 = {
       color: '#000000',
       gap: 0,
-      mirrorX: false,
-      mirrorY: false,
-      reverseX: false,
-      reverseY: false,
       gradientColor: null,
       dynamicColor: null
   };
@@ -12830,12 +12826,6 @@ var WebAudioWave = (function () {
        */
       draw(data) {
           let d = Array.from(data);
-          if (this.option.reverseX) {
-              d.reverse();
-          }
-          if (this.option.mirrorX) {
-              d = d.concat(Array.from(d).reverse());
-          }
           if (this.option.dynamicColor?.length === 2) {
               let average = data.reduce((p, c) => p + c, 0) / data.length;
               this.c.fillStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
@@ -12844,16 +12834,9 @@ var WebAudioWave = (function () {
           let width = this.width / length;
           for (let i = 0; i < length; i++) {
               let x = -this.width / 2 + i * width;
-              let y = 0;
+              let y = this.height / 2;
               let w = width - this.option.gap;
-              let h = -(d[i] * this.height) / 2;
-              if (this.option.reverseY) {
-                  h = -h;
-              }
-              if (this.option.mirrorY) {
-                  y -= h;
-                  h *= 2;
-              }
+              let h = -(d[i] * this.height);
               this.c.fillRect(x, y, w, h);
           }
       }

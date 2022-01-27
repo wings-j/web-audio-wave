@@ -1,7 +1,10 @@
+.vscode
+docs
 src
 test
 .gitignore
 babel.config.js
+index.html
 jest.config.js
 rollup.config.js
 tsconfig.jsoon
