@@ -120,3 +120,4 @@ option：可视化配置
 | gradientColor | 渐变颜色 | string[] \| null         | null      |
 | dynamicColor  | 动态颜色 | [string, string] \| null | null      |
 | fill          | 填充     | boolean                  | false     |
+| average       | 平均值   | boolean                  | false     |
