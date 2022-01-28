@@ -6,8 +6,13 @@ function initiate(type, base, config) {
     height: window.innerHeight,
     ...base
   })
-  document.body.append(webAudioWave.canvas)
   webAudioWave.config(config)
+
+  Object.assign(webAudioWave.canvas.style, {
+    width: '100%',
+    height: '100%'
+  })
+  document.body.append(webAudioWave.canvas)
 
   audio.addEventListener('play', () => {
     webAudioWave.play()

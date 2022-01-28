@@ -18,236 +18,6 @@ var WebAudioWave = (function () {
   };
   Object.freeze(context);
 
-  /**
-   * Removes all key-value entries from the list cache.
-   *
-   * @private
-   * @name clear
-   * @memberOf ListCache
-   */
-  function listCacheClear() {
-    this.__data__ = [];
-    this.size = 0;
-  }
-
-  /**
-   * Performs a
-   * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
-   * comparison between two values to determine if they are equivalent.
-   *
-   * @static
-   * @memberOf _
-   * @since 4.0.0
-   * @category Lang
-   * @param {*} value The value to compare.
-   * @param {*} other The other value to compare.
-   * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
-   * @example
-   *
-   * var object = { 'a': 1 };
-   * var other = { 'a': 1 };
-   *
-   * _.eq(object, object);
-   * // => true
-   *
-   * _.eq(object, other);
-   * // => false
-   *
-   * _.eq('a', 'a');
-   * // => true
-   *
-   * _.eq('a', Object('a'));
-   * // => false
-   *
-   * _.eq(NaN, NaN);
-   * // => true
-   */
-  function eq(value, other) {
-    return value === other || (value !== value && other !== other);
-  }
-
-  /**
-   * Gets the index at which the `key` is found in `array` of key-value pairs.
-   *
-   * @private
-   * @param {Array} array The array to inspect.
-   * @param {*} key The key to search for.
-   * @returns {number} Returns the index of the matched value, else `-1`.
-   */
-  function assocIndexOf(array, key) {
-    var length = array.length;
-    while (length--) {
-      if (eq(array[length][0], key)) {
-        return length;
-      }
-    }
-    return -1;
-  }
-
-  /** Used for built-in method references. */
-  var arrayProto = Array.prototype;
-
-  /** Built-in value references. */
-  var splice = arrayProto.splice;
-
-  /**
-   * Removes `key` and its value from the list cache.
-   *
-   * @private
-   * @name delete
-   * @memberOf ListCache
-   * @param {string} key The key of the value to remove.
-   * @returns {boolean} Returns `true` if the entry was removed, else `false`.
-   */
-  function listCacheDelete(key) {
-    var data = this.__data__,
-        index = assocIndexOf(data, key);
-
-    if (index < 0) {
-      return false;
-    }
-    var lastIndex = data.length - 1;
-    if (index == lastIndex) {
-      data.pop();
-    } else {
-      splice.call(data, index, 1);
-    }
-    --this.size;
-    return true;
-  }
-
-  /**
-   * Gets the list cache value for `key`.
-   *
-   * @private
-   * @name get
-   * @memberOf ListCache
-   * @param {string} key The key of the value to get.
-   * @returns {*} Returns the entry value.
-   */
-  function listCacheGet(key) {
-    var data = this.__data__,
-        index = assocIndexOf(data, key);
-
-    return index < 0 ? undefined : data[index][1];
-  }
-
-  /**
-   * Checks if a list cache value for `key` exists.
-   *
-   * @private
-   * @name has
-   * @memberOf ListCache
-   * @param {string} key The key of the entry to check.
-   * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-   */
-  function listCacheHas(key) {
-    return assocIndexOf(this.__data__, key) > -1;
-  }
-
-  /**
-   * Sets the list cache `key` to `value`.
-   *
-   * @private
-   * @name set
-   * @memberOf ListCache
-   * @param {string} key The key of the value to set.
-   * @param {*} value The value to set.
-   * @returns {Object} Returns the list cache instance.
-   */
-  function listCacheSet(key, value) {
-    var data = this.__data__,
-        index = assocIndexOf(data, key);
-
-    if (index < 0) {
-      ++this.size;
-      data.push([key, value]);
-    } else {
-      data[index][1] = value;
-    }
-    return this;
-  }
-
-  /**
-   * Creates an list cache object.
-   *
-   * @private
-   * @constructor
-   * @param {Array} [entries] The key-value pairs to cache.
-   */
-  function ListCache(entries) {
-    var index = -1,
-        length = entries == null ? 0 : entries.length;
-
-    this.clear();
-    while (++index < length) {
-      var entry = entries[index];
-      this.set(entry[0], entry[1]);
-    }
-  }
-
-  // Add methods to `ListCache`.
-  ListCache.prototype.clear = listCacheClear;
-  ListCache.prototype['delete'] = listCacheDelete;
-  ListCache.prototype.get = listCacheGet;
-  ListCache.prototype.has = listCacheHas;
-  ListCache.prototype.set = listCacheSet;
-
-  /**
-   * Removes all key-value entries from the stack.
-   *
-   * @private
-   * @name clear
-   * @memberOf Stack
-   */
-  function stackClear() {
-    this.__data__ = new ListCache;
-    this.size = 0;
-  }
-
-  /**
-   * Removes `key` and its value from the stack.
-   *
-   * @private
-   * @name delete
-   * @memberOf Stack
-   * @param {string} key The key of the value to remove.
-   * @returns {boolean} Returns `true` if the entry was removed, else `false`.
-   */
-  function stackDelete(key) {
-    var data = this.__data__,
-        result = data['delete'](key);
-
-    this.size = data.size;
-    return result;
-  }
-
-  /**
-   * Gets the stack value for `key`.
-   *
-   * @private
-   * @name get
-   * @memberOf Stack
-   * @param {string} key The key of the value to get.
-   * @returns {*} Returns the entry value.
-   */
-  function stackGet(key) {
-    return this.__data__.get(key);
-  }
-
-  /**
-   * Checks if a stack value for `key` exists.
-   *
-   * @private
-   * @name has
-   * @memberOf Stack
-   * @param {string} key The key of the entry to check.
-   * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
-   */
-  function stackHas(key) {
-    return this.__data__.has(key);
-  }
-
   /** Detect free variable `global` from Node.js. */
   var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
 
@@ -354,6 +124,61 @@ var WebAudioWave = (function () {
   }
 
   /**
+   * Checks if `value` is object-like. A value is object-like if it's not `null`
+   * and has a `typeof` result of "object".
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+   * @example
+   *
+   * _.isObjectLike({});
+   * // => true
+   *
+   * _.isObjectLike([1, 2, 3]);
+   * // => true
+   *
+   * _.isObjectLike(_.noop);
+   * // => false
+   *
+   * _.isObjectLike(null);
+   * // => false
+   */
+  function isObjectLike(value) {
+    return value != null && typeof value == 'object';
+  }
+
+  /**
+   * Checks if `value` is classified as an `Array` object.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is an array, else `false`.
+   * @example
+   *
+   * _.isArray([1, 2, 3]);
+   * // => true
+   *
+   * _.isArray(document.body.children);
+   * // => false
+   *
+   * _.isArray('abc');
+   * // => false
+   *
+   * _.isArray(_.noop);
+   * // => false
+   */
+  var isArray$8 = Array.isArray;
+
+  var isArray$9 = isArray$8;
+
+  /**
    * Checks if `value` is the
    * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
    * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
@@ -381,6 +206,26 @@ var WebAudioWave = (function () {
   function isObject$w(value) {
     var type = typeof value;
     return value != null && (type == 'object' || type == 'function');
+  }
+
+  /**
+   * This method returns the first argument it receives.
+   *
+   * @static
+   * @since 0.1.0
+   * @memberOf _
+   * @category Util
+   * @param {*} value Any value.
+   * @returns {*} Returns `value`.
+   * @example
+   *
+   * var object = { 'a': 1 };
+   *
+   * console.log(_.identity(object) === object);
+   * // => true
+   */
+  function identity(value) {
+    return value;
   }
 
   /** `Object#toString` result references. */
@@ -529,10 +374,869 @@ var WebAudioWave = (function () {
     return baseIsNative(value) ? value : undefined;
   }
 
-  /* Built-in method references that are verified to be native. */
-  var Map = getNative(root$1, 'Map');
+  /** Built-in value references. */
+  var objectCreate$2 = Object.create;
 
-  var Map$1 = Map;
+  /**
+   * The base implementation of `_.create` without support for assigning
+   * properties to the created object.
+   *
+   * @private
+   * @param {Object} proto The object to inherit from.
+   * @returns {Object} Returns the new object.
+   */
+  var baseCreate = (function() {
+    function object() {}
+    return function(proto) {
+      if (!isObject$w(proto)) {
+        return {};
+      }
+      if (objectCreate$2) {
+        return objectCreate$2(proto);
+      }
+      object.prototype = proto;
+      var result = new object;
+      object.prototype = undefined;
+      return result;
+    };
+  }());
+
+  var baseCreate$1 = baseCreate;
+
+  /**
+   * A faster alternative to `Function#apply`, this function invokes `func`
+   * with the `this` binding of `thisArg` and the arguments of `args`.
+   *
+   * @private
+   * @param {Function} func The function to invoke.
+   * @param {*} thisArg The `this` binding of `func`.
+   * @param {Array} args The arguments to invoke `func` with.
+   * @returns {*} Returns the result of `func`.
+   */
+  function apply$d(func, thisArg, args) {
+    switch (args.length) {
+      case 0: return func.call(thisArg);
+      case 1: return func.call(thisArg, args[0]);
+      case 2: return func.call(thisArg, args[0], args[1]);
+      case 3: return func.call(thisArg, args[0], args[1], args[2]);
+    }
+    return func.apply(thisArg, args);
+  }
+
+  /**
+   * Copies the values of `source` to `array`.
+   *
+   * @private
+   * @param {Array} source The array to copy values from.
+   * @param {Array} [array=[]] The array to copy values to.
+   * @returns {Array} Returns `array`.
+   */
+  function copyArray(source, array) {
+    var index = -1,
+        length = source.length;
+
+    array || (array = Array(length));
+    while (++index < length) {
+      array[index] = source[index];
+    }
+    return array;
+  }
+
+  /** Used to detect hot functions by number of calls within a span of milliseconds. */
+  var HOT_COUNT = 800,
+      HOT_SPAN = 16;
+
+  /* Built-in method references for those with the same name as other `lodash` methods. */
+  var nativeNow = Date.now;
+
+  /**
+   * Creates a function that'll short out and invoke `identity` instead
+   * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
+   * milliseconds.
+   *
+   * @private
+   * @param {Function} func The function to restrict.
+   * @returns {Function} Returns the new shortable function.
+   */
+  function shortOut(func) {
+    var count = 0,
+        lastCalled = 0;
+
+    return function() {
+      var stamp = nativeNow(),
+          remaining = HOT_SPAN - (stamp - lastCalled);
+
+      lastCalled = stamp;
+      if (remaining > 0) {
+        if (++count >= HOT_COUNT) {
+          return arguments[0];
+        }
+      } else {
+        count = 0;
+      }
+      return func.apply(undefined, arguments);
+    };
+  }
+
+  /**
+   * Creates a function that returns `value`.
+   *
+   * @static
+   * @memberOf _
+   * @since 2.4.0
+   * @category Util
+   * @param {*} value The value to return from the new function.
+   * @returns {Function} Returns the new constant function.
+   * @example
+   *
+   * var objects = _.times(2, _.constant({ 'a': 1 }));
+   *
+   * console.log(objects);
+   * // => [{ 'a': 1 }, { 'a': 1 }]
+   *
+   * console.log(objects[0] === objects[1]);
+   * // => true
+   */
+  function constant(value) {
+    return function() {
+      return value;
+    };
+  }
+
+  var defineProperty$k = (function() {
+    try {
+      var func = getNative(Object, 'defineProperty');
+      func({}, '', {});
+      return func;
+    } catch (e) {}
+  }());
+
+  var defineProperty$l = defineProperty$k;
+
+  /**
+   * The base implementation of `setToString` without support for hot loop shorting.
+   *
+   * @private
+   * @param {Function} func The function to modify.
+   * @param {Function} string The `toString` result.
+   * @returns {Function} Returns `func`.
+   */
+  var baseSetToString = !defineProperty$l ? identity : function(func, string) {
+    return defineProperty$l(func, 'toString', {
+      'configurable': true,
+      'enumerable': false,
+      'value': constant(string),
+      'writable': true
+    });
+  };
+
+  var baseSetToString$1 = baseSetToString;
+
+  /**
+   * Sets the `toString` method of `func` to return `string`.
+   *
+   * @private
+   * @param {Function} func The function to modify.
+   * @param {Function} string The `toString` result.
+   * @returns {Function} Returns `func`.
+   */
+  var setToString = shortOut(baseSetToString$1);
+
+  var setToString$1 = setToString;
+
+  /** Used as references for various `Number` constants. */
+  var MAX_SAFE_INTEGER$3 = 9007199254740991;
+
+  /** Used to detect unsigned integer values. */
+  var reIsUint = /^(?:0|[1-9]\d*)$/;
+
+  /**
+   * Checks if `value` is a valid array-like index.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
+   * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
+   */
+  function isIndex(value, length) {
+    var type = typeof value;
+    length = length == null ? MAX_SAFE_INTEGER$3 : length;
+
+    return !!length &&
+      (type == 'number' ||
+        (type != 'symbol' && reIsUint.test(value))) &&
+          (value > -1 && value % 1 == 0 && value < length);
+  }
+
+  /**
+   * The base implementation of `assignValue` and `assignMergeValue` without
+   * value checks.
+   *
+   * @private
+   * @param {Object} object The object to modify.
+   * @param {string} key The key of the property to assign.
+   * @param {*} value The value to assign.
+   */
+  function baseAssignValue(object, key, value) {
+    if (key == '__proto__' && defineProperty$l) {
+      defineProperty$l(object, key, {
+        'configurable': true,
+        'enumerable': true,
+        'value': value,
+        'writable': true
+      });
+    } else {
+      object[key] = value;
+    }
+  }
+
+  /**
+   * Performs a
+   * [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+   * comparison between two values to determine if they are equivalent.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to compare.
+   * @param {*} other The other value to compare.
+   * @returns {boolean} Returns `true` if the values are equivalent, else `false`.
+   * @example
+   *
+   * var object = { 'a': 1 };
+   * var other = { 'a': 1 };
+   *
+   * _.eq(object, object);
+   * // => true
+   *
+   * _.eq(object, other);
+   * // => false
+   *
+   * _.eq('a', 'a');
+   * // => true
+   *
+   * _.eq('a', Object('a'));
+   * // => false
+   *
+   * _.eq(NaN, NaN);
+   * // => true
+   */
+  function eq(value, other) {
+    return value === other || (value !== value && other !== other);
+  }
+
+  /** Used for built-in method references. */
+  var objectProto$7 = Object.prototype;
+
+  /** Used to check objects for own properties. */
+  var hasOwnProperty$8 = objectProto$7.hasOwnProperty;
+
+  /**
+   * Assigns `value` to `key` of `object` if the existing value is not equivalent
+   * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
+   * for equality comparisons.
+   *
+   * @private
+   * @param {Object} object The object to modify.
+   * @param {string} key The key of the property to assign.
+   * @param {*} value The value to assign.
+   */
+  function assignValue(object, key, value) {
+    var objValue = object[key];
+    if (!(hasOwnProperty$8.call(object, key) && eq(objValue, value)) ||
+        (value === undefined && !(key in object))) {
+      baseAssignValue(object, key, value);
+    }
+  }
+
+  /**
+   * Copies properties of `source` to `object`.
+   *
+   * @private
+   * @param {Object} source The object to copy properties from.
+   * @param {Array} props The property identifiers to copy.
+   * @param {Object} [object={}] The object to copy properties to.
+   * @param {Function} [customizer] The function to customize copied values.
+   * @returns {Object} Returns `object`.
+   */
+  function copyObject(source, props, object, customizer) {
+    var isNew = !object;
+    object || (object = {});
+
+    var index = -1,
+        length = props.length;
+
+    while (++index < length) {
+      var key = props[index];
+
+      var newValue = customizer
+        ? customizer(object[key], source[key], key, object, source)
+        : undefined;
+
+      if (newValue === undefined) {
+        newValue = source[key];
+      }
+      if (isNew) {
+        baseAssignValue(object, key, newValue);
+      } else {
+        assignValue(object, key, newValue);
+      }
+    }
+    return object;
+  }
+
+  /* Built-in method references for those with the same name as other `lodash` methods. */
+  var nativeMax = Math.max;
+
+  /**
+   * A specialized version of `baseRest` which transforms the rest array.
+   *
+   * @private
+   * @param {Function} func The function to apply a rest parameter to.
+   * @param {number} [start=func.length-1] The start position of the rest parameter.
+   * @param {Function} transform The rest array transform.
+   * @returns {Function} Returns the new function.
+   */
+  function overRest(func, start, transform) {
+    start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
+    return function() {
+      var args = arguments,
+          index = -1,
+          length = nativeMax(args.length - start, 0),
+          array = Array(length);
+
+      while (++index < length) {
+        array[index] = args[start + index];
+      }
+      index = -1;
+      var otherArgs = Array(start + 1);
+      while (++index < start) {
+        otherArgs[index] = args[index];
+      }
+      otherArgs[start] = transform(array);
+      return apply$d(func, this, otherArgs);
+    };
+  }
+
+  /**
+   * The base implementation of `_.rest` which doesn't validate or coerce arguments.
+   *
+   * @private
+   * @param {Function} func The function to apply a rest parameter to.
+   * @param {number} [start=func.length-1] The start position of the rest parameter.
+   * @returns {Function} Returns the new function.
+   */
+  function baseRest(func, start) {
+    return setToString$1(overRest(func, start, identity), func + '');
+  }
+
+  /** Used as references for various `Number` constants. */
+  var MAX_SAFE_INTEGER$2 = 9007199254740991;
+
+  /**
+   * Checks if `value` is a valid array-like length.
+   *
+   * **Note:** This method is loosely based on
+   * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
+   * @example
+   *
+   * _.isLength(3);
+   * // => true
+   *
+   * _.isLength(Number.MIN_VALUE);
+   * // => false
+   *
+   * _.isLength(Infinity);
+   * // => false
+   *
+   * _.isLength('3');
+   * // => false
+   */
+  function isLength(value) {
+    return typeof value == 'number' &&
+      value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER$2;
+  }
+
+  /**
+   * Checks if `value` is array-like. A value is considered array-like if it's
+   * not a function and has a `value.length` that's an integer greater than or
+   * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.0.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
+   * @example
+   *
+   * _.isArrayLike([1, 2, 3]);
+   * // => true
+   *
+   * _.isArrayLike(document.body.children);
+   * // => true
+   *
+   * _.isArrayLike('abc');
+   * // => true
+   *
+   * _.isArrayLike(_.noop);
+   * // => false
+   */
+  function isArrayLike(value) {
+    return value != null && isLength(value.length) && !isFunction(value);
+  }
+
+  /**
+   * Checks if the given arguments are from an iteratee call.
+   *
+   * @private
+   * @param {*} value The potential iteratee value argument.
+   * @param {*} index The potential iteratee index or key argument.
+   * @param {*} object The potential iteratee object argument.
+   * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
+   *  else `false`.
+   */
+  function isIterateeCall(value, index, object) {
+    if (!isObject$w(object)) {
+      return false;
+    }
+    var type = typeof index;
+    if (type == 'number'
+          ? (isArrayLike(object) && isIndex(index, object.length))
+          : (type == 'string' && index in object)
+        ) {
+      return eq(object[index], value);
+    }
+    return false;
+  }
+
+  /**
+   * Creates a function like `_.assign`.
+   *
+   * @private
+   * @param {Function} assigner The function to assign values.
+   * @returns {Function} Returns the new assigner function.
+   */
+  function createAssigner(assigner) {
+    return baseRest(function(object, sources) {
+      var index = -1,
+          length = sources.length,
+          customizer = length > 1 ? sources[length - 1] : undefined,
+          guard = length > 2 ? sources[2] : undefined;
+
+      customizer = (assigner.length > 3 && typeof customizer == 'function')
+        ? (length--, customizer)
+        : undefined;
+
+      if (guard && isIterateeCall(sources[0], sources[1], guard)) {
+        customizer = length < 3 ? undefined : customizer;
+        length = 1;
+      }
+      object = Object(object);
+      while (++index < length) {
+        var source = sources[index];
+        if (source) {
+          assigner(object, source, index, customizer);
+        }
+      }
+      return object;
+    });
+  }
+
+  /** Used for built-in method references. */
+  var objectProto$6 = Object.prototype;
+
+  /**
+   * Checks if `value` is likely a prototype object.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
+   */
+  function isPrototype(value) {
+    var Ctor = value && value.constructor,
+        proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$6;
+
+    return value === proto;
+  }
+
+  /**
+   * The base implementation of `_.times` without support for iteratee shorthands
+   * or max array length checks.
+   *
+   * @private
+   * @param {number} n The number of times to invoke `iteratee`.
+   * @param {Function} iteratee The function invoked per iteration.
+   * @returns {Array} Returns the array of results.
+   */
+  function baseTimes(n, iteratee) {
+    var index = -1,
+        result = Array(n);
+
+    while (++index < n) {
+      result[index] = iteratee(index);
+    }
+    return result;
+  }
+
+  /** `Object#toString` result references. */
+  var argsTag$1 = '[object Arguments]';
+
+  /**
+   * The base implementation of `_.isArguments`.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+   */
+  function baseIsArguments(value) {
+    return isObjectLike(value) && baseGetTag(value) == argsTag$1;
+  }
+
+  /** Used for built-in method references. */
+  var objectProto$5 = Object.prototype;
+
+  /** Used to check objects for own properties. */
+  var hasOwnProperty$7 = objectProto$5.hasOwnProperty;
+
+  /** Built-in value references. */
+  var propertyIsEnumerable = objectProto$5.propertyIsEnumerable;
+
+  /**
+   * Checks if `value` is likely an `arguments` object.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.1.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+   *  else `false`.
+   * @example
+   *
+   * _.isArguments(function() { return arguments; }());
+   * // => true
+   *
+   * _.isArguments([1, 2, 3]);
+   * // => false
+   */
+  var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
+    return isObjectLike(value) && hasOwnProperty$7.call(value, 'callee') &&
+      !propertyIsEnumerable.call(value, 'callee');
+  };
+
+  var isArguments$1 = isArguments;
+
+  /**
+   * This method returns `false`.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.13.0
+   * @category Util
+   * @returns {boolean} Returns `false`.
+   * @example
+   *
+   * _.times(2, _.stubFalse);
+   * // => [false, false]
+   */
+  function stubFalse() {
+    return false;
+  }
+
+  /** Detect free variable `exports`. */
+  var freeExports$2 = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+  /** Detect free variable `module`. */
+  var freeModule$2 = freeExports$2 && typeof module == 'object' && module && !module.nodeType && module;
+
+  /** Detect the popular CommonJS extension `module.exports`. */
+  var moduleExports$2 = freeModule$2 && freeModule$2.exports === freeExports$2;
+
+  /** Built-in value references. */
+  var Buffer$1 = moduleExports$2 ? root$1.Buffer : undefined;
+
+  /* Built-in method references for those with the same name as other `lodash` methods. */
+  var nativeIsBuffer = Buffer$1 ? Buffer$1.isBuffer : undefined;
+
+  /**
+   * Checks if `value` is a buffer.
+   *
+   * @static
+   * @memberOf _
+   * @since 4.3.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
+   * @example
+   *
+   * _.isBuffer(new Buffer(2));
+   * // => true
+   *
+   * _.isBuffer(new Uint8Array(2));
+   * // => false
+   */
+  var isBuffer = nativeIsBuffer || stubFalse;
+
+  var isBuffer$1 = isBuffer;
+
+  /** `Object#toString` result references. */
+  var argsTag = '[object Arguments]',
+      arrayTag = '[object Array]',
+      boolTag = '[object Boolean]',
+      dateTag = '[object Date]',
+      errorTag = '[object Error]',
+      funcTag = '[object Function]',
+      mapTag = '[object Map]',
+      numberTag = '[object Number]',
+      objectTag$1 = '[object Object]',
+      regexpTag = '[object RegExp]',
+      setTag = '[object Set]',
+      stringTag = '[object String]',
+      weakMapTag = '[object WeakMap]';
+
+  var arrayBufferTag = '[object ArrayBuffer]',
+      dataViewTag = '[object DataView]',
+      float32Tag = '[object Float32Array]',
+      float64Tag = '[object Float64Array]',
+      int8Tag = '[object Int8Array]',
+      int16Tag = '[object Int16Array]',
+      int32Tag = '[object Int32Array]',
+      uint8Tag = '[object Uint8Array]',
+      uint8ClampedTag = '[object Uint8ClampedArray]',
+      uint16Tag = '[object Uint16Array]',
+      uint32Tag = '[object Uint32Array]';
+
+  /** Used to identify `toStringTag` values of typed arrays. */
+  var typedArrayTags = {};
+  typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
+  typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
+  typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
+  typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
+  typedArrayTags[uint32Tag] = true;
+  typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
+  typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
+  typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
+  typedArrayTags[errorTag] = typedArrayTags[funcTag] =
+  typedArrayTags[mapTag] = typedArrayTags[numberTag] =
+  typedArrayTags[objectTag$1] = typedArrayTags[regexpTag] =
+  typedArrayTags[setTag] = typedArrayTags[stringTag] =
+  typedArrayTags[weakMapTag] = false;
+
+  /**
+   * The base implementation of `_.isTypedArray` without Node.js optimizations.
+   *
+   * @private
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+   */
+  function baseIsTypedArray(value) {
+    return isObjectLike(value) &&
+      isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
+  }
+
+  /**
+   * The base implementation of `_.unary` without support for storing metadata.
+   *
+   * @private
+   * @param {Function} func The function to cap arguments for.
+   * @returns {Function} Returns the new capped function.
+   */
+  function baseUnary(func) {
+    return function(value) {
+      return func(value);
+    };
+  }
+
+  /** Detect free variable `exports`. */
+  var freeExports$1 = typeof exports == 'object' && exports && !exports.nodeType && exports;
+
+  /** Detect free variable `module`. */
+  var freeModule$1 = freeExports$1 && typeof module == 'object' && module && !module.nodeType && module;
+
+  /** Detect the popular CommonJS extension `module.exports`. */
+  var moduleExports$1 = freeModule$1 && freeModule$1.exports === freeExports$1;
+
+  /** Detect free variable `process` from Node.js. */
+  var freeProcess = moduleExports$1 && freeGlobal$1.process;
+
+  /** Used to access faster Node.js helpers. */
+  var nodeUtil = (function() {
+    try {
+      // Use `util.types` for Node.js 10+.
+      var types = freeModule$1 && freeModule$1.require && freeModule$1.require('util').types;
+
+      if (types) {
+        return types;
+      }
+
+      // Legacy `process.binding('util')` for Node.js < 10.
+      return freeProcess && freeProcess.binding && freeProcess.binding('util');
+    } catch (e) {}
+  }());
+
+  var nodeUtil$1 = nodeUtil;
+
+  /* Node.js helper references. */
+  var nodeIsTypedArray = nodeUtil$1 && nodeUtil$1.isTypedArray;
+
+  /**
+   * Checks if `value` is classified as a typed array.
+   *
+   * @static
+   * @memberOf _
+   * @since 3.0.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
+   * @example
+   *
+   * _.isTypedArray(new Uint8Array);
+   * // => true
+   *
+   * _.isTypedArray([]);
+   * // => false
+   */
+  var isTypedArray$2 = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
+
+  var isTypedArray$3 = isTypedArray$2;
+
+  /** Used for built-in method references. */
+  var objectProto$4 = Object.prototype;
+
+  /** Used to check objects for own properties. */
+  var hasOwnProperty$6 = objectProto$4.hasOwnProperty;
+
+  /**
+   * Creates an array of the enumerable property names of the array-like `value`.
+   *
+   * @private
+   * @param {*} value The value to query.
+   * @param {boolean} inherited Specify returning inherited property names.
+   * @returns {Array} Returns the array of property names.
+   */
+  function arrayLikeKeys(value, inherited) {
+    var isArr = isArray$9(value),
+        isArg = !isArr && isArguments$1(value),
+        isBuff = !isArr && !isArg && isBuffer$1(value),
+        isType = !isArr && !isArg && !isBuff && isTypedArray$3(value),
+        skipIndexes = isArr || isArg || isBuff || isType,
+        result = skipIndexes ? baseTimes(value.length, String) : [],
+        length = result.length;
+
+    for (var key in value) {
+      if ((inherited || hasOwnProperty$6.call(value, key)) &&
+          !(skipIndexes && (
+             // Safari 9 has enumerable `arguments.length` in strict mode.
+             key == 'length' ||
+             // Node.js 0.10 has enumerable non-index properties on buffers.
+             (isBuff && (key == 'offset' || key == 'parent')) ||
+             // PhantomJS 2 has enumerable non-index properties on typed arrays.
+             (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
+             // Skip index properties.
+             isIndex(key, length)
+          ))) {
+        result.push(key);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Creates a unary function that invokes `func` with its argument transformed.
+   *
+   * @private
+   * @param {Function} func The function to wrap.
+   * @param {Function} transform The argument transform.
+   * @returns {Function} Returns the new function.
+   */
+  function overArg(func, transform) {
+    return function(arg) {
+      return func(transform(arg));
+    };
+  }
+
+  /**
+   * This function is like
+   * [`Object.keys`](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
+   * except that it includes inherited enumerable properties.
+   *
+   * @private
+   * @param {Object} object The object to query.
+   * @returns {Array} Returns the array of property names.
+   */
+  function nativeKeysIn(object) {
+    var result = [];
+    if (object != null) {
+      for (var key in Object(object)) {
+        result.push(key);
+      }
+    }
+    return result;
+  }
+
+  /** Used for built-in method references. */
+  var objectProto$3 = Object.prototype;
+
+  /** Used to check objects for own properties. */
+  var hasOwnProperty$5 = objectProto$3.hasOwnProperty;
+
+  /**
+   * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
+   *
+   * @private
+   * @param {Object} object The object to query.
+   * @returns {Array} Returns the array of property names.
+   */
+  function baseKeysIn(object) {
+    if (!isObject$w(object)) {
+      return nativeKeysIn(object);
+    }
+    var isProto = isPrototype(object),
+        result = [];
+
+    for (var key in object) {
+      if (!(key == 'constructor' && (isProto || !hasOwnProperty$5.call(object, key)))) {
+        result.push(key);
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Creates an array of the own and inherited enumerable property names of `object`.
+   *
+   * **Note:** Non-object values are coerced to objects.
+   *
+   * @static
+   * @memberOf _
+   * @since 3.0.0
+   * @category Object
+   * @param {Object} object The object to query.
+   * @returns {Array} Returns the array of property names.
+   * @example
+   *
+   * function Foo() {
+   *   this.a = 1;
+   *   this.b = 2;
+   * }
+   *
+   * Foo.prototype.c = 3;
+   *
+   * _.keysIn(new Foo);
+   * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
+   */
+  function keysIn(object) {
+    return isArrayLike(object) ? arrayLikeKeys(object, true) : baseKeysIn(object);
+  }
 
   /* Built-in method references that are verified to be native. */
   var nativeCreate = getNative(Object, 'create');
@@ -571,10 +1275,10 @@ var WebAudioWave = (function () {
   var HASH_UNDEFINED$1 = '__lodash_hash_undefined__';
 
   /** Used for built-in method references. */
-  var objectProto$7 = Object.prototype;
+  var objectProto$2 = Object.prototype;
 
   /** Used to check objects for own properties. */
-  var hasOwnProperty$8 = objectProto$7.hasOwnProperty;
+  var hasOwnProperty$4 = objectProto$2.hasOwnProperty;
 
   /**
    * Gets the hash value for `key`.
@@ -591,14 +1295,14 @@ var WebAudioWave = (function () {
       var result = data[key];
       return result === HASH_UNDEFINED$1 ? undefined : result;
     }
-    return hasOwnProperty$8.call(data, key) ? data[key] : undefined;
+    return hasOwnProperty$4.call(data, key) ? data[key] : undefined;
   }
 
   /** Used for built-in method references. */
-  var objectProto$6 = Object.prototype;
+  var objectProto$1 = Object.prototype;
 
   /** Used to check objects for own properties. */
-  var hasOwnProperty$7 = objectProto$6.hasOwnProperty;
+  var hasOwnProperty$3 = objectProto$1.hasOwnProperty;
 
   /**
    * Checks if a hash value for `key` exists.
@@ -611,7 +1315,7 @@ var WebAudioWave = (function () {
    */
   function hashHas(key) {
     var data = this.__data__;
-    return nativeCreate$1 ? (data[key] !== undefined) : hasOwnProperty$7.call(data, key);
+    return nativeCreate$1 ? (data[key] !== undefined) : hasOwnProperty$3.call(data, key);
   }
 
   /** Used to stand-in for `undefined` hash values. */
@@ -658,6 +1362,150 @@ var WebAudioWave = (function () {
   Hash.prototype.get = hashGet;
   Hash.prototype.has = hashHas;
   Hash.prototype.set = hashSet;
+
+  /**
+   * Removes all key-value entries from the list cache.
+   *
+   * @private
+   * @name clear
+   * @memberOf ListCache
+   */
+  function listCacheClear() {
+    this.__data__ = [];
+    this.size = 0;
+  }
+
+  /**
+   * Gets the index at which the `key` is found in `array` of key-value pairs.
+   *
+   * @private
+   * @param {Array} array The array to inspect.
+   * @param {*} key The key to search for.
+   * @returns {number} Returns the index of the matched value, else `-1`.
+   */
+  function assocIndexOf(array, key) {
+    var length = array.length;
+    while (length--) {
+      if (eq(array[length][0], key)) {
+        return length;
+      }
+    }
+    return -1;
+  }
+
+  /** Used for built-in method references. */
+  var arrayProto = Array.prototype;
+
+  /** Built-in value references. */
+  var splice = arrayProto.splice;
+
+  /**
+   * Removes `key` and its value from the list cache.
+   *
+   * @private
+   * @name delete
+   * @memberOf ListCache
+   * @param {string} key The key of the value to remove.
+   * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+   */
+  function listCacheDelete(key) {
+    var data = this.__data__,
+        index = assocIndexOf(data, key);
+
+    if (index < 0) {
+      return false;
+    }
+    var lastIndex = data.length - 1;
+    if (index == lastIndex) {
+      data.pop();
+    } else {
+      splice.call(data, index, 1);
+    }
+    --this.size;
+    return true;
+  }
+
+  /**
+   * Gets the list cache value for `key`.
+   *
+   * @private
+   * @name get
+   * @memberOf ListCache
+   * @param {string} key The key of the value to get.
+   * @returns {*} Returns the entry value.
+   */
+  function listCacheGet(key) {
+    var data = this.__data__,
+        index = assocIndexOf(data, key);
+
+    return index < 0 ? undefined : data[index][1];
+  }
+
+  /**
+   * Checks if a list cache value for `key` exists.
+   *
+   * @private
+   * @name has
+   * @memberOf ListCache
+   * @param {string} key The key of the entry to check.
+   * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+   */
+  function listCacheHas(key) {
+    return assocIndexOf(this.__data__, key) > -1;
+  }
+
+  /**
+   * Sets the list cache `key` to `value`.
+   *
+   * @private
+   * @name set
+   * @memberOf ListCache
+   * @param {string} key The key of the value to set.
+   * @param {*} value The value to set.
+   * @returns {Object} Returns the list cache instance.
+   */
+  function listCacheSet(key, value) {
+    var data = this.__data__,
+        index = assocIndexOf(data, key);
+
+    if (index < 0) {
+      ++this.size;
+      data.push([key, value]);
+    } else {
+      data[index][1] = value;
+    }
+    return this;
+  }
+
+  /**
+   * Creates an list cache object.
+   *
+   * @private
+   * @constructor
+   * @param {Array} [entries] The key-value pairs to cache.
+   */
+  function ListCache(entries) {
+    var index = -1,
+        length = entries == null ? 0 : entries.length;
+
+    this.clear();
+    while (++index < length) {
+      var entry = entries[index];
+      this.set(entry[0], entry[1]);
+    }
+  }
+
+  // Add methods to `ListCache`.
+  ListCache.prototype.clear = listCacheClear;
+  ListCache.prototype['delete'] = listCacheDelete;
+  ListCache.prototype.get = listCacheGet;
+  ListCache.prototype.has = listCacheHas;
+  ListCache.prototype.set = listCacheSet;
+
+  /* Built-in method references that are verified to be native. */
+  var Map = getNative(root$1, 'Map');
+
+  var Map$1 = Map;
 
   /**
    * Removes all key-value entries from the map.
@@ -789,6 +1637,123 @@ var WebAudioWave = (function () {
   MapCache.prototype.has = mapCacheHas;
   MapCache.prototype.set = mapCacheSet;
 
+  /** Built-in value references. */
+  var getPrototype = overArg(Object.getPrototypeOf, Object);
+
+  var getPrototype$1 = getPrototype;
+
+  /** `Object#toString` result references. */
+  var objectTag = '[object Object]';
+
+  /** Used for built-in method references. */
+  var funcProto = Function.prototype,
+      objectProto = Object.prototype;
+
+  /** Used to resolve the decompiled source of functions. */
+  var funcToString = funcProto.toString;
+
+  /** Used to check objects for own properties. */
+  var hasOwnProperty$2 = objectProto.hasOwnProperty;
+
+  /** Used to infer the `Object` constructor. */
+  var objectCtorString = funcToString.call(Object);
+
+  /**
+   * Checks if `value` is a plain object, that is, an object created by the
+   * `Object` constructor or one with a `[[Prototype]]` of `null`.
+   *
+   * @static
+   * @memberOf _
+   * @since 0.8.0
+   * @category Lang
+   * @param {*} value The value to check.
+   * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
+   * @example
+   *
+   * function Foo() {
+   *   this.a = 1;
+   * }
+   *
+   * _.isPlainObject(new Foo);
+   * // => false
+   *
+   * _.isPlainObject([1, 2, 3]);
+   * // => false
+   *
+   * _.isPlainObject({ 'x': 0, 'y': 0 });
+   * // => true
+   *
+   * _.isPlainObject(Object.create(null));
+   * // => true
+   */
+  function isPlainObject(value) {
+    if (!isObjectLike(value) || baseGetTag(value) != objectTag) {
+      return false;
+    }
+    var proto = getPrototype$1(value);
+    if (proto === null) {
+      return true;
+    }
+    var Ctor = hasOwnProperty$2.call(proto, 'constructor') && proto.constructor;
+    return typeof Ctor == 'function' && Ctor instanceof Ctor &&
+      funcToString.call(Ctor) == objectCtorString;
+  }
+
+  /**
+   * Removes all key-value entries from the stack.
+   *
+   * @private
+   * @name clear
+   * @memberOf Stack
+   */
+  function stackClear() {
+    this.__data__ = new ListCache;
+    this.size = 0;
+  }
+
+  /**
+   * Removes `key` and its value from the stack.
+   *
+   * @private
+   * @name delete
+   * @memberOf Stack
+   * @param {string} key The key of the value to remove.
+   * @returns {boolean} Returns `true` if the entry was removed, else `false`.
+   */
+  function stackDelete(key) {
+    var data = this.__data__,
+        result = data['delete'](key);
+
+    this.size = data.size;
+    return result;
+  }
+
+  /**
+   * Gets the stack value for `key`.
+   *
+   * @private
+   * @name get
+   * @memberOf Stack
+   * @param {string} key The key of the value to get.
+   * @returns {*} Returns the entry value.
+   */
+  function stackGet(key) {
+    return this.__data__.get(key);
+  }
+
+  /**
+   * Checks if a stack value for `key` exists.
+   *
+   * @private
+   * @name has
+   * @memberOf Stack
+   * @param {string} key The key of the entry to check.
+   * @returns {boolean} Returns `true` if an entry for `key` exists, else `false`.
+   */
+  function stackHas(key) {
+    return this.__data__.has(key);
+  }
+
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
 
@@ -837,105 +1802,18 @@ var WebAudioWave = (function () {
   Stack.prototype.has = stackHas;
   Stack.prototype.set = stackSet;
 
-  var defineProperty$k = (function() {
-    try {
-      var func = getNative(Object, 'defineProperty');
-      func({}, '', {});
-      return func;
-    } catch (e) {}
-  }());
-
-  var defineProperty$l = defineProperty$k;
-
-  /**
-   * The base implementation of `assignValue` and `assignMergeValue` without
-   * value checks.
-   *
-   * @private
-   * @param {Object} object The object to modify.
-   * @param {string} key The key of the property to assign.
-   * @param {*} value The value to assign.
-   */
-  function baseAssignValue(object, key, value) {
-    if (key == '__proto__' && defineProperty$l) {
-      defineProperty$l(object, key, {
-        'configurable': true,
-        'enumerable': true,
-        'value': value,
-        'writable': true
-      });
-    } else {
-      object[key] = value;
-    }
-  }
-
-  /**
-   * This function is like `assignValue` except that it doesn't assign
-   * `undefined` values.
-   *
-   * @private
-   * @param {Object} object The object to modify.
-   * @param {string} key The key of the property to assign.
-   * @param {*} value The value to assign.
-   */
-  function assignMergeValue(object, key, value) {
-    if ((value !== undefined && !eq(object[key], value)) ||
-        (value === undefined && !(key in object))) {
-      baseAssignValue(object, key, value);
-    }
-  }
-
-  /**
-   * Creates a base function for methods like `_.forIn` and `_.forOwn`.
-   *
-   * @private
-   * @param {boolean} [fromRight] Specify iterating from right to left.
-   * @returns {Function} Returns the new base function.
-   */
-  function createBaseFor(fromRight) {
-    return function(object, iteratee, keysFunc) {
-      var index = -1,
-          iterable = Object(object),
-          props = keysFunc(object),
-          length = props.length;
-
-      while (length--) {
-        var key = props[fromRight ? length : ++index];
-        if (iteratee(iterable[key], key, iterable) === false) {
-          break;
-        }
-      }
-      return object;
-    };
-  }
-
-  /**
-   * The base implementation of `baseForOwn` which iterates over `object`
-   * properties returned by `keysFunc` and invokes `iteratee` for each property.
-   * Iteratee functions may exit iteration early by explicitly returning `false`.
-   *
-   * @private
-   * @param {Object} object The object to iterate over.
-   * @param {Function} iteratee The function invoked per iteration.
-   * @param {Function} keysFunc The function to get the keys of `object`.
-   * @returns {Object} Returns `object`.
-   */
-  var baseFor = createBaseFor();
-
-  var baseFor$1 = baseFor;
-
   /** Detect free variable `exports`. */
-  var freeExports$2 = typeof exports == 'object' && exports && !exports.nodeType && exports;
+  var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
 
   /** Detect free variable `module`. */
-  var freeModule$2 = freeExports$2 && typeof module == 'object' && module && !module.nodeType && module;
+  var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
 
   /** Detect the popular CommonJS extension `module.exports`. */
-  var moduleExports$2 = freeModule$2 && freeModule$2.exports === freeExports$2;
+  var moduleExports = freeModule && freeModule.exports === freeExports;
 
   /** Built-in value references. */
-  var Buffer$1 = moduleExports$2 ? root$1.Buffer : undefined,
-      allocUnsafe = Buffer$1 ? Buffer$1.allocUnsafe : undefined;
+  var Buffer = moduleExports ? root$1.Buffer : undefined,
+      allocUnsafe = Buffer ? Buffer.allocUnsafe : undefined;
 
   /**
    * Creates a clone of  `buffer`.
@@ -988,90 +1866,6 @@ var WebAudioWave = (function () {
   }
 
   /**
-   * Copies the values of `source` to `array`.
-   *
-   * @private
-   * @param {Array} source The array to copy values from.
-   * @param {Array} [array=[]] The array to copy values to.
-   * @returns {Array} Returns `array`.
-   */
-  function copyArray(source, array) {
-    var index = -1,
-        length = source.length;
-
-    array || (array = Array(length));
-    while (++index < length) {
-      array[index] = source[index];
-    }
-    return array;
-  }
-
-  /** Built-in value references. */
-  var objectCreate$2 = Object.create;
-
-  /**
-   * The base implementation of `_.create` without support for assigning
-   * properties to the created object.
-   *
-   * @private
-   * @param {Object} proto The object to inherit from.
-   * @returns {Object} Returns the new object.
-   */
-  var baseCreate = (function() {
-    function object() {}
-    return function(proto) {
-      if (!isObject$w(proto)) {
-        return {};
-      }
-      if (objectCreate$2) {
-        return objectCreate$2(proto);
-      }
-      object.prototype = proto;
-      var result = new object;
-      object.prototype = undefined;
-      return result;
-    };
-  }());
-
-  var baseCreate$1 = baseCreate;
-
-  /**
-   * Creates a unary function that invokes `func` with its argument transformed.
-   *
-   * @private
-   * @param {Function} func The function to wrap.
-   * @param {Function} transform The argument transform.
-   * @returns {Function} Returns the new function.
-   */
-  function overArg(func, transform) {
-    return function(arg) {
-      return func(transform(arg));
-    };
-  }
-
-  /** Built-in value references. */
-  var getPrototype = overArg(Object.getPrototypeOf, Object);
-
-  var getPrototype$1 = getPrototype;
-
-  /** Used for built-in method references. */
-  var objectProto$5 = Object.prototype;
-
-  /**
-   * Checks if `value` is likely a prototype object.
-   *
-   * @private
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is a prototype, else `false`.
-   */
-  function isPrototype(value) {
-    var Ctor = value && value.constructor,
-        proto = (typeof Ctor == 'function' && Ctor.prototype) || objectProto$5;
-
-    return value === proto;
-  }
-
-  /**
    * Initializes an object clone.
    *
    * @private
@@ -1085,169 +1879,58 @@ var WebAudioWave = (function () {
   }
 
   /**
-   * Checks if `value` is object-like. A value is object-like if it's not `null`
-   * and has a `typeof` result of "object".
-   *
-   * @static
-   * @memberOf _
-   * @since 4.0.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
-   * @example
-   *
-   * _.isObjectLike({});
-   * // => true
-   *
-   * _.isObjectLike([1, 2, 3]);
-   * // => true
-   *
-   * _.isObjectLike(_.noop);
-   * // => false
-   *
-   * _.isObjectLike(null);
-   * // => false
-   */
-  function isObjectLike(value) {
-    return value != null && typeof value == 'object';
-  }
-
-  /** `Object#toString` result references. */
-  var argsTag$1 = '[object Arguments]';
-
-  /**
-   * The base implementation of `_.isArguments`.
+   * Creates a base function for methods like `_.forIn` and `_.forOwn`.
    *
    * @private
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is an `arguments` object,
+   * @param {boolean} [fromRight] Specify iterating from right to left.
+   * @returns {Function} Returns the new base function.
    */
-  function baseIsArguments(value) {
-    return isObjectLike(value) && baseGetTag(value) == argsTag$1;
-  }
+  function createBaseFor(fromRight) {
+    return function(object, iteratee, keysFunc) {
+      var index = -1,
+          iterable = Object(object),
+          props = keysFunc(object),
+          length = props.length;
 
-  /** Used for built-in method references. */
-  var objectProto$4 = Object.prototype;
-
-  /** Used to check objects for own properties. */
-  var hasOwnProperty$6 = objectProto$4.hasOwnProperty;
-
-  /** Built-in value references. */
-  var propertyIsEnumerable = objectProto$4.propertyIsEnumerable;
-
-  /**
-   * Checks if `value` is likely an `arguments` object.
-   *
-   * @static
-   * @memberOf _
-   * @since 0.1.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is an `arguments` object,
-   *  else `false`.
-   * @example
-   *
-   * _.isArguments(function() { return arguments; }());
-   * // => true
-   *
-   * _.isArguments([1, 2, 3]);
-   * // => false
-   */
-  var isArguments = baseIsArguments(function() { return arguments; }()) ? baseIsArguments : function(value) {
-    return isObjectLike(value) && hasOwnProperty$6.call(value, 'callee') &&
-      !propertyIsEnumerable.call(value, 'callee');
-  };
-
-  var isArguments$1 = isArguments;
-
-  /**
-   * Checks if `value` is classified as an `Array` object.
-   *
-   * @static
-   * @memberOf _
-   * @since 0.1.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is an array, else `false`.
-   * @example
-   *
-   * _.isArray([1, 2, 3]);
-   * // => true
-   *
-   * _.isArray(document.body.children);
-   * // => false
-   *
-   * _.isArray('abc');
-   * // => false
-   *
-   * _.isArray(_.noop);
-   * // => false
-   */
-  var isArray$8 = Array.isArray;
-
-  var isArray$9 = isArray$8;
-
-  /** Used as references for various `Number` constants. */
-  var MAX_SAFE_INTEGER$3 = 9007199254740991;
-
-  /**
-   * Checks if `value` is a valid array-like length.
-   *
-   * **Note:** This method is loosely based on
-   * [`ToLength`](http://ecma-international.org/ecma-262/7.0/#sec-tolength).
-   *
-   * @static
-   * @memberOf _
-   * @since 4.0.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is a valid length, else `false`.
-   * @example
-   *
-   * _.isLength(3);
-   * // => true
-   *
-   * _.isLength(Number.MIN_VALUE);
-   * // => false
-   *
-   * _.isLength(Infinity);
-   * // => false
-   *
-   * _.isLength('3');
-   * // => false
-   */
-  function isLength(value) {
-    return typeof value == 'number' &&
-      value > -1 && value % 1 == 0 && value <= MAX_SAFE_INTEGER$3;
+      while (length--) {
+        var key = props[fromRight ? length : ++index];
+        if (iteratee(iterable[key], key, iterable) === false) {
+          break;
+        }
+      }
+      return object;
+    };
   }
 
   /**
-   * Checks if `value` is array-like. A value is considered array-like if it's
-   * not a function and has a `value.length` that's an integer greater than or
-   * equal to `0` and less than or equal to `Number.MAX_SAFE_INTEGER`.
+   * The base implementation of `baseForOwn` which iterates over `object`
+   * properties returned by `keysFunc` and invokes `iteratee` for each property.
+   * Iteratee functions may exit iteration early by explicitly returning `false`.
    *
-   * @static
-   * @memberOf _
-   * @since 4.0.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is array-like, else `false`.
-   * @example
-   *
-   * _.isArrayLike([1, 2, 3]);
-   * // => true
-   *
-   * _.isArrayLike(document.body.children);
-   * // => true
-   *
-   * _.isArrayLike('abc');
-   * // => true
-   *
-   * _.isArrayLike(_.noop);
-   * // => false
+   * @private
+   * @param {Object} object The object to iterate over.
+   * @param {Function} iteratee The function invoked per iteration.
+   * @param {Function} keysFunc The function to get the keys of `object`.
+   * @returns {Object} Returns `object`.
    */
-  function isArrayLike(value) {
-    return value != null && isLength(value.length) && !isFunction(value);
+  var baseFor = createBaseFor();
+
+  var baseFor$1 = baseFor;
+
+  /**
+   * This function is like `assignValue` except that it doesn't assign
+   * `undefined` values.
+   *
+   * @private
+   * @param {Object} object The object to modify.
+   * @param {string} key The key of the property to assign.
+   * @param {*} value The value to assign.
+   */
+  function assignMergeValue(object, key, value) {
+    if ((value !== undefined && !eq(object[key], value)) ||
+        (value === undefined && !(key in object))) {
+      baseAssignValue(object, key, value);
+    }
   }
 
   /**
@@ -1280,237 +1963,6 @@ var WebAudioWave = (function () {
   }
 
   /**
-   * This method returns `false`.
-   *
-   * @static
-   * @memberOf _
-   * @since 4.13.0
-   * @category Util
-   * @returns {boolean} Returns `false`.
-   * @example
-   *
-   * _.times(2, _.stubFalse);
-   * // => [false, false]
-   */
-  function stubFalse() {
-    return false;
-  }
-
-  /** Detect free variable `exports`. */
-  var freeExports$1 = typeof exports == 'object' && exports && !exports.nodeType && exports;
-
-  /** Detect free variable `module`. */
-  var freeModule$1 = freeExports$1 && typeof module == 'object' && module && !module.nodeType && module;
-
-  /** Detect the popular CommonJS extension `module.exports`. */
-  var moduleExports$1 = freeModule$1 && freeModule$1.exports === freeExports$1;
-
-  /** Built-in value references. */
-  var Buffer = moduleExports$1 ? root$1.Buffer : undefined;
-
-  /* Built-in method references for those with the same name as other `lodash` methods. */
-  var nativeIsBuffer = Buffer ? Buffer.isBuffer : undefined;
-
-  /**
-   * Checks if `value` is a buffer.
-   *
-   * @static
-   * @memberOf _
-   * @since 4.3.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is a buffer, else `false`.
-   * @example
-   *
-   * _.isBuffer(new Buffer(2));
-   * // => true
-   *
-   * _.isBuffer(new Uint8Array(2));
-   * // => false
-   */
-  var isBuffer = nativeIsBuffer || stubFalse;
-
-  var isBuffer$1 = isBuffer;
-
-  /** `Object#toString` result references. */
-  var objectTag$1 = '[object Object]';
-
-  /** Used for built-in method references. */
-  var funcProto = Function.prototype,
-      objectProto$3 = Object.prototype;
-
-  /** Used to resolve the decompiled source of functions. */
-  var funcToString = funcProto.toString;
-
-  /** Used to check objects for own properties. */
-  var hasOwnProperty$5 = objectProto$3.hasOwnProperty;
-
-  /** Used to infer the `Object` constructor. */
-  var objectCtorString = funcToString.call(Object);
-
-  /**
-   * Checks if `value` is a plain object, that is, an object created by the
-   * `Object` constructor or one with a `[[Prototype]]` of `null`.
-   *
-   * @static
-   * @memberOf _
-   * @since 0.8.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is a plain object, else `false`.
-   * @example
-   *
-   * function Foo() {
-   *   this.a = 1;
-   * }
-   *
-   * _.isPlainObject(new Foo);
-   * // => false
-   *
-   * _.isPlainObject([1, 2, 3]);
-   * // => false
-   *
-   * _.isPlainObject({ 'x': 0, 'y': 0 });
-   * // => true
-   *
-   * _.isPlainObject(Object.create(null));
-   * // => true
-   */
-  function isPlainObject(value) {
-    if (!isObjectLike(value) || baseGetTag(value) != objectTag$1) {
-      return false;
-    }
-    var proto = getPrototype$1(value);
-    if (proto === null) {
-      return true;
-    }
-    var Ctor = hasOwnProperty$5.call(proto, 'constructor') && proto.constructor;
-    return typeof Ctor == 'function' && Ctor instanceof Ctor &&
-      funcToString.call(Ctor) == objectCtorString;
-  }
-
-  /** `Object#toString` result references. */
-  var argsTag = '[object Arguments]',
-      arrayTag = '[object Array]',
-      boolTag = '[object Boolean]',
-      dateTag = '[object Date]',
-      errorTag = '[object Error]',
-      funcTag = '[object Function]',
-      mapTag = '[object Map]',
-      numberTag = '[object Number]',
-      objectTag = '[object Object]',
-      regexpTag = '[object RegExp]',
-      setTag = '[object Set]',
-      stringTag = '[object String]',
-      weakMapTag = '[object WeakMap]';
-
-  var arrayBufferTag = '[object ArrayBuffer]',
-      dataViewTag = '[object DataView]',
-      float32Tag = '[object Float32Array]',
-      float64Tag = '[object Float64Array]',
-      int8Tag = '[object Int8Array]',
-      int16Tag = '[object Int16Array]',
-      int32Tag = '[object Int32Array]',
-      uint8Tag = '[object Uint8Array]',
-      uint8ClampedTag = '[object Uint8ClampedArray]',
-      uint16Tag = '[object Uint16Array]',
-      uint32Tag = '[object Uint32Array]';
-
-  /** Used to identify `toStringTag` values of typed arrays. */
-  var typedArrayTags = {};
-  typedArrayTags[float32Tag] = typedArrayTags[float64Tag] =
-  typedArrayTags[int8Tag] = typedArrayTags[int16Tag] =
-  typedArrayTags[int32Tag] = typedArrayTags[uint8Tag] =
-  typedArrayTags[uint8ClampedTag] = typedArrayTags[uint16Tag] =
-  typedArrayTags[uint32Tag] = true;
-  typedArrayTags[argsTag] = typedArrayTags[arrayTag] =
-  typedArrayTags[arrayBufferTag] = typedArrayTags[boolTag] =
-  typedArrayTags[dataViewTag] = typedArrayTags[dateTag] =
-  typedArrayTags[errorTag] = typedArrayTags[funcTag] =
-  typedArrayTags[mapTag] = typedArrayTags[numberTag] =
-  typedArrayTags[objectTag] = typedArrayTags[regexpTag] =
-  typedArrayTags[setTag] = typedArrayTags[stringTag] =
-  typedArrayTags[weakMapTag] = false;
-
-  /**
-   * The base implementation of `_.isTypedArray` without Node.js optimizations.
-   *
-   * @private
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
-   */
-  function baseIsTypedArray(value) {
-    return isObjectLike(value) &&
-      isLength(value.length) && !!typedArrayTags[baseGetTag(value)];
-  }
-
-  /**
-   * The base implementation of `_.unary` without support for storing metadata.
-   *
-   * @private
-   * @param {Function} func The function to cap arguments for.
-   * @returns {Function} Returns the new capped function.
-   */
-  function baseUnary(func) {
-    return function(value) {
-      return func(value);
-    };
-  }
-
-  /** Detect free variable `exports`. */
-  var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
-
-  /** Detect free variable `module`. */
-  var freeModule = freeExports && typeof module == 'object' && module && !module.nodeType && module;
-
-  /** Detect the popular CommonJS extension `module.exports`. */
-  var moduleExports = freeModule && freeModule.exports === freeExports;
-
-  /** Detect free variable `process` from Node.js. */
-  var freeProcess = moduleExports && freeGlobal$1.process;
-
-  /** Used to access faster Node.js helpers. */
-  var nodeUtil = (function() {
-    try {
-      // Use `util.types` for Node.js 10+.
-      var types = freeModule && freeModule.require && freeModule.require('util').types;
-
-      if (types) {
-        return types;
-      }
-
-      // Legacy `process.binding('util')` for Node.js < 10.
-      return freeProcess && freeProcess.binding && freeProcess.binding('util');
-    } catch (e) {}
-  }());
-
-  var nodeUtil$1 = nodeUtil;
-
-  /* Node.js helper references. */
-  var nodeIsTypedArray = nodeUtil$1 && nodeUtil$1.isTypedArray;
-
-  /**
-   * Checks if `value` is classified as a typed array.
-   *
-   * @static
-   * @memberOf _
-   * @since 3.0.0
-   * @category Lang
-   * @param {*} value The value to check.
-   * @returns {boolean} Returns `true` if `value` is a typed array, else `false`.
-   * @example
-   *
-   * _.isTypedArray(new Uint8Array);
-   * // => true
-   *
-   * _.isTypedArray([]);
-   * // => false
-   */
-  var isTypedArray$2 = nodeIsTypedArray ? baseUnary(nodeIsTypedArray) : baseIsTypedArray;
-
-  var isTypedArray$3 = isTypedArray$2;
-
-  /**
    * Gets the value at `key`, unless `key` is "__proto__" or "constructor".
    *
    * @private
@@ -1528,224 +1980,6 @@ var WebAudioWave = (function () {
     }
 
     return object[key];
-  }
-
-  /** Used for built-in method references. */
-  var objectProto$2 = Object.prototype;
-
-  /** Used to check objects for own properties. */
-  var hasOwnProperty$4 = objectProto$2.hasOwnProperty;
-
-  /**
-   * Assigns `value` to `key` of `object` if the existing value is not equivalent
-   * using [`SameValueZero`](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero)
-   * for equality comparisons.
-   *
-   * @private
-   * @param {Object} object The object to modify.
-   * @param {string} key The key of the property to assign.
-   * @param {*} value The value to assign.
-   */
-  function assignValue(object, key, value) {
-    var objValue = object[key];
-    if (!(hasOwnProperty$4.call(object, key) && eq(objValue, value)) ||
-        (value === undefined && !(key in object))) {
-      baseAssignValue(object, key, value);
-    }
-  }
-
-  /**
-   * Copies properties of `source` to `object`.
-   *
-   * @private
-   * @param {Object} source The object to copy properties from.
-   * @param {Array} props The property identifiers to copy.
-   * @param {Object} [object={}] The object to copy properties to.
-   * @param {Function} [customizer] The function to customize copied values.
-   * @returns {Object} Returns `object`.
-   */
-  function copyObject(source, props, object, customizer) {
-    var isNew = !object;
-    object || (object = {});
-
-    var index = -1,
-        length = props.length;
-
-    while (++index < length) {
-      var key = props[index];
-
-      var newValue = customizer
-        ? customizer(object[key], source[key], key, object, source)
-        : undefined;
-
-      if (newValue === undefined) {
-        newValue = source[key];
-      }
-      if (isNew) {
-        baseAssignValue(object, key, newValue);
-      } else {
-        assignValue(object, key, newValue);
-      }
-    }
-    return object;
-  }
-
-  /**
-   * The base implementation of `_.times` without support for iteratee shorthands
-   * or max array length checks.
-   *
-   * @private
-   * @param {number} n The number of times to invoke `iteratee`.
-   * @param {Function} iteratee The function invoked per iteration.
-   * @returns {Array} Returns the array of results.
-   */
-  function baseTimes(n, iteratee) {
-    var index = -1,
-        result = Array(n);
-
-    while (++index < n) {
-      result[index] = iteratee(index);
-    }
-    return result;
-  }
-
-  /** Used as references for various `Number` constants. */
-  var MAX_SAFE_INTEGER$2 = 9007199254740991;
-
-  /** Used to detect unsigned integer values. */
-  var reIsUint = /^(?:0|[1-9]\d*)$/;
-
-  /**
-   * Checks if `value` is a valid array-like index.
-   *
-   * @private
-   * @param {*} value The value to check.
-   * @param {number} [length=MAX_SAFE_INTEGER] The upper bounds of a valid index.
-   * @returns {boolean} Returns `true` if `value` is a valid index, else `false`.
-   */
-  function isIndex(value, length) {
-    var type = typeof value;
-    length = length == null ? MAX_SAFE_INTEGER$2 : length;
-
-    return !!length &&
-      (type == 'number' ||
-        (type != 'symbol' && reIsUint.test(value))) &&
-          (value > -1 && value % 1 == 0 && value < length);
-  }
-
-  /** Used for built-in method references. */
-  var objectProto$1 = Object.prototype;
-
-  /** Used to check objects for own properties. */
-  var hasOwnProperty$3 = objectProto$1.hasOwnProperty;
-
-  /**
-   * Creates an array of the enumerable property names of the array-like `value`.
-   *
-   * @private
-   * @param {*} value The value to query.
-   * @param {boolean} inherited Specify returning inherited property names.
-   * @returns {Array} Returns the array of property names.
-   */
-  function arrayLikeKeys(value, inherited) {
-    var isArr = isArray$9(value),
-        isArg = !isArr && isArguments$1(value),
-        isBuff = !isArr && !isArg && isBuffer$1(value),
-        isType = !isArr && !isArg && !isBuff && isTypedArray$3(value),
-        skipIndexes = isArr || isArg || isBuff || isType,
-        result = skipIndexes ? baseTimes(value.length, String) : [],
-        length = result.length;
-
-    for (var key in value) {
-      if ((inherited || hasOwnProperty$3.call(value, key)) &&
-          !(skipIndexes && (
-             // Safari 9 has enumerable `arguments.length` in strict mode.
-             key == 'length' ||
-             // Node.js 0.10 has enumerable non-index properties on buffers.
-             (isBuff && (key == 'offset' || key == 'parent')) ||
-             // PhantomJS 2 has enumerable non-index properties on typed arrays.
-             (isType && (key == 'buffer' || key == 'byteLength' || key == 'byteOffset')) ||
-             // Skip index properties.
-             isIndex(key, length)
-          ))) {
-        result.push(key);
-      }
-    }
-    return result;
-  }
-
-  /**
-   * This function is like
-   * [`Object.keys`](http://ecma-international.org/ecma-262/7.0/#sec-object.keys)
-   * except that it includes inherited enumerable properties.
-   *
-   * @private
-   * @param {Object} object The object to query.
-   * @returns {Array} Returns the array of property names.
-   */
-  function nativeKeysIn(object) {
-    var result = [];
-    if (object != null) {
-      for (var key in Object(object)) {
-        result.push(key);
-      }
-    }
-    return result;
-  }
-
-  /** Used for built-in method references. */
-  var objectProto = Object.prototype;
-
-  /** Used to check objects for own properties. */
-  var hasOwnProperty$2 = objectProto.hasOwnProperty;
-
-  /**
-   * The base implementation of `_.keysIn` which doesn't treat sparse arrays as dense.
-   *
-   * @private
-   * @param {Object} object The object to query.
-   * @returns {Array} Returns the array of property names.
-   */
-  function baseKeysIn(object) {
-    if (!isObject$w(object)) {
-      return nativeKeysIn(object);
-    }
-    var isProto = isPrototype(object),
-        result = [];
-
-    for (var key in object) {
-      if (!(key == 'constructor' && (isProto || !hasOwnProperty$2.call(object, key)))) {
-        result.push(key);
-      }
-    }
-    return result;
-  }
-
-  /**
-   * Creates an array of the own and inherited enumerable property names of `object`.
-   *
-   * **Note:** Non-object values are coerced to objects.
-   *
-   * @static
-   * @memberOf _
-   * @since 3.0.0
-   * @category Object
-   * @param {Object} object The object to query.
-   * @returns {Array} Returns the array of property names.
-   * @example
-   *
-   * function Foo() {
-   *   this.a = 1;
-   *   this.b = 2;
-   * }
-   *
-   * Foo.prototype.c = 3;
-   *
-   * _.keysIn(new Foo);
-   * // => ['a', 'b', 'c'] (iteration order is not guaranteed)
-   */
-  function keysIn(object) {
-    return isArrayLike(object) ? arrayLikeKeys(object, true) : baseKeysIn(object);
   }
 
   /**
@@ -1887,237 +2121,61 @@ var WebAudioWave = (function () {
   }
 
   /**
-   * This method returns the first argument it receives.
-   *
-   * @static
-   * @since 0.1.0
-   * @memberOf _
-   * @category Util
-   * @param {*} value Any value.
-   * @returns {*} Returns `value`.
-   * @example
-   *
-   * var object = { 'a': 1 };
-   *
-   * console.log(_.identity(object) === object);
-   * // => true
-   */
-  function identity(value) {
-    return value;
-  }
-
-  /**
-   * A faster alternative to `Function#apply`, this function invokes `func`
-   * with the `this` binding of `thisArg` and the arguments of `args`.
+   * The base implementation of `_.sum` and `_.sumBy` without support for
+   * iteratee shorthands.
    *
    * @private
-   * @param {Function} func The function to invoke.
-   * @param {*} thisArg The `this` binding of `func`.
-   * @param {Array} args The arguments to invoke `func` with.
-   * @returns {*} Returns the result of `func`.
+   * @param {Array} array The array to iterate over.
+   * @param {Function} iteratee The function invoked per iteration.
+   * @returns {number} Returns the sum.
    */
-  function apply$d(func, thisArg, args) {
-    switch (args.length) {
-      case 0: return func.call(thisArg);
-      case 1: return func.call(thisArg, args[0]);
-      case 2: return func.call(thisArg, args[0], args[1]);
-      case 3: return func.call(thisArg, args[0], args[1], args[2]);
+  function baseSum(array, iteratee) {
+    var result,
+        index = -1,
+        length = array.length;
+
+    while (++index < length) {
+      var current = iteratee(array[index]);
+      if (current !== undefined) {
+        result = result === undefined ? current : (result + current);
+      }
     }
-    return func.apply(thisArg, args);
+    return result;
   }
 
-  /* Built-in method references for those with the same name as other `lodash` methods. */
-  var nativeMax = Math.max;
+  /** Used as references for various `Number` constants. */
+  var NAN = 0 / 0;
 
   /**
-   * A specialized version of `baseRest` which transforms the rest array.
+   * The base implementation of `_.mean` and `_.meanBy` without support for
+   * iteratee shorthands.
    *
    * @private
-   * @param {Function} func The function to apply a rest parameter to.
-   * @param {number} [start=func.length-1] The start position of the rest parameter.
-   * @param {Function} transform The rest array transform.
-   * @returns {Function} Returns the new function.
+   * @param {Array} array The array to iterate over.
+   * @param {Function} iteratee The function invoked per iteration.
+   * @returns {number} Returns the mean.
    */
-  function overRest(func, start, transform) {
-    start = nativeMax(start === undefined ? (func.length - 1) : start, 0);
-    return function() {
-      var args = arguments,
-          index = -1,
-          length = nativeMax(args.length - start, 0),
-          array = Array(length);
-
-      while (++index < length) {
-        array[index] = args[start + index];
-      }
-      index = -1;
-      var otherArgs = Array(start + 1);
-      while (++index < start) {
-        otherArgs[index] = args[index];
-      }
-      otherArgs[start] = transform(array);
-      return apply$d(func, this, otherArgs);
-    };
+  function baseMean(array, iteratee) {
+    var length = array == null ? 0 : array.length;
+    return length ? (baseSum(array, iteratee) / length) : NAN;
   }
 
   /**
-   * Creates a function that returns `value`.
+   * Computes the mean of the values in `array`.
    *
    * @static
    * @memberOf _
-   * @since 2.4.0
-   * @category Util
-   * @param {*} value The value to return from the new function.
-   * @returns {Function} Returns the new constant function.
+   * @since 4.0.0
+   * @category Math
+   * @param {Array} array The array to iterate over.
+   * @returns {number} Returns the mean.
    * @example
    *
-   * var objects = _.times(2, _.constant({ 'a': 1 }));
-   *
-   * console.log(objects);
-   * // => [{ 'a': 1 }, { 'a': 1 }]
-   *
-   * console.log(objects[0] === objects[1]);
-   * // => true
+   * _.mean([4, 2, 8, 6]);
+   * // => 5
    */
-  function constant(value) {
-    return function() {
-      return value;
-    };
-  }
-
-  /**
-   * The base implementation of `setToString` without support for hot loop shorting.
-   *
-   * @private
-   * @param {Function} func The function to modify.
-   * @param {Function} string The `toString` result.
-   * @returns {Function} Returns `func`.
-   */
-  var baseSetToString = !defineProperty$l ? identity : function(func, string) {
-    return defineProperty$l(func, 'toString', {
-      'configurable': true,
-      'enumerable': false,
-      'value': constant(string),
-      'writable': true
-    });
-  };
-
-  var baseSetToString$1 = baseSetToString;
-
-  /** Used to detect hot functions by number of calls within a span of milliseconds. */
-  var HOT_COUNT = 800,
-      HOT_SPAN = 16;
-
-  /* Built-in method references for those with the same name as other `lodash` methods. */
-  var nativeNow = Date.now;
-
-  /**
-   * Creates a function that'll short out and invoke `identity` instead
-   * of `func` when it's called `HOT_COUNT` or more times in `HOT_SPAN`
-   * milliseconds.
-   *
-   * @private
-   * @param {Function} func The function to restrict.
-   * @returns {Function} Returns the new shortable function.
-   */
-  function shortOut(func) {
-    var count = 0,
-        lastCalled = 0;
-
-    return function() {
-      var stamp = nativeNow(),
-          remaining = HOT_SPAN - (stamp - lastCalled);
-
-      lastCalled = stamp;
-      if (remaining > 0) {
-        if (++count >= HOT_COUNT) {
-          return arguments[0];
-        }
-      } else {
-        count = 0;
-      }
-      return func.apply(undefined, arguments);
-    };
-  }
-
-  /**
-   * Sets the `toString` method of `func` to return `string`.
-   *
-   * @private
-   * @param {Function} func The function to modify.
-   * @param {Function} string The `toString` result.
-   * @returns {Function} Returns `func`.
-   */
-  var setToString = shortOut(baseSetToString$1);
-
-  var setToString$1 = setToString;
-
-  /**
-   * The base implementation of `_.rest` which doesn't validate or coerce arguments.
-   *
-   * @private
-   * @param {Function} func The function to apply a rest parameter to.
-   * @param {number} [start=func.length-1] The start position of the rest parameter.
-   * @returns {Function} Returns the new function.
-   */
-  function baseRest(func, start) {
-    return setToString$1(overRest(func, start, identity), func + '');
-  }
-
-  /**
-   * Checks if the given arguments are from an iteratee call.
-   *
-   * @private
-   * @param {*} value The potential iteratee value argument.
-   * @param {*} index The potential iteratee index or key argument.
-   * @param {*} object The potential iteratee object argument.
-   * @returns {boolean} Returns `true` if the arguments are from an iteratee call,
-   *  else `false`.
-   */
-  function isIterateeCall(value, index, object) {
-    if (!isObject$w(object)) {
-      return false;
-    }
-    var type = typeof index;
-    if (type == 'number'
-          ? (isArrayLike(object) && isIndex(index, object.length))
-          : (type == 'string' && index in object)
-        ) {
-      return eq(object[index], value);
-    }
-    return false;
-  }
-
-  /**
-   * Creates a function like `_.assign`.
-   *
-   * @private
-   * @param {Function} assigner The function to assign values.
-   * @returns {Function} Returns the new assigner function.
-   */
-  function createAssigner(assigner) {
-    return baseRest(function(object, sources) {
-      var index = -1,
-          length = sources.length,
-          customizer = length > 1 ? sources[length - 1] : undefined,
-          guard = length > 2 ? sources[2] : undefined;
-
-      customizer = (assigner.length > 3 && typeof customizer == 'function')
-        ? (length--, customizer)
-        : undefined;
-
-      if (guard && isIterateeCall(sources[0], sources[1], guard)) {
-        customizer = length < 3 ? undefined : customizer;
-        length = 1;
-      }
-      object = Object(object);
-      while (++index < length) {
-        var source = sources[index];
-        if (source) {
-          assigner(object, source, index, customizer);
-        }
-      }
-      return object;
-    });
+  function mean(array) {
+    return baseMean(array, identity);
   }
 
   /**
@@ -2155,7 +2213,7 @@ var WebAudioWave = (function () {
     baseMerge(object, source, srcIndex);
   });
 
-  var _merge = merge$1;
+  var merge$2 = merge$1;
 
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
@@ -12333,10 +12391,6 @@ var WebAudioWave = (function () {
        */
       draw(data) {
           let d = Array.from(data);
-          if (this.option.dynamicColor?.length === 2) {
-              let average = data.reduce((p, c) => p + c, 0) / data.length;
-              this.c.fillStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
-          }
           let length = d.length;
           let width = this.width / length;
           for (let i = 0; i < length; i++) {
@@ -12344,6 +12398,9 @@ var WebAudioWave = (function () {
               let y = this.height / 2;
               let w = width - this.option.gap;
               let h = -(d[i] * this.height);
+              if (this.option.dynamicColor?.length === 2) {
+                  this.c.fillStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], d[i]);
+              }
               this.c.fillRect(x, y, w, h);
           }
       }
@@ -12400,7 +12457,7 @@ var WebAudioWave = (function () {
               d = d.concat(Array.from(d).reverse());
           }
           if (this.option.dynamicColor?.length === 2) {
-              let average = data.reduce((p, c) => p + c, 0) / data.length;
+              let average = mean(data);
               this.c.strokeStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
           }
           let dw = this.width / d.length;
@@ -12440,10 +12497,11 @@ var WebAudioWave = (function () {
    */
   const option = {
       color: '#000000',
-      fill: false,
       width: 1,
       gradientColor: null,
-      dynamicColor: null
+      dynamicColor: null,
+      fill: false,
+      average: false
   };
   /**
    * 类
@@ -12465,32 +12523,51 @@ var WebAudioWave = (function () {
        * @param data 数据。归一化
        */
       draw(data) {
-          if (this.option.fill) {
-              for (let a of data) {
-                  this.c.beginPath();
-                  this.c.moveTo(this.maxRadius * a, 0);
-                  this.c.arc(0, 0, this.maxRadius * a, 0, 360);
-                  this.c.closePath();
-                  if (this.option.dynamicColor?.length === 2) {
-                      let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a);
-                      this.c.fillStyle = color;
-                  }
+          if (this.option.average) {
+              let average = mean(data);
+              this.c.beginPath();
+              this.c.moveTo(this.maxRadius * average, 0);
+              this.c.arc(0, 0, this.maxRadius * average, 0, 360);
+              this.c.closePath();
+              if (this.option.dynamicColor?.length === 2) {
+                  let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
+                  this.c.fillStyle = color;
+              }
+              if (this.option.fill) {
                   this.c.fill();
+              }
+              else {
+                  this.c.stroke();
               }
           }
           else {
-              if (this.option.dynamicColor?.length === 2) {
-                  let average = data.reduce((p, c) => p + c, 0) / data.length;
-                  let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
-                  this.c.strokeStyle = color;
+              if (this.option.fill) {
+                  for (let a of data) {
+                      this.c.beginPath();
+                      this.c.moveTo(this.maxRadius * a, 0);
+                      this.c.arc(0, 0, this.maxRadius * a, 0, 360);
+                      this.c.closePath();
+                      if (this.option.dynamicColor?.length === 2) {
+                          let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a);
+                          this.c.fillStyle = color;
+                      }
+                      this.c.fill();
+                  }
               }
-              this.c.beginPath();
-              for (let a of data) {
-                  this.c.moveTo(this.maxRadius * a, 0);
-                  this.c.arc(0, 0, this.maxRadius * a, 0, 360);
+              else {
+                  for (let a of data) {
+                      this.c.beginPath();
+                      this.c.moveTo(this.maxRadius * a, 0);
+                      this.c.arc(0, 0, this.maxRadius * a, 0, 360);
+                      this.c.closePath();
+                      if (this.option.dynamicColor?.length === 2) {
+                          mean(data);
+                          let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a);
+                          this.c.strokeStyle = color;
+                      }
+                      this.c.stroke();
+                  }
               }
-              this.c.closePath();
-              this.c.stroke();
           }
       }
       /**
@@ -12605,7 +12682,7 @@ var WebAudioWave = (function () {
           if (!type) {
               throw new Error('Missing parameter: audio');
           }
-          this.context = _merge({}, context, option);
+          this.context = merge$2({}, context, option);
           this.context.type = type;
           this.context.audio = audio;
           this.visualize = new Visualize(this.context);

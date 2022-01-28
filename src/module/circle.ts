@@ -4,13 +4,15 @@
 
 import Graph from '../type/graph'
 import CalcDeltaColor from '../util/calc-delta-color'
+import { mean } from 'lodash-es'
 
 const option = {
   color: '#000000',
-  fill: false,
   width: 1,
   gradientColor: null as string[] | null,
-  dynamicColor: null as [string, string] | null
+  dynamicColor: null as [string, string] | null,
+  fill: false,
+  average: false
 }
 
 type Option = typeof option
@@ -37,34 +39,53 @@ class Circle extends Graph<Option> {
    * @param data 数据。归一化
    */
   draw(data: number[]) {
-    if (this.option.fill) {
-      for (let a of data) {
-        this.c.beginPath()
-        this.c.moveTo(this.maxRadius * a, 0)
-        this.c.arc(0, 0, this.maxRadius * a, 0, 360)
-        this.c.closePath()
+    if (this.option.average) {
+      let average = mean(data)
+      this.c.beginPath()
+      this.c.moveTo(this.maxRadius * average, 0)
+      this.c.arc(0, 0, this.maxRadius * average, 0, 360)
+      this.c.closePath()
 
-        if (this.option.dynamicColor?.length === 2) {
-          let color = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a)
-          this.c.fillStyle = color
-        }
-
+      if (this.option.dynamicColor?.length === 2) {
+        let color = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average)
+        this.c.fillStyle = color
+      }
+      if (this.option.fill) {
         this.c.fill()
+      } else {
+        this.c.stroke()
       }
     } else {
-      if (this.option.dynamicColor?.length === 2) {
-        let average = data.reduce((p, c) => p + c, 0) / data.length
-        let color = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average)
-        this.c.strokeStyle = color
-      }
+      if (this.option.fill) {
+        for (let a of data) {
+          this.c.beginPath()
+          this.c.moveTo(this.maxRadius * a, 0)
+          this.c.arc(0, 0, this.maxRadius * a, 0, 360)
+          this.c.closePath()
 
-      this.c.beginPath()
-      for (let a of data) {
-        this.c.moveTo(this.maxRadius * a, 0)
-        this.c.arc(0, 0, this.maxRadius * a, 0, 360)
+          if (this.option.dynamicColor?.length === 2) {
+            let color = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a)
+            this.c.fillStyle = color
+          }
+
+          this.c.fill()
+        }
+      } else {
+        for (let a of data) {
+          this.c.beginPath()
+          this.c.moveTo(this.maxRadius * a, 0)
+          this.c.arc(0, 0, this.maxRadius * a, 0, 360)
+          this.c.closePath()
+
+          if (this.option.dynamicColor?.length === 2) {
+            let average = mean(data)
+            let color = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a)
+            this.c.strokeStyle = color
+          }
+
+          this.c.stroke()
+        }
       }
-      this.c.closePath()
-      this.c.stroke()
     }
   }
   /**

@@ -4,10 +4,11 @@
 import Graph from '../type/graph';
 declare const option: {
     color: string;
-    fill: boolean;
     width: number;
     gradientColor: string[] | null;
     dynamicColor: [string, string] | null;
+    fill: boolean;
+    average: boolean;
 };
 declare type Option = typeof option;
 /**

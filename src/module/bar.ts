@@ -34,11 +34,6 @@ class Bar extends Graph<Option> {
   draw(data: number[]) {
     let d = Array.from(data)
 
-    if (this.option.dynamicColor?.length === 2) {
-      let average = data.reduce((p, c) => p + c, 0) / data.length
-      this.c.fillStyle = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average)
-    }
-
     let length = d.length
     let width = this.width / length
     for (let i = 0; i < length; i++) {
@@ -46,6 +41,10 @@ class Bar extends Graph<Option> {
       let y = this.height / 2
       let w = width - this.option.gap
       let h = -(d[i] * this.height)
+
+      if (this.option.dynamicColor?.length === 2) {
+        this.c.fillStyle = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], d[i])
+      }
 
       this.c.fillRect(x, y, w, h)
     }

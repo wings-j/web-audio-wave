@@ -4,6 +4,7 @@
 
 import Graph from '../type/graph'
 import CalcDeltaColor from '../util/calc-delta-color'
+import { mean } from 'lodash-es'
 
 const option = {
   color: '#000000',
@@ -44,7 +45,7 @@ class Curve extends Graph<Option> {
     }
 
     if (this.option.dynamicColor?.length === 2) {
-      let average = data.reduce((p, c) => p + c, 0) / data.length
+      let average = mean(data)
       this.c.strokeStyle = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average)
     }
 

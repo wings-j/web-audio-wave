@@ -3,7 +3,7 @@
  */
 
 import context, { Context, Option } from './type/context'
-import _merge from 'lodash-es/merge'
+import { merge } from 'lodash-es'
 import { AudioFft, Animate } from '@wings-j/web-sdk'
 import Visualize, { Option as VisualizeOption } from './core/visualize'
 
@@ -34,7 +34,7 @@ class WebAudioWave {
       throw new Error('Missing parameter: audio')
     }
 
-    this.context = _merge({}, context, option)
+    this.context = merge({}, context, option)
     this.context.type = type
     this.context.audio = audio
 
