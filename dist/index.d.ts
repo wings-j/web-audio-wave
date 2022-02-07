@@ -10,7 +10,7 @@ declare class WebAudioWave {
     private context;
     private animate;
     private visualize;
-    private fft;
+    private audio;
     get canvas(): HTMLCanvasElement;
     /**
      * 构造方法

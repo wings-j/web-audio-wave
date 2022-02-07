@@ -6,9 +6,10 @@ var WebAudioWave = (function () {
    */
   const context = {
       type: '',
-      audio: null,
+      audio: document.createElement('audio'),
       rate: 60,
       size: 512,
+      gain: 1,
       pow: 1,
       width: 1024,
       height: 1024,
@@ -2451,7 +2452,7 @@ var WebAudioWave = (function () {
   var global$1u = global$1z;
   var getBuiltIn$h = getBuiltIn$j;
   var isCallable$B = isCallable$E;
-  var isPrototypeOf$a = objectIsPrototypeOf$1;
+  var isPrototypeOf$9 = objectIsPrototypeOf$1;
   var USE_SYMBOL_AS_UID$3 = useSymbolAsUid$1;
 
   var Object$b = global$1u.Object;
@@ -2460,7 +2461,7 @@ var WebAudioWave = (function () {
     return typeof it == 'symbol';
   } : function (it) {
     var $Symbol = getBuiltIn$h('Symbol');
-    return isCallable$B($Symbol) && isPrototypeOf$a($Symbol.prototype, Object$b(it));
+    return isCallable$B($Symbol) && isPrototypeOf$9($Symbol.prototype, Object$b(it));
   };
 
   var global$1t = global$1z;
@@ -3751,7 +3752,7 @@ var WebAudioWave = (function () {
   var isArray$3 = isArray$7;
   var isCallable$s = isCallable$E;
   var isObject$m = isObject$v;
-  var isPrototypeOf$9 = objectIsPrototypeOf$1;
+  var isPrototypeOf$8 = objectIsPrototypeOf$1;
   var isSymbol$4 = isSymbol$7;
   var anObject$p = anObject$t;
   var toObject$f = toObject$j;
@@ -3909,7 +3910,7 @@ var WebAudioWave = (function () {
   // https://tc39.es/ecma262/#sec-symbol-constructor
   if (!NATIVE_SYMBOL$2) {
     $Symbol = function Symbol() {
-      if (isPrototypeOf$9(SymbolPrototype, this)) throw TypeError$n('Symbol is not a constructor');
+      if (isPrototypeOf$8(SymbolPrototype, this)) throw TypeError$n('Symbol is not a constructor');
       var description = !arguments.length || arguments[0] === undefined ? undefined : $toString$1(arguments[0]);
       var tag = uid$5(description);
       var setter = function (value) {
@@ -4770,11 +4771,11 @@ var WebAudioWave = (function () {
   var Iterators$5 = iterators$1;
 
   var ITERATOR$8 = wellKnownSymbol$q('iterator');
-  var ArrayPrototype$3 = Array.prototype;
+  var ArrayPrototype$2 = Array.prototype;
 
   // check on default Array iterator
   var isArrayIteratorMethod$4 = function (it) {
-    return it !== undefined && (Iterators$5.Array === it || ArrayPrototype$3[ITERATOR$8] === it);
+    return it !== undefined && (Iterators$5.Array === it || ArrayPrototype$2[ITERATOR$8] === it);
   };
 
   var global$12 = global$1z;
@@ -4879,7 +4880,7 @@ var WebAudioWave = (function () {
   };
 
   var $$t = _export$1;
-  var from$3 = arrayFrom;
+  var from = arrayFrom;
   var checkCorrectnessOfIteration$3 = checkCorrectnessOfIteration$4;
 
   var INCORRECT_ITERATION$1 = !checkCorrectnessOfIteration$3(function (iterable) {
@@ -4890,16 +4891,12 @@ var WebAudioWave = (function () {
   // `Array.from` method
   // https://tc39.es/ecma262/#sec-array.from
   $$t({ target: 'Array', stat: true, forced: INCORRECT_ITERATION$1 }, {
-    from: from$3
+    from: from
   });
 
   var path$e = path$m;
 
-  var from$2 = path$e.Array.from;
-
-  var parent$4 = from$2;
-
-  var from$1 = parent$4;
+  path$e.Array.from;
 
   var hasOwn$e = hasOwnProperty_1$1;
 
@@ -5033,17 +5030,17 @@ var WebAudioWave = (function () {
 
   if (Object$6.defineProperty.sham) defineProperty$e.sham = true;
 
-  var parent$3 = defineProperty$g.exports;
+  var parent$2 = defineProperty$g.exports;
 
-  var defineProperty$d = parent$3;
+  var defineProperty$d = parent$2;
 
-  var parent$2 = defineProperty$d;
+  var parent$1 = defineProperty$d;
 
-  var defineProperty$c = parent$2;
+  var defineProperty$c = parent$1;
 
-  var parent$1 = defineProperty$c;
+  var parent = defineProperty$c;
 
-  var defineProperty$b = parent$1;
+  var defineProperty$b = parent;
 
   var defineProperty$a = defineProperty$b;
 
@@ -5115,7 +5112,7 @@ var WebAudioWave = (function () {
   var tryToString$5 = tryToString$9;
   var isArrayIteratorMethod$2 = isArrayIteratorMethod$4;
   var lengthOfArrayLike$c = lengthOfArrayLike$j;
-  var isPrototypeOf$8 = objectIsPrototypeOf$1;
+  var isPrototypeOf$7 = objectIsPrototypeOf$1;
   var getIterator$2 = getIterator$4;
   var getIteratorMethod$3 = getIteratorMethod$6;
   var iteratorClose = iteratorClose$2;
@@ -5158,7 +5155,7 @@ var WebAudioWave = (function () {
       if (isArrayIteratorMethod$2(iterFn)) {
         for (index = 0, length = lengthOfArrayLike$c(iterable); length > index; index++) {
           result = callFn(iterable[index]);
-          if (result && isPrototypeOf$8(ResultPrototype, result)) return result;
+          if (result && isPrototypeOf$7(ResultPrototype, result)) return result;
         } return new Result(false);
       }
       iterator = getIterator$2(iterable, iterFn);
@@ -5171,7 +5168,7 @@ var WebAudioWave = (function () {
       } catch (error) {
         iteratorClose(iterator, 'throw', error);
       }
-      if (typeof result == 'object' && result && isPrototypeOf$8(ResultPrototype, result)) return result;
+      if (typeof result == 'object' && result && isPrototypeOf$7(ResultPrototype, result)) return result;
     } return new Result(false);
   };
 
@@ -5194,7 +5191,7 @@ var WebAudioWave = (function () {
 
   var $$m = _export$1;
   var global$$ = global$1z;
-  var isPrototypeOf$7 = objectIsPrototypeOf$1;
+  var isPrototypeOf$6 = objectIsPrototypeOf$1;
   var getPrototypeOf$4 = objectGetPrototypeOf$1;
   var setPrototypeOf$5 = objectSetPrototypeOf$1;
   var copyConstructorProperties$2 = copyConstructorProperties$3;
@@ -5214,7 +5211,7 @@ var WebAudioWave = (function () {
 
   var $AggregateError = function AggregateError(errors, message /* , options */) {
     var options = arguments.length > 2 ? arguments[2] : undefined;
-    var isInstance = isPrototypeOf$7(AggregateErrorPrototype, this);
+    var isInstance = isPrototypeOf$6(AggregateErrorPrototype, this);
     var that;
     if (setPrototypeOf$5) {
       that = setPrototypeOf$5(new Error$1(), isInstance ? getPrototypeOf$4(this) : AggregateErrorPrototype);
@@ -5279,12 +5276,12 @@ var WebAudioWave = (function () {
   };
 
   var global$Z = global$1z;
-  var isPrototypeOf$6 = objectIsPrototypeOf$1;
+  var isPrototypeOf$5 = objectIsPrototypeOf$1;
 
   var TypeError$i = global$Z.TypeError;
 
   var anInstance$6 = function (it, Prototype) {
-    if (isPrototypeOf$6(Prototype, it)) return it;
+    if (isPrototypeOf$5(Prototype, it)) return it;
     throw TypeError$i('Incorrect invocation');
   };
 
@@ -6927,25 +6924,7 @@ var WebAudioWave = (function () {
 
   var entryVirtual$6 = entryVirtual$8;
 
-  var map$3 = entryVirtual$6('Array').map;
-
-  var isPrototypeOf$5 = objectIsPrototypeOf$1;
-  var method = map$3;
-
-  var ArrayPrototype$2 = Array.prototype;
-
-  var map$2 = function (it) {
-    var own = it.map;
-    return it === ArrayPrototype$2 || (isPrototypeOf$5(ArrayPrototype$2, it) && own === ArrayPrototype$2.map) ? method : own;
-  };
-
-  var parent = map$2;
-
-  var map$1 = parent;
-
-  var map = map$1;
-
-  var from = from$1;
+  entryVirtual$6('Array').map;
 
   var DESCRIPTORS$f = descriptors$1;
   var uncurryThis$B = functionUncurryThis$1;
@@ -12123,62 +12102,6 @@ var WebAudioWave = (function () {
   });
 
   /**
-   * FFT
-   */
-  var max = 256; // 2**8
-
-  /**
-   * 类
-   */
-
-  var AudioFft = /*#__PURE__*/function () {
-    /**
-     * 构造方法
-     * @param audio 音频组件
-     * @param size 采样宽度。2的幂
-     */
-    function AudioFft(audio) {
-      var size = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 1024;
-
-      _classCallCheck(this, AudioFft);
-
-      _defineProperty(this, "size", void 0);
-
-      _defineProperty(this, "analyser", void 0);
-
-      this.size = size;
-      var audioContext = new AudioContext();
-      var source = audioContext.createMediaElementSource(audio);
-      var analyser = audioContext.createAnalyser();
-      this.analyser = analyser;
-      source.connect(analyser);
-      analyser.connect(audioContext.destination);
-      analyser.fftSize = size;
-    }
-    /**
-     * 获取数据
-     */
-
-
-    _createClass(AudioFft, [{
-      key: "get",
-      value: function get() {
-        var _context;
-
-        var data = new Uint8Array(this.size);
-        this.analyser.getByteFrequencyData(data);
-
-        var output = map(_context = from(data)).call(_context, function (a) {
-          return a / max;
-        });
-
-        return output;
-      }
-    }]);
-
-    return AudioFft;
-  }();
-  /**
    * 动画
    */
 
@@ -12656,6 +12579,77 @@ var WebAudioWave = (function () {
   }
 
   /**
+   * 分析
+   */
+  /**
+   * 滤波类型
+   */
+  var Type;
+  (function (Type) {
+      Type["lowpass"] = "lowpass";
+      Type["highpass"] = "highpass";
+      Type["bandpass"] = "bandpass";
+      Type["lowshelf"] = "lowshelf";
+      Type["highshelf"] = "highshelf";
+      Type["peaking"] = "peaking";
+      Type["notch"] = "notch";
+      Type["allpass"] = "allpass";
+  })(Type || (Type = {}));
+  const max = 256; // 2**8
+  /**
+   * 类
+   */
+  class Audio {
+      size;
+      context;
+      source; // 头结点
+      analyser; // 尾结点
+      nodes;
+      /**
+       * 构造方法
+       * @param context 上下文
+       * @param filters 滤波
+       */
+      constructor(context, filters) {
+          this.size = context.size;
+          this.context = new AudioContext();
+          this.source = this.context.createMediaElementSource(context.audio);
+          this.source.connect(this.context.destination);
+          this.analyser = this.context.createAnalyser();
+          this.analyser.fftSize = this.size;
+          this.nodes = [this.source];
+          if (context.gain !== 1) {
+              let gain = this.context.createGain();
+              gain.gain.value = context.gain;
+              this.nodes.push(gain);
+          }
+          if (filters) {
+              for (let a of filters) {
+                  let filter = this.context.createBiquadFilter();
+                  filter.type = a[0];
+                  filter.frequency.value = a[1];
+                  filter.Q.value = a[2];
+                  filter.gain.value = a[3];
+                  this.nodes.push(filter);
+              }
+          }
+          this.nodes.push(this.analyser);
+          for (let i = 0; i < this.nodes.length - 1; i++) {
+              this.nodes[i].connect(this.nodes[i + 1]);
+          }
+      }
+      /**
+       * 获取数据
+       */
+      get() {
+          let data = new Uint8Array(this.size);
+          this.analyser.getByteFrequencyData(data);
+          let output = Array.from(data).map(a => a / max);
+          return output;
+      }
+  }
+
+  /**
    * index
    */
   /**
@@ -12665,7 +12659,7 @@ var WebAudioWave = (function () {
       context;
       animate;
       visualize;
-      fft = null;
+      audio = null;
       get canvas() {
           return this.visualize.canvas;
       }
@@ -12692,14 +12686,14 @@ var WebAudioWave = (function () {
        * 回调方法
        */
       callback() {
-          this.visualize.update(this.fft?.get() ?? []);
+          this.visualize.update(this.audio?.get() ?? []);
       }
       /**
        * 播放
        */
       play() {
-          if (!this.fft && this.context.audio) {
-              this.fft = new AudioFft(this.context.audio, this.context.size); // 因为浏览器的音频权限策略，延迟初始化
+          if (!this.audio && this.context.audio) {
+              this.audio = new Audio(this.context); // 因为浏览器的音频权限策略，延迟初始化
           }
           this.animate.play();
       }

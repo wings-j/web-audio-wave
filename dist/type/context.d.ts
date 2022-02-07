@@ -3,9 +3,10 @@
  */
 declare const context: {
     type: string;
-    audio: HTMLAudioElement | null;
+    audio: HTMLAudioElement;
     rate: number;
     size: number;
+    gain: number;
     pow: number;
     width: number;
     height: number;

@@ -4,9 +4,10 @@
 
 const context = {
   type: '',
-  audio: null as HTMLAudioElement | null,
+  audio: document.createElement('audio'),
   rate: 60,
   size: 512,
+  gain: 1,
   pow: 1,
   width: 1024,
   height: 1024,
