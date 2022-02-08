@@ -19,6 +19,122 @@ var WebAudioWave = (function () {
   };
   Object.freeze(context);
 
+  /**
+   * 图形
+   */
+  /**
+   * 类
+   */
+  class Graph {
+      context;
+      option = {};
+      visualize;
+      audio;
+      /**
+       * 构造方法
+       * @param context 上下文
+       * @param audio 音频
+       * @param visualize 可视化
+       * @param option 选项
+       */
+      constructor(context, visualize, audio, option) {
+          this.context = context;
+          this.visualize = visualize;
+          this.audio = audio;
+          this.config(option);
+      }
+      /**
+       * 配置
+       * @param option 选项
+       */
+      config(option) {
+          Object.assign(this.option, option);
+      }
+  }
+
+  /**
+   * 计算中间颜色
+   */
+  /**
+   * 方法
+   * @param start 起始颜色
+   * @param end 停止颜色
+   * @param delta 变化比例
+   * @return 颜色
+   */
+  function calcDeltaColor(start, end, delta) {
+      let sr = parseInt(start.slice(1, 3), 16);
+      let sg = parseInt(start.slice(3, 5), 16);
+      let sb = parseInt(start.slice(5, 7), 16);
+      let er = parseInt(end.slice(1, 3), 16);
+      let eg = parseInt(end.slice(3, 5), 16);
+      let eb = parseInt(end.slice(5, 7), 16);
+      let dr = er - sr;
+      let dg = eg - sg;
+      let db = eb - sb;
+      let result = `#${Math.round(sr + delta * dr)
+        .toString(16)
+        .padStart(2, '0')}${Math.round(sg + delta * dg)
+        .toString(16)
+        .padStart(2, '0')}${Math.round(sb + delta * db)
+        .toString(16)
+        .padStart(2, '0')}`;
+      return result;
+  }
+
+  /**
+   * 柱形
+   */
+  /**
+   * 类
+   */
+  class Bar extends Graph {
+      /**
+       * 构造方法
+       * @param context 上下文
+       * @param audio 音频
+       * @param visualize 可视化
+       */
+      constructor(context, visualize, audio) {
+          super(context, visualize, audio);
+      }
+      /**
+       * 配置
+       * @param option 选项
+       */
+      config(option) {
+          super.config(option);
+          this.visualize.brush.fillStyle = this.option.color;
+          if (this.option.gradientColor?.length) {
+              let gradient = this.visualize.brush.createLinearGradient(this.visualize.wrap[0], 0, this.visualize.wrap[0] + this.visualize.wrap[2], 0);
+              for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
+                  gradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i]);
+              }
+              this.visualize.brush.fillStyle = gradient;
+          }
+      }
+      /**
+       * 更新
+       */
+      update() {
+          let data = Array.from(this.audio?.get() ?? []);
+          this.visualize.update(() => {
+              let length = data.length;
+              let width = this.context.width / length;
+              for (let i = 0; i < length; i++) {
+                  let x = -this.context.width / 2 + i * width;
+                  let y = this.context.height / 2;
+                  let w = width - this.option.gap;
+                  let h = -(data[i] * this.context.height);
+                  if (this.option.dynamicColor?.length === 2) {
+                      this.visualize.brush.fillStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], data[i]);
+                  }
+                  this.visualize.brush.fillRect(x, y, w, h);
+              }
+          });
+      }
+  }
+
   /** Detect free variable `global` from Node.js. */
   var freeGlobal = typeof global == 'object' && global && global.Object === Object && global;
 
@@ -2216,6 +2332,167 @@ var WebAudioWave = (function () {
 
   var merge$2 = merge$1;
 
+  /**
+   * 曲线
+   */
+  /**
+   * 类
+   */
+  class Curve extends Graph {
+      /**
+       * 构造方法
+       * @param context 上下文
+       * @param audio 音频
+       * @param visualize 可视化
+       */
+      constructor(context, visualize, audio) {
+          super(context, visualize, audio);
+      }
+      /**
+       * 配置
+       * @param option 选项
+       */
+      config(option) {
+          super.config(option);
+          let brush = this.visualize.brush;
+          brush.strokeStyle = this.option.color;
+          brush.lineWidth = this.option.width;
+          if (this.option.gradientColor?.length) {
+              let gradient = brush.createLinearGradient(this.visualize.wrap[0], 0, this.visualize.wrap[0] + this.visualize.wrap[2], 0);
+              for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
+                  gradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i]);
+              }
+              brush.strokeStyle = gradient;
+          }
+      }
+      /**
+       * 绘制
+       */
+      update() {
+          let data = Array.from(this.audio?.get() ?? []);
+          let d = Array.from(data);
+          if (this.option.reverse) {
+              d.reverse();
+          }
+          if (this.option.mirror) {
+              d = d.concat(Array.from(d).reverse());
+          }
+          let brush = this.visualize.brush;
+          this.visualize.update(() => {
+              if (this.option.dynamicColor?.length === 2) {
+                  let average = mean(data);
+                  brush.strokeStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
+              }
+              let dw = this.context.width / d.length;
+              let startX = -this.context.width / 2;
+              let direction = 1;
+              let path2D = `M ${startX},0`;
+              let sum = 0;
+              for (let i = 0, l = d.length; i < l; i++) {
+                  let x = startX + dw * i;
+                  let y = (direction * d[i] * this.context.height) / 2;
+                  path2D += ` L ${x},${y}`;
+                  direction *= -1;
+                  sum += d[i];
+              }
+              brush.stroke(new Path2D(path2D));
+          });
+      }
+  }
+
+  /**
+   * 圆形
+   */
+  /**
+   * 类
+   */
+  class Circle extends Graph {
+      get maxRadius() {
+          return Math.min(this.context.width, this.context.height) / 2;
+      }
+      /**
+       * 构造方法
+       * @param context 上下文
+       * @param audio 音频
+       * @param visualize 可视化
+       */
+      constructor(context, visualize, audio) {
+          super(context, visualize, audio);
+      }
+      /**
+       * 配置
+       * @param option 选项
+       */
+      config(option) {
+          super.config(option);
+          let brush = this.visualize.brush;
+          brush.strokeStyle = this.option.color;
+          brush.lineWidth = this.option.width;
+          if (this.option.gradientColor?.length) {
+              let gradient = brush.createRadialGradient(0, 0, 0, 0, 0, this.maxRadius);
+              for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
+                  gradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i]);
+              }
+              brush.strokeStyle = gradient;
+              brush.fillStyle = gradient;
+          }
+      }
+      /**
+       * 更新
+       */
+      update() {
+          let brush = this.visualize.brush;
+          let data = this.audio?.get() ?? [];
+          this.visualize.update(() => {
+              if (this.option.average) {
+                  let average = mean(data);
+                  brush.beginPath();
+                  brush.moveTo(this.maxRadius * average, 0);
+                  brush.arc(0, 0, this.maxRadius * average, 0, 360);
+                  brush.closePath();
+                  if (this.option.dynamicColor?.length === 2) {
+                      let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
+                      brush.fillStyle = color;
+                  }
+                  if (this.option.fill) {
+                      brush.fill();
+                  }
+                  else {
+                      brush.stroke();
+                  }
+              }
+              else {
+                  if (this.option.fill) {
+                      for (let a of data) {
+                          brush.beginPath();
+                          brush.moveTo(this.maxRadius * a, 0);
+                          brush.arc(0, 0, this.maxRadius * a, 0, 360);
+                          brush.closePath();
+                          if (this.option.dynamicColor?.length === 2) {
+                              let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a);
+                              brush.fillStyle = color;
+                          }
+                          brush.fill();
+                      }
+                  }
+                  else {
+                      for (let a of data) {
+                          brush.beginPath();
+                          brush.moveTo(this.maxRadius * a, 0);
+                          brush.arc(0, 0, this.maxRadius * a, 0, 360);
+                          brush.closePath();
+                          if (this.option.dynamicColor?.length === 2) {
+                              let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a);
+                              brush.strokeStyle = color;
+                          }
+                          brush.stroke();
+                      }
+                  }
+              }
+          });
+      }
+  }
+
   var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
   var fails$U = function (exec) {
@@ -3608,16 +3885,16 @@ var WebAudioWave = (function () {
   var OBJECT_ALREADY_INITIALIZED$1 = 'Object already initialized';
   var TypeError$o = global$1a.TypeError;
   var WeakMap$2 = global$1a.WeakMap;
-  var set$3, get$3, has$1;
+  var set$3, get$4, has$1;
 
   var enforce$1 = function (it) {
-    return has$1(it) ? get$3(it) : set$3(it, {});
+    return has$1(it) ? get$4(it) : set$3(it, {});
   };
 
   var getterFor$1 = function (TYPE) {
     return function (it) {
       var state;
-      if (!isObject$n(it) || (state = get$3(it)).type !== TYPE) {
+      if (!isObject$n(it) || (state = get$4(it)).type !== TYPE) {
         throw TypeError$o('Incompatible receiver, ' + TYPE + ' required');
       } return state;
     };
@@ -3634,7 +3911,7 @@ var WebAudioWave = (function () {
       wmset$1(store$4, it, metadata);
       return metadata;
     };
-    get$3 = function (it) {
+    get$4 = function (it) {
       return wmget$1(store$4, it) || {};
     };
     has$1 = function (it) {
@@ -3649,7 +3926,7 @@ var WebAudioWave = (function () {
       createNonEnumerableProperty$d(it, STATE$1, metadata);
       return metadata;
     };
-    get$3 = function (it) {
+    get$4 = function (it) {
       return hasOwn$j(it, STATE$1) ? it[STATE$1] : {};
     };
     has$1 = function (it) {
@@ -3659,7 +3936,7 @@ var WebAudioWave = (function () {
 
   var internalState$1 = {
     set: set$3,
-    get: get$3,
+    get: get$4,
     has: has$1,
     enforce: enforce$1,
     getterFor: getterFor$1
@@ -4914,7 +5191,7 @@ var WebAudioWave = (function () {
 
   // `Reflect.get` method
   // https://tc39.es/ecma262/#sec-reflect.get
-  function get$2(target, propertyKey /* , receiver */) {
+  function get$3(target, propertyKey /* , receiver */) {
     var receiver = arguments.length < 3 ? target : arguments[2];
     var descriptor, prototype;
     if (anObject$j(target) === receiver) return target[propertyKey];
@@ -4922,11 +5199,11 @@ var WebAudioWave = (function () {
     if (descriptor) return isDataDescriptor(descriptor)
       ? descriptor.value
       : descriptor.get === undefined ? undefined : call$m(descriptor.get, receiver);
-    if (isObject$j(prototype = getPrototypeOf$5(target))) return get$2(prototype, propertyKey, receiver);
+    if (isObject$j(prototype = getPrototypeOf$5(target))) return get$3(prototype, propertyKey, receiver);
   }
 
   $$s({ target: 'Reflect', stat: true }, {
-    get: get$2
+    get: get$3
   });
 
   var path$d = path$m;
@@ -8602,16 +8879,16 @@ var WebAudioWave = (function () {
   var OBJECT_ALREADY_INITIALIZED = 'Object already initialized';
   var TypeError$8 = global$u.TypeError;
   var WeakMap = global$u.WeakMap;
-  var set$1, get$1, has;
+  var set$1, get$2, has;
 
   var enforce = function (it) {
-    return has(it) ? get$1(it) : set$1(it, {});
+    return has(it) ? get$2(it) : set$1(it, {});
   };
 
   var getterFor = function (TYPE) {
     return function (it) {
       var state;
-      if (!isObject$6(it) || (state = get$1(it)).type !== TYPE) {
+      if (!isObject$6(it) || (state = get$2(it)).type !== TYPE) {
         throw TypeError$8('Incompatible receiver, ' + TYPE + ' required');
       } return state;
     };
@@ -8628,7 +8905,7 @@ var WebAudioWave = (function () {
       wmset(store, it, metadata);
       return metadata;
     };
-    get$1 = function (it) {
+    get$2 = function (it) {
       return wmget(store, it) || {};
     };
     has = function (it) {
@@ -8643,7 +8920,7 @@ var WebAudioWave = (function () {
       createNonEnumerableProperty$7(it, STATE, metadata);
       return metadata;
     };
-    get$1 = function (it) {
+    get$2 = function (it) {
       return hasOwn$8(it, STATE) ? it[STATE] : {};
     };
     has = function (it) {
@@ -8653,7 +8930,7 @@ var WebAudioWave = (function () {
 
   var internalState = {
     set: set$1,
-    get: get$1,
+    get: get$2,
     has: has,
     enforce: enforce,
     getterFor: getterFor
@@ -9458,7 +9735,7 @@ var WebAudioWave = (function () {
     defineProperty$2(Constructor[PROTOTYPE], key, { get: function () { return getInternalState$2(this)[key]; } });
   };
 
-  var get = function (view, count, index, isLittleEndian) {
+  var get$1 = function (view, count, index, isLittleEndian) {
     var intIndex = toIndex$1(index);
     var store = getInternalState$2(view);
     if (intIndex + count > store.byteLength) throw RangeError$4(WRONG_INDEX);
@@ -9522,30 +9799,30 @@ var WebAudioWave = (function () {
 
     redefineAll(DataViewPrototype$1, {
       getInt8: function getInt8(byteOffset) {
-        return get(this, 1, byteOffset)[0] << 24 >> 24;
+        return get$1(this, 1, byteOffset)[0] << 24 >> 24;
       },
       getUint8: function getUint8(byteOffset) {
-        return get(this, 1, byteOffset)[0];
+        return get$1(this, 1, byteOffset)[0];
       },
       getInt16: function getInt16(byteOffset /* , littleEndian */) {
-        var bytes = get(this, 2, byteOffset, arguments.length > 1 ? arguments[1] : undefined);
+        var bytes = get$1(this, 2, byteOffset, arguments.length > 1 ? arguments[1] : undefined);
         return (bytes[1] << 8 | bytes[0]) << 16 >> 16;
       },
       getUint16: function getUint16(byteOffset /* , littleEndian */) {
-        var bytes = get(this, 2, byteOffset, arguments.length > 1 ? arguments[1] : undefined);
+        var bytes = get$1(this, 2, byteOffset, arguments.length > 1 ? arguments[1] : undefined);
         return bytes[1] << 8 | bytes[0];
       },
       getInt32: function getInt32(byteOffset /* , littleEndian */) {
-        return unpackInt32(get(this, 4, byteOffset, arguments.length > 1 ? arguments[1] : undefined));
+        return unpackInt32(get$1(this, 4, byteOffset, arguments.length > 1 ? arguments[1] : undefined));
       },
       getUint32: function getUint32(byteOffset /* , littleEndian */) {
-        return unpackInt32(get(this, 4, byteOffset, arguments.length > 1 ? arguments[1] : undefined)) >>> 0;
+        return unpackInt32(get$1(this, 4, byteOffset, arguments.length > 1 ? arguments[1] : undefined)) >>> 0;
       },
       getFloat32: function getFloat32(byteOffset /* , littleEndian */) {
-        return unpackIEEE754(get(this, 4, byteOffset, arguments.length > 1 ? arguments[1] : undefined), 23);
+        return unpackIEEE754(get$1(this, 4, byteOffset, arguments.length > 1 ? arguments[1] : undefined), 23);
       },
       getFloat64: function getFloat64(byteOffset /* , littleEndian */) {
-        return unpackIEEE754(get(this, 8, byteOffset, arguments.length > 1 ? arguments[1] : undefined), 52);
+        return unpackIEEE754(get$1(this, 8, byteOffset, arguments.length > 1 ? arguments[1] : undefined), 52);
       },
       setInt8: function setInt8(byteOffset, value) {
         set(this, 1, byteOffset, packInt8, value);
@@ -12219,300 +12496,6 @@ var WebAudioWave = (function () {
   }();
 
   /**
-   * 图形
-   */
-  /**
-   * 类
-   */
-  class Graph {
-      c;
-      context;
-      option = {};
-      get width() {
-          return this.context.width;
-      }
-      get height() {
-          return this.context.height;
-      }
-      get wrap() {
-          return [-this.width / 2, -this.height / 2, this.width, this.height];
-      }
-      /**
-       * 构造方法
-       * @param c 绘图环境
-       * @param width 宽度
-       * @param height 高度
-       */
-      constructor(c, context, option) {
-          this.c = c;
-          this.context = context;
-          this.config(option);
-      }
-      /**
-       * 配置
-       * @param option 选项
-       */
-      config(option) {
-          Object.assign(this.option, option);
-      }
-  }
-
-  /**
-   * 计算中间颜色
-   */
-  /**
-   * 方法
-   * @param start 起始颜色
-   * @param end 停止颜色
-   * @param delta 变化比例
-   * @return 颜色
-   */
-  function calcDeltaColor(start, end, delta) {
-      let sr = parseInt(start.slice(1, 3), 16);
-      let sg = parseInt(start.slice(3, 5), 16);
-      let sb = parseInt(start.slice(5, 7), 16);
-      let er = parseInt(end.slice(1, 3), 16);
-      let eg = parseInt(end.slice(3, 5), 16);
-      let eb = parseInt(end.slice(5, 7), 16);
-      let dr = er - sr;
-      let dg = eg - sg;
-      let db = eb - sb;
-      let result = `#${Math.round(sr + delta * dr)
-        .toString(16)
-        .padStart(2, '0')}${Math.round(sg + delta * dg)
-        .toString(16)
-        .padStart(2, '0')}${Math.round(sb + delta * db)
-        .toString(16)
-        .padStart(2, '0')}`;
-      return result;
-  }
-
-  /**
-   * 柱形
-   */
-  const option$2 = {
-      color: '#000000',
-      gap: 0,
-      gradientColor: null,
-      dynamicColor: null
-  };
-  /**
-   * 类
-   */
-  class Bar extends Graph {
-      /**
-       * 构造方法
-       * @param c 绘图环境
-       * @param context 上下文
-       */
-      constructor(c, context) {
-          super(c, context, option$2);
-      }
-      /**
-       * 绘制
-       * @name data 数据
-       */
-      draw(data) {
-          let d = Array.from(data);
-          let length = d.length;
-          let width = this.width / length;
-          for (let i = 0; i < length; i++) {
-              let x = -this.width / 2 + i * width;
-              let y = this.height / 2;
-              let w = width - this.option.gap;
-              let h = -(d[i] * this.height);
-              if (this.option.dynamicColor?.length === 2) {
-                  this.c.fillStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], d[i]);
-              }
-              this.c.fillRect(x, y, w, h);
-          }
-      }
-      /**
-       * 配置
-       * @param option 选项
-       */
-      config(option) {
-          super.config(option);
-          this.c.fillStyle = this.option.color;
-          if (this.option.gradientColor?.length) {
-              let gradient = this.c.createLinearGradient(this.wrap[0], 0, this.wrap[0] + this.wrap[2], 0);
-              for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
-                  gradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i]);
-              }
-              this.c.fillStyle = gradient;
-          }
-      }
-  }
-
-  /**
-   * 曲线
-   */
-  const option$1 = {
-      color: '#000000',
-      width: 1,
-      mirror: false,
-      reverse: false,
-      gradientColor: null,
-      dynamicColor: null
-  };
-  /**
-   * 类
-   */
-  class Curve extends Graph {
-      /**
-       * 构造方法
-       * @param c 绘图环境
-       * @param context 上下文
-       */
-      constructor(c, context) {
-          super(c, context, option$1);
-      }
-      /**
-       * 绘制
-       * @param data 数据。归一化
-       */
-      draw(data) {
-          let d = Array.from(data);
-          if (this.option.reverse) {
-              d.reverse();
-          }
-          if (this.option.mirror) {
-              d = d.concat(Array.from(d).reverse());
-          }
-          if (this.option.dynamicColor?.length === 2) {
-              let average = mean(data);
-              this.c.strokeStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
-          }
-          let dw = this.width / d.length;
-          let startX = -this.width / 2;
-          let direction = 1;
-          let path2D = `M ${startX},0`;
-          let sum = 0;
-          for (let i = 0, l = d.length; i < l; i++) {
-              let x = startX + dw * i;
-              let y = (direction * d[i] * this.height) / 2;
-              path2D += ` L ${x},${y}`;
-              direction *= -1;
-              sum += d[i];
-          }
-          this.c.stroke(new Path2D(path2D));
-      }
-      /**
-       * 配置
-       * @param option 选项
-       */
-      config(option) {
-          super.config(option);
-          this.c.strokeStyle = this.option.color;
-          this.c.lineWidth = this.option.width;
-          if (this.option.gradientColor?.length) {
-              let gradient = this.c.createLinearGradient(this.wrap[0], 0, this.wrap[0] + this.wrap[2], 0);
-              for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
-                  gradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i]);
-              }
-              this.c.strokeStyle = gradient;
-          }
-      }
-  }
-
-  /**
-   * 圆形
-   */
-  const option = {
-      color: '#000000',
-      width: 1,
-      gradientColor: null,
-      dynamicColor: null,
-      fill: false,
-      average: false
-  };
-  /**
-   * 类
-   */
-  class Circle extends Graph {
-      get maxRadius() {
-          return Math.min(this.width, this.height) / 2;
-      }
-      /**
-       * 构造方法
-       * @param c 绘图环境
-       * @param context 上下文
-       */
-      constructor(c, context) {
-          super(c, context, option);
-      }
-      /**
-       * 绘制
-       * @param data 数据。归一化
-       */
-      draw(data) {
-          if (this.option.average) {
-              let average = mean(data);
-              this.c.beginPath();
-              this.c.moveTo(this.maxRadius * average, 0);
-              this.c.arc(0, 0, this.maxRadius * average, 0, 360);
-              this.c.closePath();
-              if (this.option.dynamicColor?.length === 2) {
-                  let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
-                  this.c.fillStyle = color;
-              }
-              if (this.option.fill) {
-                  this.c.fill();
-              }
-              else {
-                  this.c.stroke();
-              }
-          }
-          else {
-              if (this.option.fill) {
-                  for (let a of data) {
-                      this.c.beginPath();
-                      this.c.moveTo(this.maxRadius * a, 0);
-                      this.c.arc(0, 0, this.maxRadius * a, 0, 360);
-                      this.c.closePath();
-                      if (this.option.dynamicColor?.length === 2) {
-                          let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a);
-                          this.c.fillStyle = color;
-                      }
-                      this.c.fill();
-                  }
-              }
-              else {
-                  for (let a of data) {
-                      this.c.beginPath();
-                      this.c.moveTo(this.maxRadius * a, 0);
-                      this.c.arc(0, 0, this.maxRadius * a, 0, 360);
-                      this.c.closePath();
-                      if (this.option.dynamicColor?.length === 2) {
-                          mean(data);
-                          let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a);
-                          this.c.strokeStyle = color;
-                      }
-                      this.c.stroke();
-                  }
-              }
-          }
-      }
-      /**
-       * 配置
-       * @param option 选项
-       */
-      config(option) {
-          super.config(option);
-          this.c.strokeStyle = this.option.color;
-          this.c.lineWidth = this.option.width;
-          if (this.option.gradientColor?.length) {
-              let gradient = this.c.createRadialGradient(0, 0, 0, 0, 0, this.maxRadius);
-              for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
-                  gradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i]);
-              }
-              this.c.strokeStyle = gradient;
-              this.c.fillStyle = gradient;
-          }
-      }
-  }
-
-  /**
    * 可视化
    */
   /**
@@ -12523,10 +12506,12 @@ var WebAudioWave = (function () {
       c;
       offscreen;
       o;
-      graph;
       canvas;
       get wrap() {
-          return this.graph?.wrap || [-this.context.width / 2, -this.context.height / 2, this.context.width, this.context.height];
+          return [-this.context.width / 2, -this.context.height / 2, this.context.width, this.context.height];
+      }
+      get brush() {
+          return this.o;
       }
       /**
        * 构造方法
@@ -12544,37 +12529,21 @@ var WebAudioWave = (function () {
           this.offscreen.setAttribute('width', context.width.toString());
           this.offscreen.setAttribute('height', context.height.toString());
           this.o.translate(context.width / 2, context.height / 2);
-          if (context.type === 'bar') {
-              this.graph = new Bar(this.o, context);
-          }
-          else if (context.type === 'curve') {
-              this.graph = new Curve(this.o, context);
-          }
-          else if (context.type === 'circle') {
-              this.graph = new Circle(this.o, context);
-          }
       }
       /**
        * 更新
-       * @param data 数据
+       * @param draw 绘制
        */
-      update(data) {
+      update(draw) {
           this.o.clearRect(...this.wrap);
           if (this.context.effect.trace < 1) {
               this.o.globalAlpha = this.context.effect.trace;
               this.o.drawImage(this.canvas, ...this.wrap);
               this.o.globalAlpha = 1;
           }
-          this.graph?.draw(data.slice(0, Math.floor(data.length / 2)));
+          draw();
           this.c.clearRect(...this.wrap);
           this.c.drawImage(this.offscreen, ...this.wrap);
-      }
-      /**
-       * 配置
-       * @param option 选项
-       */
-      config(option) {
-          this.graph?.config(option);
       }
   }
 
@@ -12597,55 +12566,95 @@ var WebAudioWave = (function () {
   })(Type || (Type = {}));
   const max = 256; // 2**8
   /**
-   * 类
+   * 获取数据
+   * @param analyser 分析器
+   * @return 数据
    */
-  class Audio {
-      size;
-      context;
-      source; // 头结点
-      analyser; // 尾结点
-      nodes;
+  function get(analyser) {
+      let data = new Uint8Array(analyser.fftSize);
+      analyser.getByteFrequencyData(data);
+      let output = Array.from(data)
+          .map(a => a / max)
+          .slice(0, Math.floor(data.length / 2));
+      return output;
+  }
+  /**
+   * 分析器
+   */
+  class Analyser {
+      analyser;
       /**
        * 构造方法
        * @param context 上下文
-       * @param filters 滤波
+       * @param analyser 源分析器
+       * @param filters 滤波器
        */
-      constructor(context, filters) {
-          this.size = context.size;
-          this.context = new AudioContext();
-          this.source = this.context.createMediaElementSource(context.audio);
-          this.source.connect(this.context.destination);
-          this.analyser = this.context.createAnalyser();
-          this.analyser.fftSize = this.size;
-          this.nodes = [this.source];
-          if (context.gain !== 1) {
-              let gain = this.context.createGain();
-              gain.gain.value = context.gain;
-              this.nodes.push(gain);
-          }
+      constructor(context, analyser, filters) {
+          let nodes = [];
+          nodes.push(analyser);
           if (filters) {
               for (let a of filters) {
-                  let filter = this.context.createBiquadFilter();
+                  let filter = context.createBiquadFilter();
                   filter.type = a[0];
                   filter.frequency.value = a[1];
                   filter.Q.value = a[2];
                   filter.gain.value = a[3];
-                  this.nodes.push(filter);
+                  nodes.push(filter);
               }
           }
-          this.nodes.push(this.analyser);
-          for (let i = 0; i < this.nodes.length - 1; i++) {
-              this.nodes[i].connect(this.nodes[i + 1]);
+          this.analyser = context.createAnalyser();
+          nodes.push(this.analyser);
+          for (let i = 0; i < nodes.length - 1; i++) {
+              nodes[i].connect(nodes[i + 1]);
           }
       }
       /**
        * 获取数据
        */
       get() {
-          let data = new Uint8Array(this.size);
-          this.analyser.getByteFrequencyData(data);
-          let output = Array.from(data).map(a => a / max);
-          return output;
+          return get(this.analyser);
+      }
+  }
+  /**
+   * 类
+   */
+  class Audio {
+      context;
+      source; // 头结点
+      analyser; // 尾结点
+      /**
+       * 构造方法
+       * @param context 上下文
+       */
+      constructor(context) {
+          this.context = new AudioContext();
+          this.source = this.context.createMediaElementSource(context.audio);
+          this.source.connect(this.context.destination);
+          this.analyser = this.context.createAnalyser();
+          this.analyser.fftSize = context.size;
+          let nodes = [];
+          nodes.push(this.source);
+          let gain = this.context.createGain();
+          gain.gain.value = context.gain;
+          nodes.push(gain);
+          nodes.push(this.analyser);
+          for (let i = 0; i < nodes.length - 1; i++) {
+              nodes[i].connect(nodes[i + 1]);
+          }
+      }
+      /**
+       * 获取数据
+       */
+      get() {
+          return get(this.analyser);
+      }
+      /**
+       * 创建分析器
+       * @param filters 滤波器
+       * @return 分析器
+       */
+      create(filters) {
+          return new Analyser(this.context, this.analyser, filters);
       }
   }
 
@@ -12659,7 +12668,8 @@ var WebAudioWave = (function () {
       context;
       animate;
       visualize;
-      audio = null;
+      audio;
+      graph;
       get canvas() {
           return this.visualize.canvas;
       }
@@ -12679,21 +12689,31 @@ var WebAudioWave = (function () {
           this.context = merge$2({}, context, option);
           this.context.type = type;
           this.context.audio = audio;
+          this.animate = new Animate(this.callback.bind(this), this.context.rate);
           this.visualize = new Visualize(this.context);
-          this.animate = new Animate(this.callback.bind(this), 60);
+          if (this.context.type === 'bar') {
+              this.graph = new Bar(this.context, this.visualize, this.audio);
+          }
+          else if (this.context.type === 'curve') {
+              this.graph = new Curve(this.context, this.visualize, this.audio);
+          }
+          else if (this.context.type === 'circle') {
+              this.graph = new Circle(this.context, this.visualize, this.audio);
+          }
       }
       /**
        * 回调方法
        */
       callback() {
-          this.visualize.update(this.audio?.get() ?? []);
+          this.graph?.update();
       }
       /**
        * 播放
        */
       play() {
-          if (!this.audio && this.context.audio) {
+          if (!this.audio && this.context.audio && this.graph) {
               this.audio = new Audio(this.context); // 因为浏览器的音频权限策略，延迟初始化
+              this.graph.audio = this.audio;
           }
           this.animate.play();
       }
@@ -12708,7 +12728,7 @@ var WebAudioWave = (function () {
        * @param option 选项
        */
       config(option) {
-          this.visualize.config(option);
+          this.graph?.config(option);
       }
   }
 

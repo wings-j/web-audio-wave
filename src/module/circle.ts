@@ -22,72 +22,23 @@ type Option = typeof option
  */
 class Circle extends Graph<Option> {
   get maxRadius() {
-    return Math.min(this.width, this.height) / 2
+    return Math.min(this.context.width, this.context.height) / 2
   }
 
   /**
    * 构造方法
-   * @param c 绘图环境
    * @param context 上下文
+   * @param audio 音频
+   * @param visualize 可视化
    */
-  constructor(c: ConstructorParameters<typeof Graph>[0], context: ConstructorParameters<typeof Graph>[1]) {
-    super(c, context, option)
+  constructor(
+    context: ConstructorParameters<typeof Graph>[0],
+    visualize: ConstructorParameters<typeof Graph>[1],
+    audio: ConstructorParameters<typeof Graph>[2]
+  ) {
+    super(context, visualize, audio)
   }
 
-  /**
-   * 绘制
-   * @param data 数据。归一化
-   */
-  draw(data: number[]) {
-    if (this.option.average) {
-      let average = mean(data)
-      this.c.beginPath()
-      this.c.moveTo(this.maxRadius * average, 0)
-      this.c.arc(0, 0, this.maxRadius * average, 0, 360)
-      this.c.closePath()
-
-      if (this.option.dynamicColor?.length === 2) {
-        let color = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average)
-        this.c.fillStyle = color
-      }
-      if (this.option.fill) {
-        this.c.fill()
-      } else {
-        this.c.stroke()
-      }
-    } else {
-      if (this.option.fill) {
-        for (let a of data) {
-          this.c.beginPath()
-          this.c.moveTo(this.maxRadius * a, 0)
-          this.c.arc(0, 0, this.maxRadius * a, 0, 360)
-          this.c.closePath()
-
-          if (this.option.dynamicColor?.length === 2) {
-            let color = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a)
-            this.c.fillStyle = color
-          }
-
-          this.c.fill()
-        }
-      } else {
-        for (let a of data) {
-          this.c.beginPath()
-          this.c.moveTo(this.maxRadius * a, 0)
-          this.c.arc(0, 0, this.maxRadius * a, 0, 360)
-          this.c.closePath()
-
-          if (this.option.dynamicColor?.length === 2) {
-            let average = mean(data)
-            let color = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a)
-            this.c.strokeStyle = color
-          }
-
-          this.c.stroke()
-        }
-      }
-    }
-  }
   /**
    * 配置
    * @param option 选项
@@ -95,18 +46,76 @@ class Circle extends Graph<Option> {
   config(option?: Partial<Option>) {
     super.config(option)
 
-    this.c.strokeStyle = this.option.color
-    this.c.lineWidth = this.option.width
+    let brush = this.visualize.brush
+    brush.strokeStyle = this.option.color
+    brush.lineWidth = this.option.width
 
     if (this.option.gradientColor?.length) {
-      let gradient = this.c.createRadialGradient(0, 0, 0, 0, 0, this.maxRadius)
+      let gradient = brush.createRadialGradient(0, 0, 0, 0, 0, this.maxRadius)
       for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
         gradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i])
       }
 
-      this.c.strokeStyle = gradient
-      this.c.fillStyle = gradient
+      brush.strokeStyle = gradient
+      brush.fillStyle = gradient
     }
+  }
+  /**
+   * 更新
+   */
+  update() {
+    let brush = this.visualize.brush
+    let data = this.audio?.get() ?? []
+
+    this.visualize.update(() => {
+      if (this.option.average) {
+        let average = mean(data)
+        brush.beginPath()
+        brush.moveTo(this.maxRadius * average, 0)
+        brush.arc(0, 0, this.maxRadius * average, 0, 360)
+        brush.closePath()
+
+        if (this.option.dynamicColor?.length === 2) {
+          let color = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average)
+          brush.fillStyle = color
+        }
+        if (this.option.fill) {
+          brush.fill()
+        } else {
+          brush.stroke()
+        }
+      } else {
+        if (this.option.fill) {
+          for (let a of data) {
+            brush.beginPath()
+            brush.moveTo(this.maxRadius * a, 0)
+            brush.arc(0, 0, this.maxRadius * a, 0, 360)
+            brush.closePath()
+
+            if (this.option.dynamicColor?.length === 2) {
+              let color = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a)
+              brush.fillStyle = color
+            }
+
+            brush.fill()
+          }
+        } else {
+          for (let a of data) {
+            brush.beginPath()
+            brush.moveTo(this.maxRadius * a, 0)
+            brush.arc(0, 0, this.maxRadius * a, 0, 360)
+            brush.closePath()
+
+            if (this.option.dynamicColor?.length === 2) {
+              let color = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], a)
+              brush.strokeStyle = color
+            }
+
+            brush.stroke()
+          }
+        }
+      }
+    })
   }
 }
 

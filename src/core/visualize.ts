@@ -3,12 +3,6 @@
  */
 
 import { Context } from '../type/context'
-import Graph from '../type/graph'
-import Bar, { Option as BarOption } from '../module/bar'
-import Curve, { Option as CurveOption } from '../module/curve'
-import Circle, { Option as CircleOption } from '../module/circle'
-
-type Option = Partial<BarOption | CurveOption | CircleOption>
 
 /**
  * 类
@@ -18,11 +12,13 @@ class Visualize {
   private c: CanvasRenderingContext2D
   private offscreen: HTMLCanvasElement
   private o: CanvasRenderingContext2D
-  private graph?: Graph
   canvas: HTMLCanvasElement
 
-  private get wrap() {
-    return this.graph?.wrap || [-this.context.width / 2, -this.context.height / 2, this.context.width, this.context.height]
+  get wrap(): [number, number, number, number] {
+    return [-this.context.width / 2, -this.context.height / 2, this.context.width, this.context.height]
+  }
+  get brush() {
+    return this.o
   }
 
   /**
@@ -42,21 +38,13 @@ class Visualize {
     this.offscreen.setAttribute('width', context.width.toString())
     this.offscreen.setAttribute('height', context.height.toString())
     this.o.translate(context.width / 2, context.height / 2)
-
-    if (context.type === 'bar') {
-      this.graph = new Bar(this.o, context)
-    } else if (context.type === 'curve') {
-      this.graph = new Curve(this.o, context)
-    } else if (context.type === 'circle') {
-      this.graph = new Circle(this.o, context)
-    }
   }
 
   /**
    * 更新
-   * @param data 数据
+   * @param draw 绘制
    */
-  update(data: number[]) {
+  update(draw: () => void) {
     this.o.clearRect(...this.wrap)
 
     if (this.context.effect.trace < 1) {
@@ -65,19 +53,11 @@ class Visualize {
       this.o.globalAlpha = 1
     }
 
-    this.graph?.draw(data.slice(0, Math.floor(data.length / 2)))
+    draw()
 
     this.c.clearRect(...this.wrap)
     this.c.drawImage(this.offscreen, ...this.wrap)
   }
-  /**
-   * 配置
-   * @param option 选项
-   */
-  config(option: Option) {
-    this.graph?.config(option)
-  }
 }
 
 export default Visualize
-export { Option }

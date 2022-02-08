@@ -20,35 +20,18 @@ type Option = typeof option
 class Bar extends Graph<Option> {
   /**
    * 构造方法
-   * @param c 绘图环境
    * @param context 上下文
+   * @param audio 音频
+   * @param visualize 可视化
    */
-  constructor(c: ConstructorParameters<typeof Graph>[0], context: ConstructorParameters<typeof Graph>[1]) {
-    super(c, context, option)
+  constructor(
+    context: ConstructorParameters<typeof Graph>[0],
+    visualize: ConstructorParameters<typeof Graph>[1],
+    audio: ConstructorParameters<typeof Graph>[2]
+  ) {
+    super(context, visualize, audio)
   }
 
-  /**
-   * 绘制
-   * @name data 数据
-   */
-  draw(data: number[]) {
-    let d = Array.from(data)
-
-    let length = d.length
-    let width = this.width / length
-    for (let i = 0; i < length; i++) {
-      let x = -this.width / 2 + i * width
-      let y = this.height / 2
-      let w = width - this.option.gap
-      let h = -(d[i] * this.height)
-
-      if (this.option.dynamicColor?.length === 2) {
-        this.c.fillStyle = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], d[i])
-      }
-
-      this.c.fillRect(x, y, w, h)
-    }
-  }
   /**
    * 配置
    * @param option 选项
@@ -56,16 +39,39 @@ class Bar extends Graph<Option> {
   config(option?: Partial<Option>) {
     super.config(option)
 
-    this.c.fillStyle = this.option.color
+    this.visualize.brush.fillStyle = this.option.color
 
     if (this.option.gradientColor?.length) {
-      let gradient = this.c.createLinearGradient(this.wrap[0], 0, this.wrap[0] + this.wrap[2], 0)
+      let gradient = this.visualize.brush.createLinearGradient(this.visualize.wrap[0], 0, this.visualize.wrap[0] + this.visualize.wrap[2], 0)
       for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
         gradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i])
       }
 
-      this.c.fillStyle = gradient
+      this.visualize.brush.fillStyle = gradient
     }
+  }
+  /**
+   * 更新
+   */
+  update() {
+    let data = Array.from(this.audio?.get() ?? [])
+
+    this.visualize.update(() => {
+      let length = data.length
+      let width = this.context.width / length
+      for (let i = 0; i < length; i++) {
+        let x = -this.context.width / 2 + i * width
+        let y = this.context.height / 2
+        let w = width - this.option.gap
+        let h = -(data[i] * this.context.height)
+
+        if (this.option.dynamicColor?.length === 2) {
+          this.visualize.brush.fillStyle = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], data[i])
+        }
+
+        this.visualize.brush.fillRect(x, y, w, h)
+      }
+    })
   }
 }
 

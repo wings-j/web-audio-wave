@@ -15,20 +15,20 @@ declare type Option = typeof option;
 declare class Bar extends Graph<Option> {
     /**
      * 构造方法
-     * @param c 绘图环境
      * @param context 上下文
+     * @param audio 音频
+     * @param visualize 可视化
      */
-    constructor(c: ConstructorParameters<typeof Graph>[0], context: ConstructorParameters<typeof Graph>[1]);
-    /**
-     * 绘制
-     * @name data 数据
-     */
-    draw(data: number[]): void;
+    constructor(context: ConstructorParameters<typeof Graph>[0], visualize: ConstructorParameters<typeof Graph>[1], audio: ConstructorParameters<typeof Graph>[2]);
     /**
      * 配置
      * @param option 选项
      */
     config(option?: Partial<Option>): void;
+    /**
+     * 更新
+     */
+    update(): void;
 }
 export default Bar;
 export { Option };

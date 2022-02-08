@@ -2,32 +2,32 @@
  * 图形
  */
 import { Context } from './context';
+import Visualize from '../core/visualize';
+import Audio from '../core/audio';
 /**
  * 类
  */
 declare abstract class Graph<Option extends Record<string, any> = {}> {
-    c: CanvasRenderingContext2D;
     context: Context;
     option: Option;
-    get width(): number;
-    get height(): number;
-    get wrap(): [number, number, number, number];
+    visualize: Visualize;
+    audio?: Audio;
     /**
      * 构造方法
-     * @param c 绘图环境
-     * @param width 宽度
-     * @param height 高度
+     * @param context 上下文
+     * @param audio 音频
+     * @param visualize 可视化
+     * @param option 选项
      */
-    constructor(c: CanvasRenderingContext2D, context: Context, option?: Option);
-    /**
-     * 绘制
-     * @param data 数据。归一化
-     */
-    abstract draw(data: number[]): void;
+    constructor(context: Context, visualize: Visualize, audio?: Audio, option?: Option);
     /**
      * 配置
      * @param option 选项
      */
     config(option?: Record<string, unknown>): void;
+    /**
+     * 更新
+     */
+    abstract update(): void;
 }
 export default Graph;

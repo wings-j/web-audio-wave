@@ -2,7 +2,10 @@
  * index
  */
 import { Option } from './type/context';
-import { Option as VisualizeOption } from './core/visualize';
+import { Option as BarOption } from './module/bar';
+import { Option as CurveOption } from './module/curve';
+import { Option as CircleOption } from './module/circle';
+declare type GraphOption = Partial<BarOption | CurveOption | CircleOption>;
 /**
  * 类
  */
@@ -10,7 +13,8 @@ declare class WebAudioWave {
     private context;
     private animate;
     private visualize;
-    private audio;
+    private audio?;
+    private graph?;
     get canvas(): HTMLCanvasElement;
     /**
      * 构造方法
@@ -35,6 +39,6 @@ declare class WebAudioWave {
      * 配置
      * @param option 选项
      */
-    config(option: VisualizeOption): void;
+    config(option: GraphOption): void;
 }
 export default WebAudioWave;

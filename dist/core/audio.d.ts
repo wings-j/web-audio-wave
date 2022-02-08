@@ -20,23 +20,43 @@ declare enum Type {
  */
 declare type Filter = [Type, number, number, number];
 /**
- * 类
+ * 分析器
  */
-declare class Audio {
-    private size;
-    private context;
-    private source;
+declare class Analyser {
     private analyser;
-    private nodes;
     /**
      * 构造方法
      * @param context 上下文
-     * @param filters 滤波
+     * @param analyser 源分析器
+     * @param filters 滤波器
      */
-    constructor(context: Context, filters?: Filter[]);
+    constructor(context: AudioContext, analyser: AnalyserNode, filters?: Filter[]);
     /**
      * 获取数据
      */
     get(): number[];
+}
+/**
+ * 类
+ */
+declare class Audio {
+    private context;
+    private source;
+    private analyser;
+    /**
+     * 构造方法
+     * @param context 上下文
+     */
+    constructor(context: Context);
+    /**
+     * 获取数据
+     */
+    get(): number[];
+    /**
+     * 创建分析器
+     * @param filters 滤波器
+     * @return 分析器
+     */
+    create(filters?: Filter[]): Analyser;
 }
 export default Audio;
