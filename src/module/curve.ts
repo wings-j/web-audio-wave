@@ -5,7 +5,7 @@
 import Graph from '../type/graph'
 import CalcDeltaColor from '../util/calc-delta-color'
 import { mean } from 'lodash-es'
-import GeneratePath from '../util/generate-path'
+import { PathCurve } from '@wings-j/canvas'
 
 const option = {
   color: '#000000',
@@ -94,9 +94,9 @@ class Curve extends Graph<Option> {
 
       let path: Path2D
       if (this.option.smooth) {
-        path = GeneratePath(points, 'bezier')
+        path = PathCurve(points, 'bezier')
       } else {
-        path = GeneratePath(points)
+        path = PathCurve(points)
       }
 
       brush.stroke(path)
