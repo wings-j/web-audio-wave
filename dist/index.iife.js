@@ -2333,6 +2333,66 @@ var WebAudioWave = (function () {
   var merge$2 = merge$1;
 
   /**
+   * 画曲线
+   */
+  /**
+   * 计算控制点
+   * @param points 点数组，[{x:float,y:float}]
+   * @param i 点索引
+   * @param a 系数a
+   * @param b 系数b
+   * @return 控制点，{pa:{x:float,y:float},pb:{x:float,y:float}}
+   */
+  function calcControlPoint(points, i, a, b) {
+      let pax;
+      let pay;
+      if (i < 1) {
+          //处理极端情形
+          pax = points[0][0] + (points[1][0] - points[0][0]) * a;
+          pay = points[0][1] + (points[1][1] - points[0][1]) * a;
+      }
+      else {
+          pax = points[i][0] + (points[i + 1][0] - points[i - 1][0]) * a;
+          pay = points[i][1] + (points[i + 1][1] - points[i - 1][1]) * a;
+      }
+      let pbx;
+      let pby;
+      if (i > points.length - 3) {
+          //处理极端情形
+          let last = points.length - 1;
+          pbx = points[last][0] - (points[last][0] - points[last - 1][0]) * b;
+          pby = points[last][1] - (points[last][1] - points[last - 1][1]) * b;
+      }
+      else {
+          pbx = points[i + 1][0] - (points[i + 2][0] - points[i][0]) * b;
+          pby = points[i + 1][1] - (points[i + 2][1] - points[i][1]) * b;
+      }
+      return { pa: [pax, pay], pb: [pbx, pby] };
+  }
+  /**
+   * 函数
+   * @param points 点数组
+   * @param type 类型
+   * @param a 系数a。可省略
+   * @param b 系数b。可省略
+   * @return 路径
+   */
+  function generatePath(points, type, { a = 0.25, b = 0.25 } = {}) {
+      let path = new Path2D();
+      path.moveTo(points[0][0], points[0][1]);
+      for (let i = 1, l = points.length; i < l; i++) {
+          if (type === 'bezier') {
+              let ctrlPoint = calcControlPoint(points, i - 1, a, b);
+              path.bezierCurveTo(ctrlPoint.pa[0], ctrlPoint.pa[1], ctrlPoint.pb[0], ctrlPoint.pb[1], points[i][0], points[i][1]);
+          }
+          else {
+              path.lineTo(points[i][0], points[i][1]);
+          }
+      }
+      return path;
+  }
+
+  /**
    * 曲线
    */
   /**
@@ -2383,21 +2443,26 @@ var WebAudioWave = (function () {
                   let average = mean(data);
                   brush.strokeStyle = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
               }
+              let points = [];
               let dw = this.context.width / d.length;
               let startX = -this.context.width / 2;
               let direction = 1;
-              let path2D = `M ${startX},0`;
-              let sum = 0;
               for (let i = 0, l = d.length; i < l; i++) {
                   let x = startX + dw * i;
                   let y = -(direction * d[i] * this.context.height) / 2;
-                  path2D += ` L ${x},${y}`;
+                  points.push([x, y]);
                   if (this.option.backforth) {
                       direction *= -1;
                   }
-                  sum += d[i];
               }
-              brush.stroke(new Path2D(path2D));
+              let path;
+              if (this.option.smooth) {
+                  path = generatePath(points, 'bezier');
+              }
+              else {
+                  path = generatePath(points);
+              }
+              brush.stroke(path);
           });
       }
   }
@@ -3887,16 +3952,16 @@ var WebAudioWave = (function () {
   var OBJECT_ALREADY_INITIALIZED$1 = 'Object already initialized';
   var TypeError$o = global$1a.TypeError;
   var WeakMap$2 = global$1a.WeakMap;
-  var set$3, get$4, has$1;
+  var set$3, get$3, has$1;
 
   var enforce$1 = function (it) {
-    return has$1(it) ? get$4(it) : set$3(it, {});
+    return has$1(it) ? get$3(it) : set$3(it, {});
   };
 
   var getterFor$1 = function (TYPE) {
     return function (it) {
       var state;
-      if (!isObject$n(it) || (state = get$4(it)).type !== TYPE) {
+      if (!isObject$n(it) || (state = get$3(it)).type !== TYPE) {
         throw TypeError$o('Incompatible receiver, ' + TYPE + ' required');
       } return state;
     };
@@ -3913,7 +3978,7 @@ var WebAudioWave = (function () {
       wmset$1(store$4, it, metadata);
       return metadata;
     };
-    get$4 = function (it) {
+    get$3 = function (it) {
       return wmget$1(store$4, it) || {};
     };
     has$1 = function (it) {
@@ -3928,7 +3993,7 @@ var WebAudioWave = (function () {
       createNonEnumerableProperty$d(it, STATE$1, metadata);
       return metadata;
     };
-    get$4 = function (it) {
+    get$3 = function (it) {
       return hasOwn$j(it, STATE$1) ? it[STATE$1] : {};
     };
     has$1 = function (it) {
@@ -3938,7 +4003,7 @@ var WebAudioWave = (function () {
 
   var internalState$1 = {
     set: set$3,
-    get: get$4,
+    get: get$3,
     has: has$1,
     enforce: enforce$1,
     getterFor: getterFor$1
@@ -5193,7 +5258,7 @@ var WebAudioWave = (function () {
 
   // `Reflect.get` method
   // https://tc39.es/ecma262/#sec-reflect.get
-  function get$3(target, propertyKey /* , receiver */) {
+  function get$2(target, propertyKey /* , receiver */) {
     var receiver = arguments.length < 3 ? target : arguments[2];
     var descriptor, prototype;
     if (anObject$j(target) === receiver) return target[propertyKey];
@@ -5201,11 +5266,11 @@ var WebAudioWave = (function () {
     if (descriptor) return isDataDescriptor(descriptor)
       ? descriptor.value
       : descriptor.get === undefined ? undefined : call$m(descriptor.get, receiver);
-    if (isObject$j(prototype = getPrototypeOf$5(target))) return get$3(prototype, propertyKey, receiver);
+    if (isObject$j(prototype = getPrototypeOf$5(target))) return get$2(prototype, propertyKey, receiver);
   }
 
   $$s({ target: 'Reflect', stat: true }, {
-    get: get$3
+    get: get$2
   });
 
   var path$d = path$m;
@@ -8881,16 +8946,16 @@ var WebAudioWave = (function () {
   var OBJECT_ALREADY_INITIALIZED = 'Object already initialized';
   var TypeError$8 = global$u.TypeError;
   var WeakMap = global$u.WeakMap;
-  var set$1, get$2, has;
+  var set$1, get$1, has;
 
   var enforce = function (it) {
-    return has(it) ? get$2(it) : set$1(it, {});
+    return has(it) ? get$1(it) : set$1(it, {});
   };
 
   var getterFor = function (TYPE) {
     return function (it) {
       var state;
-      if (!isObject$6(it) || (state = get$2(it)).type !== TYPE) {
+      if (!isObject$6(it) || (state = get$1(it)).type !== TYPE) {
         throw TypeError$8('Incompatible receiver, ' + TYPE + ' required');
       } return state;
     };
@@ -8907,7 +8972,7 @@ var WebAudioWave = (function () {
       wmset(store, it, metadata);
       return metadata;
     };
-    get$2 = function (it) {
+    get$1 = function (it) {
       return wmget(store, it) || {};
     };
     has = function (it) {
@@ -8922,7 +8987,7 @@ var WebAudioWave = (function () {
       createNonEnumerableProperty$7(it, STATE, metadata);
       return metadata;
     };
-    get$2 = function (it) {
+    get$1 = function (it) {
       return hasOwn$8(it, STATE) ? it[STATE] : {};
     };
     has = function (it) {
@@ -8932,7 +8997,7 @@ var WebAudioWave = (function () {
 
   var internalState = {
     set: set$1,
-    get: get$2,
+    get: get$1,
     has: has,
     enforce: enforce,
     getterFor: getterFor
@@ -9737,7 +9802,7 @@ var WebAudioWave = (function () {
     defineProperty$2(Constructor[PROTOTYPE], key, { get: function () { return getInternalState$2(this)[key]; } });
   };
 
-  var get$1 = function (view, count, index, isLittleEndian) {
+  var get = function (view, count, index, isLittleEndian) {
     var intIndex = toIndex$1(index);
     var store = getInternalState$2(view);
     if (intIndex + count > store.byteLength) throw RangeError$4(WRONG_INDEX);
@@ -9801,30 +9866,30 @@ var WebAudioWave = (function () {
 
     redefineAll(DataViewPrototype$1, {
       getInt8: function getInt8(byteOffset) {
-        return get$1(this, 1, byteOffset)[0] << 24 >> 24;
+        return get(this, 1, byteOffset)[0] << 24 >> 24;
       },
       getUint8: function getUint8(byteOffset) {
-        return get$1(this, 1, byteOffset)[0];
+        return get(this, 1, byteOffset)[0];
       },
       getInt16: function getInt16(byteOffset /* , littleEndian */) {
-        var bytes = get$1(this, 2, byteOffset, arguments.length > 1 ? arguments[1] : undefined);
+        var bytes = get(this, 2, byteOffset, arguments.length > 1 ? arguments[1] : undefined);
         return (bytes[1] << 8 | bytes[0]) << 16 >> 16;
       },
       getUint16: function getUint16(byteOffset /* , littleEndian */) {
-        var bytes = get$1(this, 2, byteOffset, arguments.length > 1 ? arguments[1] : undefined);
+        var bytes = get(this, 2, byteOffset, arguments.length > 1 ? arguments[1] : undefined);
         return bytes[1] << 8 | bytes[0];
       },
       getInt32: function getInt32(byteOffset /* , littleEndian */) {
-        return unpackInt32(get$1(this, 4, byteOffset, arguments.length > 1 ? arguments[1] : undefined));
+        return unpackInt32(get(this, 4, byteOffset, arguments.length > 1 ? arguments[1] : undefined));
       },
       getUint32: function getUint32(byteOffset /* , littleEndian */) {
-        return unpackInt32(get$1(this, 4, byteOffset, arguments.length > 1 ? arguments[1] : undefined)) >>> 0;
+        return unpackInt32(get(this, 4, byteOffset, arguments.length > 1 ? arguments[1] : undefined)) >>> 0;
       },
       getFloat32: function getFloat32(byteOffset /* , littleEndian */) {
-        return unpackIEEE754(get$1(this, 4, byteOffset, arguments.length > 1 ? arguments[1] : undefined), 23);
+        return unpackIEEE754(get(this, 4, byteOffset, arguments.length > 1 ? arguments[1] : undefined), 23);
       },
       getFloat64: function getFloat64(byteOffset /* , littleEndian */) {
-        return unpackIEEE754(get$1(this, 8, byteOffset, arguments.length > 1 ? arguments[1] : undefined), 52);
+        return unpackIEEE754(get(this, 8, byteOffset, arguments.length > 1 ? arguments[1] : undefined), 52);
       },
       setInt8: function setInt8(byteOffset, value) {
         set(this, 1, byteOffset, packInt8, value);
@@ -12568,59 +12633,22 @@ var WebAudioWave = (function () {
   })(Type || (Type = {}));
   const max = 256; // 2**8
   /**
-   * 获取数据
-   * @param analyser 分析器
-   * @return 数据
-   */
-  function get(analyser) {
-      let data = new Uint8Array(analyser.fftSize);
-      analyser.getByteFrequencyData(data);
-      let output = Array.from(data)
-          .map(a => a / max)
-          .slice(0, Math.floor(data.length / 2));
-      return output;
-  }
-  /**
-   * 分析器
-   */
-  class Analyser {
-      analyser;
-      /**
-       * 构造方法
-       * @param context 上下文
-       * @param analyser 源分析器
-       * @param filters 滤波器
-       */
-      constructor(context, analyser, filters) {
-          let nodes = [];
-          nodes.push(analyser);
-          if (filters) {
-              for (let a of filters) {
-                  let filter = context.createBiquadFilter();
-                  filter.type = a[0];
-                  filter.frequency.value = a[1];
-                  filter.Q.value = a[2];
-                  filter.gain.value = a[3];
-                  nodes.push(filter);
-              }
-          }
-          this.analyser = context.createAnalyser();
-          nodes.push(this.analyser);
-          for (let i = 0; i < nodes.length - 1; i++) {
-              nodes[i].connect(nodes[i + 1]);
-          }
-      }
-      /**
-       * 获取数据
-       */
-      get() {
-          return get(this.analyser);
-      }
-  }
-  /**
    * 类
    */
   class Audio {
+      /**
+       * 获取数据
+       * @param analyser 分析器
+       * @return 数据
+       */
+      static get(analyser) {
+          let data = new Uint8Array(analyser.fftSize);
+          analyser.getByteFrequencyData(data);
+          let output = Array.from(data)
+              .map(a => a / max)
+              .slice(0, Math.floor(data.length / 2));
+          return output;
+      }
       context;
       source; // 头结点
       analyser; // 尾结点
@@ -12648,15 +12676,7 @@ var WebAudioWave = (function () {
        * 获取数据
        */
       get() {
-          return get(this.analyser);
-      }
-      /**
-       * 创建分析器
-       * @param filters 滤波器
-       * @return 分析器
-       */
-      create(filters) {
-          return new Analyser(this.context, this.analyser, filters);
+          return Audio.get(this.analyser);
       }
   }
 

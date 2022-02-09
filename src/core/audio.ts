@@ -25,68 +25,27 @@ type Filter = [Type, number, number, number] // 类型，频率，Q，增益
 const max = 256 // 2**8
 
 /**
- * 获取数据
- * @param analyser 分析器
- * @return 数据
- */
-function get(analyser: AnalyserNode) {
-  let data = new Uint8Array(analyser.fftSize)
-  analyser.getByteFrequencyData(data)
-  let output = Array.from(data)
-    .map(a => a / max)
-    .slice(0, Math.floor(data.length / 2))
-
-  return output
-}
-
-/**
- * 分析器
- */
-class Analyser {
-  private analyser: AnalyserNode
-
-  /**
-   * 构造方法
-   * @param context 上下文
-   * @param analyser 源分析器
-   * @param filters 滤波器
-   */
-  constructor(context: AudioContext, analyser: AnalyserNode, filters?: Filter[]) {
-    let nodes: AudioNode[] = []
-    nodes.push(analyser)
-
-    if (filters) {
-      for (let a of filters) {
-        let filter = context.createBiquadFilter()
-        filter.type = a[0]
-        filter.frequency.value = a[1]
-        filter.Q.value = a[2]
-        filter.gain.value = a[3]
-        nodes.push(filter)
-      }
-    }
-
-    this.analyser = context.createAnalyser()
-    nodes.push(this.analyser)
-    for (let i = 0; i < nodes.length - 1; i++) {
-      nodes[i].connect(nodes[i + 1])
-    }
-  }
-  /**
-   * 获取数据
-   */
-  get() {
-    return get(this.analyser)
-  }
-}
-
-/**
  * 类
  */
 class Audio {
-  private context: AudioContext
-  private source: MediaElementAudioSourceNode // 头结点
-  private analyser: AnalyserNode // 尾结点
+  /**
+   * 获取数据
+   * @param analyser 分析器
+   * @return 数据
+   */
+  static get(analyser: AnalyserNode) {
+    let data = new Uint8Array(analyser.fftSize)
+    analyser.getByteFrequencyData(data)
+    let output = Array.from(data)
+      .map(a => a / max)
+      .slice(0, Math.floor(data.length / 2))
+
+    return output
+  }
+
+  context: AudioContext
+  source: MediaElementAudioSourceNode // 头结点
+  analyser: AnalyserNode // 尾结点
 
   /**
    * 构造方法
@@ -114,17 +73,8 @@ class Audio {
    * 获取数据
    */
   get() {
-    return get(this.analyser)
-  }
-  /**
-   * 创建分析器
-   * @param filters 滤波器
-   * @return 分析器
-   */
-  create(filters?: Filter[]) {
-    return new Analyser(this.context, this.analyser, filters)
+    return Audio.get(this.analyser)
   }
 }
 
 export default Audio
-export { Analyser }

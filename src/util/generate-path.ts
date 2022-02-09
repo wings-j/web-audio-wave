@@ -47,17 +47,26 @@ function calcControlPoint(points: Point[], i: number, a: number, b: number): Con
 
 /**
  * 函数
- * @param context Canvas绘图环境
- * @param points 点数组。[{x,y}]
+ * @param points 点数组
+ * @param type 类型
  * @param a 系数a。可省略
  * @param b 系数b。可省略
+ * @return 路径
  */
-function pathCurve(context: CanvasRenderingContext2D, points: Point[], a: number = 0.25, b: number = 0.25) {
-  context.moveTo(points[0][0], points[0][1])
+function generatePath(points: Point[], type?: 'bezier', { a = 0.25, b = 0.25 } = {}) {
+  let path = new Path2D()
+
+  path.moveTo(points[0][0], points[0][1])
   for (let i = 1, l = points.length; i < l; i++) {
-    let ctrlPoint = calcControlPoint(points, i - 1, a, b)
-    context.bezierCurveTo(ctrlPoint.pa[0], ctrlPoint.pa[1], ctrlPoint.pb[0], ctrlPoint.pb[1], points[i][0], points[i][1])
+    if (type === 'bezier') {
+      let ctrlPoint = calcControlPoint(points, i - 1, a, b)
+      path.bezierCurveTo(ctrlPoint.pa[0], ctrlPoint.pa[1], ctrlPoint.pb[0], ctrlPoint.pb[1], points[i][0], points[i][1])
+    } else {
+      path.lineTo(points[i][0], points[i][1])
+    }
   }
+
+  return path
 }
 
-export default pathCurve
+export default generatePath

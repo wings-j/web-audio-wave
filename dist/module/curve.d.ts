@@ -10,6 +10,7 @@ declare const option: {
     mirror: boolean;
     reverse: boolean;
     backforth: boolean;
+    smooth: boolean;
 };
 declare type Option = typeof option;
 /**

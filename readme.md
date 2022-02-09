@@ -111,6 +111,8 @@ option：可视化配置
 | width         | 线宽     | number                   | 1         |
 | mirror        | 镜像     | boolean                  | false     |
 | reverse       | 反转     | boolean                  | false     |
+| backforth     | 来回     | boolean                  | false     |
+| smooth        | 平滑     | boolean                  | false     |
 
 ### circle
 

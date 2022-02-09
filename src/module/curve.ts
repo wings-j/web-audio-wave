@@ -5,6 +5,7 @@
 import Graph from '../type/graph'
 import CalcDeltaColor from '../util/calc-delta-color'
 import { mean } from 'lodash-es'
+import GeneratePath from '../util/generate-path'
 
 const option = {
   color: '#000000',
@@ -13,7 +14,8 @@ const option = {
   width: 1,
   mirror: false,
   reverse: false,
-  backforth: false
+  backforth: false,
+  smooth: false
 }
 
 type Option = typeof option
@@ -76,23 +78,28 @@ class Curve extends Graph<Option> {
         brush.strokeStyle = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average)
       }
 
+      let points: [number, number][] = []
       let dw = this.context.width / d.length
       let startX = -this.context.width / 2
       let direction = 1
-      let path2D = `M ${startX},0`
-      let sum = 0
       for (let i = 0, l = d.length; i < l; i++) {
         let x = startX + dw * i
         let y = -(direction * d[i] * this.context.height) / 2
 
-        path2D += ` L ${x},${y}`
+        points.push([x, y])
         if (this.option.backforth) {
           direction *= -1
         }
-        sum += d[i]
       }
 
-      brush.stroke(new Path2D(path2D))
+      let path: Path2D
+      if (this.option.smooth) {
+        path = GeneratePath(points, 'bezier')
+      } else {
+        path = GeneratePath(points)
+      }
+
+      brush.stroke(path)
     })
   }
 }
