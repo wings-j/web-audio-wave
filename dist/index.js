@@ -15,7 +15,7 @@ import _defineProperty from "@babel/runtime-corejs3/helpers/defineProperty";
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof _Symbol !== "undefined" && _getIteratorMethod(o) || o["@@iterator"]; if (!it) { if (_Array$isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
-function _unsupportedIterableToArray(o, minLen) { var _context13; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = _sliceInstanceProperty(_context13 = Object.prototype.toString.call(o)).call(_context13, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return _Array$from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _unsupportedIterableToArray(o, minLen) { var _context12; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = _sliceInstanceProperty(_context12 = Object.prototype.toString.call(o)).call(_context12, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return _Array$from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
@@ -256,6 +256,82 @@ var Bar = /*#__PURE__*/function (_Graph) {
   return Bar;
 }(Graph);
 /**
+ * 画曲线
+ */
+
+/**
+ * 计算控制点
+ * @param points 点数组，[{x:float,y:float}]
+ * @param i 点索引
+ * @param a 系数a
+ * @param b 系数b
+ * @return 控制点，{pa:{x:float,y:float},pb:{x:float,y:float}}
+ */
+
+
+function calcControlPoint(points, i, a, b) {
+  var pax;
+  var pay;
+
+  if (i < 1) {
+    //处理极端情形
+    pax = points[0][0] + (points[1][0] - points[0][0]) * a;
+    pay = points[0][1] + (points[1][1] - points[0][1]) * a;
+  } else {
+    pax = points[i][0] + (points[i + 1][0] - points[i - 1][0]) * a;
+    pay = points[i][1] + (points[i + 1][1] - points[i - 1][1]) * a;
+  }
+
+  var pbx;
+  var pby;
+
+  if (i > points.length - 3) {
+    //处理极端情形
+    var last = points.length - 1;
+    pbx = points[last][0] - (points[last][0] - points[last - 1][0]) * b;
+    pby = points[last][1] - (points[last][1] - points[last - 1][1]) * b;
+  } else {
+    pbx = points[i + 1][0] - (points[i + 2][0] - points[i][0]) * b;
+    pby = points[i + 1][1] - (points[i + 2][1] - points[i][1]) * b;
+  }
+
+  return {
+    pa: [pax, pay],
+    pb: [pbx, pby]
+  };
+}
+/**
+ * 函数
+ * @param points 点数组
+ * @param type 类型
+ * @param a 系数a。可省略
+ * @param b 系数b。可省略
+ * @return 路径
+ */
+
+
+function generatePath(points, type) {
+  var _ref = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+      _ref$a = _ref.a,
+      a = _ref$a === void 0 ? 0.25 : _ref$a,
+      _ref$b = _ref.b,
+      b = _ref$b === void 0 ? 0.25 : _ref$b;
+
+  var path = new Path2D();
+  path.moveTo(points[0][0], points[0][1]);
+
+  for (var i = 1, l = points.length; i < l; i++) {
+    if (type === 'bezier') {
+      var ctrlPoint = calcControlPoint(points, i - 1, a, b);
+      path.bezierCurveTo(ctrlPoint.pa[0], ctrlPoint.pa[1], ctrlPoint.pb[0], ctrlPoint.pb[1], points[i][0], points[i][1]);
+    } else {
+      path.lineTo(points[i][0], points[i][1]);
+    }
+  }
+
+  return path;
+}
+/**
  * 曲线
  */
 
@@ -341,23 +417,30 @@ var Curve = /*#__PURE__*/function (_Graph2) {
           brush.strokeStyle = calcDeltaColor(_this2.option.dynamicColor[0], _this2.option.dynamicColor[1], average);
         }
 
+        var points = [];
         var dw = _this2.context.width / d.length;
         var startX = -_this2.context.width / 2;
         var direction = 1;
-        var path2D = "M ".concat(startX, ",0");
-        var sum = 0;
 
         for (var i = 0, l = d.length; i < l; i++) {
-          var _context7;
-
           var x = startX + dw * i;
-          var y = direction * d[i] * _this2.context.height / 2;
-          path2D += _concatInstanceProperty(_context7 = " L ".concat(x, ",")).call(_context7, y);
-          direction *= -1;
-          sum += d[i];
+          var y = -(direction * d[i] * _this2.context.height) / 2;
+          points.push([x, y]);
+
+          if (_this2.option.backforth) {
+            direction *= -1;
+          }
         }
 
-        brush.stroke(new Path2D(path2D));
+        var path;
+
+        if (_this2.option.smooth) {
+          path = generatePath(points, 'bezier');
+        } else {
+          path = generatePath(points);
+        }
+
+        brush.stroke(path);
       });
     }
   }]);
@@ -576,16 +659,16 @@ var Visualize = /*#__PURE__*/function () {
   }, {
     key: "update",
     value: function update(draw) {
-      var _this$o, _this$c, _this$c2, _context9;
+      var _this$o, _this$c, _this$c2, _context8;
 
       (_this$o = this.o).clearRect.apply(_this$o, _toConsumableArray(this.wrap));
 
       if (this.context.effect.trace < 1) {
-        var _this$o2, _context8;
+        var _this$o2, _context7;
 
         this.o.globalAlpha = this.context.effect.trace;
 
-        (_this$o2 = this.o).drawImage.apply(_this$o2, _concatInstanceProperty(_context8 = [this.canvas]).call(_context8, _toConsumableArray(this.wrap)));
+        (_this$o2 = this.o).drawImage.apply(_this$o2, _concatInstanceProperty(_context7 = [this.canvas]).call(_context7, _toConsumableArray(this.wrap)));
 
         this.o.globalAlpha = 1;
       }
@@ -594,7 +677,7 @@ var Visualize = /*#__PURE__*/function () {
 
       (_this$c = this.c).clearRect.apply(_this$c, _toConsumableArray(this.wrap));
 
-      (_this$c2 = this.c).drawImage.apply(_this$c2, _concatInstanceProperty(_context9 = [this.offscreen]).call(_context9, _toConsumableArray(this.wrap)));
+      (_this$c2 = this.c).drawImage.apply(_this$c2, _concatInstanceProperty(_context8 = [this.offscreen]).call(_context8, _toConsumableArray(this.wrap)));
     }
   }]);
 
@@ -625,92 +708,10 @@ var Type;
 var max = 256; // 2**8
 
 /**
- * 获取数据
- * @param analyser 分析器
- * @return 数据
- */
-
-function _get2(analyser) {
-  var _context10, _context11;
-
-  var data = new Uint8Array(analyser.fftSize);
-  analyser.getByteFrequencyData(data);
-
-  var output = _sliceInstanceProperty(_context10 = _mapInstanceProperty(_context11 = _Array$from(data)).call(_context11, function (a) {
-    return a / max;
-  })).call(_context10, 0, Math.floor(data.length / 2));
-
-  return output;
-}
-/**
- * 分析器
- */
-
-
-var Analyser = /*#__PURE__*/function () {
-  /**
-   * 构造方法
-   * @param context 上下文
-   * @param analyser 源分析器
-   * @param filters 滤波器
-   */
-  function Analyser(context, analyser, filters) {
-    _classCallCheck(this, Analyser);
-
-    _defineProperty(this, "analyser", void 0);
-
-    var nodes = [];
-    nodes.push(analyser);
-
-    if (filters) {
-      var _iterator3 = _createForOfIteratorHelper(filters),
-          _step3;
-
-      try {
-        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-          var a = _step3.value;
-          var filter = context.createBiquadFilter();
-          filter.type = a[0];
-          filter.frequency.value = a[1];
-          filter.Q.value = a[2];
-          filter.gain.value = a[3];
-          nodes.push(filter);
-        }
-      } catch (err) {
-        _iterator3.e(err);
-      } finally {
-        _iterator3.f();
-      }
-    }
-
-    this.analyser = context.createAnalyser();
-    nodes.push(this.analyser);
-
-    for (var i = 0; i < nodes.length - 1; i++) {
-      nodes[i].connect(nodes[i + 1]);
-    }
-  }
-  /**
-   * 获取数据
-   */
-
-
-  _createClass(Analyser, [{
-    key: "get",
-    value: function get() {
-      return _get2(this.analyser);
-    }
-  }]);
-
-  return Analyser;
-}();
-/**
  * 类
  */
 
-
 var Audio = /*#__PURE__*/function () {
-  // 头结点
   // 尾结点
 
   /**
@@ -750,18 +751,27 @@ var Audio = /*#__PURE__*/function () {
   _createClass(Audio, [{
     key: "get",
     value: function get() {
-      return _get2(this.analyser);
+      return Audio.get(this.analyser);
     }
+  }], [{
+    key: "get",
+    value:
     /**
-     * 创建分析器
-     * @param filters 滤波器
-     * @return 分析器
+     * 获取数据
+     * @param analyser 分析器
+     * @return 数据
      */
+    function get(analyser) {
+      var _context9, _context10;
 
-  }, {
-    key: "create",
-    value: function create(filters) {
-      return new Analyser(this.context, this.analyser, filters);
+      var data = new Uint8Array(analyser.fftSize);
+      analyser.getByteFrequencyData(data);
+
+      var output = _sliceInstanceProperty(_context9 = _mapInstanceProperty(_context10 = _Array$from(data)).call(_context10, function (a) {
+        return a / max;
+      })).call(_context9, 0, Math.floor(data.length / 2));
+
+      return output;
     }
   }]);
 
@@ -784,7 +794,7 @@ var WebAudioWave = /*#__PURE__*/function () {
    * @param option 选项
    */
   function WebAudioWave(type, audio, option) {
-    var _context12;
+    var _context11;
 
     _classCallCheck(this, WebAudioWave);
 
@@ -809,7 +819,7 @@ var WebAudioWave = /*#__PURE__*/function () {
     this.context = merge({}, context, option);
     this.context.type = type;
     this.context.audio = audio;
-    this.animate = new Animate(_bindInstanceProperty(_context12 = this.callback).call(_context12, this), this.context.rate);
+    this.animate = new Animate(_bindInstanceProperty(_context11 = this.callback).call(_context11, this), this.context.rate);
     this.visualize = new Visualize(this.context);
 
     if (this.context.type === 'bar') {
