@@ -4,9 +4,9 @@
 import Graph from '../type/graph';
 declare const option: {
     color: string;
-    width: number;
     gradientColor: string[] | null;
     dynamicColor: [string, string] | null;
+    width: number;
     fill: boolean;
     average: boolean;
 };

@@ -2390,9 +2390,11 @@ var WebAudioWave = (function () {
               let sum = 0;
               for (let i = 0, l = d.length; i < l; i++) {
                   let x = startX + dw * i;
-                  let y = (direction * d[i] * this.context.height) / 2;
+                  let y = -(direction * d[i] * this.context.height) / 2;
                   path2D += ` L ${x},${y}`;
-                  direction *= -1;
+                  if (this.option.backforth) {
+                      direction *= -1;
+                  }
                   sum += d[i];
               }
               brush.stroke(new Path2D(path2D));

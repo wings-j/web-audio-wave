@@ -127,3 +127,4 @@ class Audio {
 }
 
 export default Audio
+export { Analyser }

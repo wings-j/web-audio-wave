@@ -4,11 +4,12 @@
 import Graph from '../type/graph';
 declare const option: {
     color: string;
+    gradientColor: string[] | null;
+    dynamicColor: [string, string] | null;
     width: number;
     mirror: boolean;
     reverse: boolean;
-    gradientColor: string[] | null;
-    dynamicColor: [string, string] | null;
+    backforth: boolean;
 };
 declare type Option = typeof option;
 /**

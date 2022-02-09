@@ -8,9 +8,9 @@ import { mean } from 'lodash-es'
 
 const option = {
   color: '#000000',
-  width: 1,
   gradientColor: null as string[] | null,
   dynamicColor: null as [string, string] | null,
+  width: 1,
   fill: false,
   average: false
 }

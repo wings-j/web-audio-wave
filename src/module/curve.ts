@@ -8,11 +8,12 @@ import { mean } from 'lodash-es'
 
 const option = {
   color: '#000000',
+  gradientColor: null as string[] | null,
+  dynamicColor: null as [string, string] | null,
   width: 1,
   mirror: false,
   reverse: false,
-  gradientColor: null as string[] | null,
-  dynamicColor: null as [string, string] | null
+  backforth: false
 }
 
 type Option = typeof option
@@ -82,10 +83,12 @@ class Curve extends Graph<Option> {
       let sum = 0
       for (let i = 0, l = d.length; i < l; i++) {
         let x = startX + dw * i
-        let y = (direction * d[i] * this.context.height) / 2
+        let y = -(direction * d[i] * this.context.height) / 2
 
         path2D += ` L ${x},${y}`
-        direction *= -1
+        if (this.option.backforth) {
+          direction *= -1
+        }
         sum += d[i]
       }
 

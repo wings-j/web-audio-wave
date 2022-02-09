@@ -60,3 +60,4 @@ declare class Audio {
     create(filters?: Filter[]): Analyser;
 }
 export default Audio;
+export { Analyser };

@@ -97,28 +97,28 @@ option：可视化配置
 | 名称          | 说明     | 类型                     | 默认值    |
 | ------------- | -------- | ------------------------ | --------- |
 | color         | 颜色     | string                   | "#000000" |
-| gap           | 柱形间距 | number                   | 0         |
 | gradientColor | 渐变颜色 | string[] \| null         | null      |
 | dynamicColor  | 动态颜色 | [string, string] \| null | null      |
+| gap           | 柱形间距 | number                   | 0         |
 
 ### curve
 
 | 名称          | 说明     | 类型                     | 默认值    |
 | ------------- | -------- | ------------------------ | --------- |
 | color         | 颜色     | string                   | "#000000" |
+| gradientColor | 渐变颜色 | string[] \| null         | null      |
+| dynamicColor  | 动态颜色 | [string, string] \| null | null      |
 | width         | 线宽     | number                   | 1         |
 | mirror        | 镜像     | boolean                  | false     |
 | reverse       | 反转     | boolean                  | false     |
-| gradientColor | 渐变颜色 | string[] \| null         | null      |
-| dynamicColor  | 动态颜色 | [string, string] \| null | null      |
 
 ### circle
 
 | 名称          | 说明     | 类型                     | 默认值    |
 | ------------- | -------- | ------------------------ | --------- |
 | color         | 颜色     | string                   | "#000000" |
-| width         | 线宽     | number                   | 1         |
 | gradientColor | 渐变颜色 | string[] \| null         | null      |
 | dynamicColor  | 动态颜色 | [string, string] \| null | null      |
+| width         | 线宽     | number                   | 1         |
 | fill          | 填充     | boolean                  | false     |
 | average       | 平均值   | boolean                  | false     |

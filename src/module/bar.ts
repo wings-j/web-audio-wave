@@ -7,9 +7,9 @@ import CalcDeltaColor from '../util/calc-delta-color'
 
 const option = {
   color: '#000000',
-  gap: 0,
   gradientColor: null as string[] | null,
-  dynamicColor: null as [string, string] | null
+  dynamicColor: null as [string, string] | null,
+  gap: 0
 }
 
 type Option = typeof option
