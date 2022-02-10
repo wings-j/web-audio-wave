@@ -74,15 +74,16 @@ option：可视化配置
 
 ## 通用配置（Option）
 
-| 名称         | 说明                    | 类型   | 默认值 |
-| ------------ | ----------------------- | ------ | ------ |
-| rate         | 帧率                    | number | 60     |
-| size         | FFT 长度                | number | 512    |
-| pow          | 对 FFT 的值做幂运算的幂 | number | 1      |
-| gain         | 增益                    | number | 1      |
-| width        | SVG 宽度                | number | 1024   |
-| height       | SVG 高度                | number | 1024   |
-| effect.trace | 轨迹。[0,1]             | number | 1      |
+| 名称         | 说明                    | 类型    | 默认值 |
+| ------------ | ----------------------- | ------- | ------ |
+| width        | SVG 宽度                | number  | 1024   |
+| height       | SVG 高度                | number  | 1024   |
+| rate         | 帧率                    | number  | 60     |
+| size         | FFT 长度                | number  | 512    |
+| pow          | 对 FFT 的值做幂运算的幂 | number  | 1      |
+| gain         | 增益                    | number  | 1      |
+| db           | 分贝                    | boolean | false  |
+| effect.trace | 轨迹。[0,1]             | number  | 1      |
 
 ## 类型配置（VisualizeOption）
 

@@ -48,6 +48,7 @@ class Circle extends Graph<Option> {
 
     let brush = this.visualize.brush
     brush.strokeStyle = this.option.color
+    brush.fillStyle = this.option.color
     brush.lineWidth = this.option.width
 
     if (this.option.gradientColor?.length) {

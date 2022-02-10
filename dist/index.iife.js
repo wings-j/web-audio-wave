@@ -7,12 +7,13 @@ var WebAudioWave = (function () {
   const context = {
       type: '',
       audio: document.createElement('audio'),
+      width: 1024,
+      height: 1024,
       rate: 60,
       size: 512,
       gain: 1,
       pow: 1,
-      width: 1024,
-      height: 1024,
+      db: false,
       effect: {
           trace: 1
       }
@@ -2494,6 +2495,7 @@ var WebAudioWave = (function () {
           super.config(option);
           let brush = this.visualize.brush;
           brush.strokeStyle = this.option.color;
+          brush.fillStyle = this.option.color;
           brush.lineWidth = this.option.width;
           if (this.option.gradientColor?.length) {
               let gradient = brush.createRadialGradient(0, 0, 0, 0, 0, this.maxRadius);
@@ -12617,66 +12619,79 @@ var WebAudioWave = (function () {
   /**
    * 分析
    */
-  /**
-   * 滤波类型
-   */
-  var Type;
-  (function (Type) {
-      Type["lowpass"] = "lowpass";
-      Type["highpass"] = "highpass";
-      Type["bandpass"] = "bandpass";
-      Type["lowshelf"] = "lowshelf";
-      Type["highshelf"] = "highshelf";
-      Type["peaking"] = "peaking";
-      Type["notch"] = "notch";
-      Type["allpass"] = "allpass";
-  })(Type || (Type = {}));
   const max = 256; // 2**8
   /**
    * 类
    */
   class Audio {
-      /**
-       * 获取数据
-       * @param analyser 分析器
-       * @return 数据
-       */
-      static get(analyser) {
-          let data = new Uint8Array(analyser.fftSize);
-          analyser.getByteFrequencyData(data);
-          let output = Array.from(data)
-              .map(a => a / max)
-              .slice(0, Math.floor(data.length / 2));
-          return output;
-      }
+      _context;
       context;
       source; // 头结点
       analyser; // 尾结点
+      second; // 最后第二个结点
+      last; // 最后第一个结点
       /**
        * 构造方法
        * @param context 上下文
        */
       constructor(context) {
+          this._context = context;
           this.context = new AudioContext();
           this.source = this.context.createMediaElementSource(context.audio);
           this.source.connect(this.context.destination);
           this.analyser = this.context.createAnalyser();
           this.analyser.fftSize = context.size;
-          let nodes = [];
-          nodes.push(this.source);
-          let gain = this.context.createGain();
-          gain.gain.value = context.gain;
-          nodes.push(gain);
-          nodes.push(this.analyser);
-          for (let i = 0; i < nodes.length - 1; i++) {
-              nodes[i].connect(nodes[i + 1]);
+          this.source.connect(this.analyser);
+          this.second = this.source;
+          this.last = this.analyser;
+          if (context.gain !== 1) {
+              this.addGain();
           }
       }
       /**
        * 获取数据
+       * @return 数据
        */
       get() {
-          return Audio.get(this.analyser);
+          let data = new Uint8Array(this.analyser.fftSize);
+          this.analyser.getByteFrequencyData(data);
+          let d = Array.from(data)
+              .map(a => a / max)
+              .slice(0, Math.floor(data.length / 2));
+          if (this._context.db) {
+              d = d.map(a => Math.min(1 + Math.log10(a), 1));
+          }
+          return d;
+      }
+      /**
+       * 添加结点
+       * @param node 结点
+       */
+      add(node) {
+          this.second.disconnect(this.last);
+          this.second.connect(node);
+          node.connect(this.last);
+          this.second = node;
+      }
+      /**
+       * 添加增益
+       * @param value 值
+       */
+      addGain(value = this._context.gain) {
+          let gain = this.context.createGain();
+          gain.gain.value = value;
+          this.add(gain);
+      }
+      /**
+       * 添加滤波器
+       */
+      addFilter(type, frequency, q, gain = 1) {
+          let filter = this.context.createBiquadFilter();
+          filter.type = type;
+          filter.frequency.value = frequency;
+          filter.Q.value = q;
+          filter.gain.value = gain;
+          this.add(filter);
       }
   }
 
