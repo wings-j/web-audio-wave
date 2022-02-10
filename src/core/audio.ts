@@ -46,10 +46,16 @@ class Audio {
    */
   get() {
     let data = new Uint8Array(this.analyser.fftSize)
-    this.analyser.getByteFrequencyData(data)
+
+    if (this._context.time) {
+      this.analyser.getByteTimeDomainData(data)
+    } else {
+      this.analyser.getByteFrequencyData(data)
+    }
+
     let d = Array.from(data)
-      .map(a => a / max)
       .slice(0, Math.floor(data.length / 2))
+      .map(a => a / max)
 
     if (this._context.db) {
       d = d.map(a => Math.min(1 + Math.log10(a), 1))

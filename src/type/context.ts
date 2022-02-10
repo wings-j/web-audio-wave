@@ -8,6 +8,7 @@ const context = {
   width: 1024,
   height: 1024,
   rate: 60,
+  time: false,
   size: 512,
   gain: 1,
   pow: 1,

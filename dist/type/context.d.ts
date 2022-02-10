@@ -7,6 +7,7 @@ declare const context: {
     width: number;
     height: number;
     rate: number;
+    time: boolean;
     size: number;
     gain: number;
     pow: number;
