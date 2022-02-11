@@ -36,6 +36,8 @@ class Curve extends Graph<Option> {
     audio: ConstructorParameters<typeof Graph>[2]
   ) {
     super(context, visualize, audio)
+
+    this.config(option)
   }
 
   /**

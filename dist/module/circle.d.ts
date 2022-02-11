@@ -15,7 +15,7 @@ declare type Option = typeof option;
  * 类
  */
 declare class Circle extends Graph<Option> {
-    get maxRadius(): number;
+    private get maxRadius();
     /**
      * 构造方法
      * @param context 上下文

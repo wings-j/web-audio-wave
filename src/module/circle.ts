@@ -21,7 +21,7 @@ type Option = typeof option
  * 类
  */
 class Circle extends Graph<Option> {
-  get maxRadius() {
+  private get maxRadius() {
     return Math.min(this.context.width, this.context.height) / 2
   }
 
@@ -37,6 +37,8 @@ class Circle extends Graph<Option> {
     audio: ConstructorParameters<typeof Graph>[2]
   ) {
     super(context, visualize, audio)
+
+    this.config(option)
   }
 
   /**

@@ -11,7 +11,7 @@ import Audio from '../core/audio'
  */
 abstract class Graph<Option extends Record<string, any> = {}> {
   context: Context
-  option = {} as Option
+  option: Option = {} as Option
   visualize: Visualize
   audio?: Audio
 

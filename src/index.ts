@@ -7,6 +7,7 @@ import Graph from './type/graph'
 import Bar, { Option as BarOption } from './module/bar'
 import Curve, { Option as CurveOption } from './module/curve'
 import Circle, { Option as CircleOption } from './module/circle'
+import Ripple, { Option as RippleOption } from './module/ripple'
 import { merge } from 'lodash-es'
 import { Animate } from '@wings-j/web-sdk'
 import Visualize from './core/visualize'
@@ -54,6 +55,8 @@ class WebAudioWave {
       this.graph = new Curve(this.context, this.visualize, this.audio)
     } else if (this.context.type === 'circle') {
       this.graph = new Circle(this.context, this.visualize, this.audio)
+    } else if (this.context.type === 'ripple') {
+      this.graph = new Ripple(this.context, this.visualize, this.audio)
     }
   }
 

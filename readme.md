@@ -88,7 +88,7 @@ option：可视化配置
 
 ## 类型配置（VisualizeOption）
 
-下列选项中，颜色选项有优先级，从高到低：
+颜色选项用 6 位 HEX 表示，并且有优先级，从高到低：
 
 1. `dynamicColor`
 2. `gradientColor`

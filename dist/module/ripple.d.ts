@@ -5,24 +5,28 @@ import Graph from '../type/graph';
 import { FilterType } from '../core/audio';
 declare const option: {
     color: string;
-    gradientColor: string[] | null;
     dynamicColor: [string, string] | null;
     width: number;
+    dynamicWidth: [number, number] | null;
     fill: boolean;
+    threshold: number;
+    period: number;
+    interval: number;
+    minRadius: number;
+    maxRadius: number;
     filter: "" | FilterType;
     filterFrequency: number;
     filterQ: number;
     filterGain: number;
-    threshold: number;
-    period: number;
-    interval: number;
 };
 declare type Option = typeof option;
 /**
  * 类
  */
 declare class Ripple extends Graph<Option> {
-    get maxRadius(): number;
+    private units;
+    private count;
+    private get maxRadius();
     /**
      * 构造方法
      * @param context 上下文

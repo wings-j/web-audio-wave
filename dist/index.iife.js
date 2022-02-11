@@ -87,6 +87,12 @@ var WebAudioWave = (function () {
   /**
    * 柱形
    */
+  const option$3 = {
+      color: '#000000',
+      gradientColor: null,
+      dynamicColor: null,
+      gap: 0
+  };
   /**
    * 类
    */
@@ -99,6 +105,7 @@ var WebAudioWave = (function () {
        */
       constructor(context, visualize, audio) {
           super(context, visualize, audio);
+          this.config(option$3);
       }
       /**
        * 配置
@@ -6931,6 +6938,16 @@ var WebAudioWave = (function () {
   /**
    * 曲线
    */
+  const option$2 = {
+      color: '#000000',
+      gradientColor: null,
+      dynamicColor: null,
+      width: 1,
+      mirror: false,
+      reverse: false,
+      backforth: false,
+      smooth: false
+  };
   /**
    * 类
    */
@@ -6943,6 +6960,7 @@ var WebAudioWave = (function () {
        */
       constructor(context, visualize, audio) {
           super(context, visualize, audio);
+          this.config(option$2);
       }
       /**
        * 配置
@@ -7006,6 +7024,14 @@ var WebAudioWave = (function () {
   /**
    * 圆形
    */
+  const option$1 = {
+      color: '#000000',
+      gradientColor: null,
+      dynamicColor: null,
+      width: 1,
+      fill: false,
+      average: false
+  };
   /**
    * 类
    */
@@ -7021,6 +7047,7 @@ var WebAudioWave = (function () {
        */
       constructor(context, visualize, audio) {
           super(context, visualize, audio);
+          this.config(option$1);
       }
       /**
        * 配置
@@ -7091,6 +7118,135 @@ var WebAudioWave = (function () {
                           }
                           brush.stroke();
                       }
+                  }
+              }
+          });
+      }
+  }
+
+  /**
+   * 波纹
+   */
+  const option = {
+      color: '#000000',
+      dynamicColor: null,
+      width: 1,
+      dynamicWidth: null,
+      fill: false,
+      threshold: 0,
+      period: context.rate,
+      interval: context.rate,
+      minRadius: 0,
+      maxRadius: 0,
+      filter: '',
+      filterFrequency: 0,
+      filterQ: 0,
+      filterGain: 1
+  };
+  /**
+   * 单元
+   */
+  class Unit {
+      time = 0;
+      period;
+      minRadius;
+      maxRadius;
+      color;
+      get finished() {
+          return this.time >= this.period;
+      }
+      get phase() {
+          return Math.min(this.time / this.period, 1);
+      }
+      constructor(period, minRadius, maxRadius, color) {
+          this.period = period;
+          this.minRadius = minRadius;
+          this.maxRadius = maxRadius;
+          this.color = color;
+      }
+      /**
+       * 更新
+       */
+      update() {
+          this.time++;
+      }
+      /**
+       * 数据
+       */
+      get() {
+          let radius = (this.maxRadius - this.minRadius) * this.phase + this.minRadius;
+          let color = this.color +
+              Math.floor(255 * (1 - this.phase))
+                  .toString(16)
+                  .padStart(2, '0');
+          return {
+              radius,
+              color
+          };
+      }
+  }
+  /**
+   * 类
+   */
+  class Ripple extends Graph {
+      units = new Set();
+      count = 0;
+      get maxRadius() {
+          return Math.min(this.context.width, this.context.height) / 2;
+      }
+      /**
+       * 构造方法
+       * @param context 上下文
+       * @param audio 音频
+       * @param visualize 可视化
+       */
+      constructor(context, visualize, audio) {
+          super(context, visualize, audio);
+          this.config(option);
+          this.option.period = context.rate;
+          this.option.interval = context.rate;
+      }
+      /**
+       * 配置
+       * @param option 选项
+       */
+      config(option) {
+          super.config(option);
+          let brush = this.visualize.brush;
+          brush.lineWidth = this.option.width;
+      }
+      /**
+       * 更新
+       */
+      update() {
+          this.count++;
+          let brush = this.visualize.brush;
+          if (this.count >= this.option.interval) {
+              let data = this.audio?.get() ?? [];
+              let average = mean(data);
+              if (average >= this.option.threshold) {
+                  this.count = 0;
+                  this.units.add(new Unit(this.option.period, this.option.minRadius, this.option.maxRadius || this.maxRadius, this.option.color));
+              }
+          }
+          this.visualize.update(() => {
+              for (let a of this.units.values()) {
+                  let { radius, color } = a.get();
+                  brush.beginPath();
+                  brush.moveTo(radius, 0);
+                  brush.arc(0, 0, radius, 0, 360);
+                  brush.closePath();
+                  if (this.option.fill) {
+                      brush.fillStyle = color;
+                      brush.fill();
+                  }
+                  else {
+                      brush.strokeStyle = color;
+                      brush.stroke();
+                  }
+                  a.update();
+                  if (a.finished) {
+                      this.units.delete(a);
                   }
               }
           });
@@ -12759,6 +12915,9 @@ var WebAudioWave = (function () {
           }
           else if (this.context.type === 'circle') {
               this.graph = new Circle(this.context, this.visualize, this.audio);
+          }
+          else if (this.context.type === 'ripple') {
+              this.graph = new Ripple(this.context, this.visualize, this.audio);
           }
       }
       /**
