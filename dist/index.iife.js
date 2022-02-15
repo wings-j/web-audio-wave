@@ -37,13 +37,11 @@ var WebAudioWave = (function () {
        * @param context 上下文
        * @param audio 音频
        * @param visualize 可视化
-       * @param option 选项
        */
-      constructor(context, visualize, audio, option) {
+      constructor(context, visualize, audio) {
           this.context = context;
           this.visualize = visualize;
           this.audio = audio;
-          this.config(option);
       }
       /**
        * 配置
@@ -87,7 +85,7 @@ var WebAudioWave = (function () {
   /**
    * 柱形
    */
-  const option$3 = {
+  const preset$3 = {
       color: '#000000',
       gradientColor: null,
       dynamicColor: null,
@@ -103,9 +101,9 @@ var WebAudioWave = (function () {
        * @param audio 音频
        * @param visualize 可视化
        */
-      constructor(context, visualize, audio) {
+      constructor(context, visualize, audio, option) {
           super(context, visualize, audio);
-          this.config(option$3);
+          this.config(Object.assign({}, preset$3, option));
       }
       /**
        * 配置
@@ -6938,7 +6936,7 @@ var WebAudioWave = (function () {
   /**
    * 曲线
    */
-  const option$2 = {
+  const preset$2 = {
       color: '#000000',
       gradientColor: null,
       dynamicColor: null,
@@ -6958,9 +6956,9 @@ var WebAudioWave = (function () {
        * @param audio 音频
        * @param visualize 可视化
        */
-      constructor(context, visualize, audio) {
+      constructor(context, visualize, audio, option) {
           super(context, visualize, audio);
-          this.config(option$2);
+          this.config(Object.assign({}, preset$2, option));
       }
       /**
        * 配置
@@ -7024,7 +7022,7 @@ var WebAudioWave = (function () {
   /**
    * 圆形
    */
-  const option$1 = {
+  const preset$1 = {
       color: '#000000',
       gradientColor: null,
       dynamicColor: null,
@@ -7045,9 +7043,9 @@ var WebAudioWave = (function () {
        * @param audio 音频
        * @param visualize 可视化
        */
-      constructor(context, visualize, audio) {
+      constructor(context, visualize, audio, option) {
           super(context, visualize, audio);
-          this.config(option$1);
+          this.config(Object.assign({}, preset$1, option));
       }
       /**
        * 配置
@@ -7127,17 +7125,17 @@ var WebAudioWave = (function () {
   /**
    * 波纹
    */
-  const option = {
+  const preset = {
       color: '#000000',
       dynamicColor: null,
       width: 1,
-      dynamicWidth: null,
       fill: false,
       threshold: 0,
       period: context.rate,
       interval: context.rate,
       minRadius: 0,
       maxRadius: 0,
+      timeFunction: (v) => v,
       filter: '',
       filterFrequency: 0,
       filterQ: 0,
@@ -7147,21 +7145,17 @@ var WebAudioWave = (function () {
    * 单元
    */
   class Unit {
-      time = 0;
-      period;
-      minRadius;
-      maxRadius;
+      option;
       color;
+      time = 0;
       get finished() {
-          return this.time >= this.period;
+          return this.time >= this.option.period;
       }
       get phase() {
-          return Math.min(this.time / this.period, 1);
+          return Math.min(this.time / this.option.period, 1);
       }
-      constructor(period, minRadius, maxRadius, color) {
-          this.period = period;
-          this.minRadius = minRadius;
-          this.maxRadius = maxRadius;
+      constructor(option, color) {
+          this.option = option;
           this.color = color;
       }
       /**
@@ -7174,7 +7168,7 @@ var WebAudioWave = (function () {
        * 数据
        */
       get() {
-          let radius = (this.maxRadius - this.minRadius) * this.phase + this.minRadius;
+          let radius = (this.option.maxRadius - this.option.minRadius) * this.phase + this.option.minRadius;
           let color = this.color +
               Math.floor(255 * (1 - this.phase))
                   .toString(16)
@@ -7191,20 +7185,15 @@ var WebAudioWave = (function () {
   class Ripple extends Graph {
       units = new Set();
       count = 0;
-      get maxRadius() {
-          return Math.min(this.context.width, this.context.height) / 2;
-      }
       /**
        * 构造方法
        * @param context 上下文
        * @param audio 音频
        * @param visualize 可视化
        */
-      constructor(context, visualize, audio) {
+      constructor(context, visualize, audio, option) {
           super(context, visualize, audio);
-          this.config(option);
-          this.option.period = context.rate;
-          this.option.interval = context.rate;
+          this.config(Object.assign({}, preset, { period: context.rate, interval: context.rate, maxRadius: Math.min(this.context.width, this.context.height) / 2 }, option));
       }
       /**
        * 配置
@@ -7214,6 +7203,9 @@ var WebAudioWave = (function () {
           super.config(option);
           let brush = this.visualize.brush;
           brush.lineWidth = this.option.width;
+          if (this.option.filter) {
+              this.audio?.addFilter(this.option.filter, this.option.filterFrequency, this.option.filterQ, this.option.filterGain);
+          }
       }
       /**
        * 更新
@@ -7226,7 +7218,11 @@ var WebAudioWave = (function () {
               let average = mean(data);
               if (average >= this.option.threshold) {
                   this.count = 0;
-                  this.units.add(new Unit(this.option.period, this.option.minRadius, this.option.maxRadius || this.maxRadius, this.option.color));
+                  let color = this.option.color;
+                  if (this.option.dynamicColor?.length === 2) {
+                      color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
+                  }
+                  this.units.add(new Unit(this.option, color));
               }
           }
           this.visualize.update(() => {
@@ -12798,27 +12794,27 @@ var WebAudioWave = (function () {
    * 类
    */
   class Audio {
-      _context;
       context;
+      _context;
       source; // 头结点
       analyser; // 尾结点
       second; // 最后第二个结点
       last; // 最后第一个结点
       /**
        * 构造方法
-       * @param context 上下文
+       * @param _context 上下文
        */
-      constructor(context) {
-          this._context = context;
-          this.context = new AudioContext();
-          this.source = this.context.createMediaElementSource(context.audio);
-          this.source.connect(this.context.destination);
-          this.analyser = this.context.createAnalyser();
-          this.analyser.fftSize = context.size;
+      constructor(_context) {
+          this.context = _context;
+          this._context = new AudioContext();
+          this.source = this._context.createMediaElementSource(_context.audio);
+          this.source.connect(this._context.destination);
+          this.analyser = this._context.createAnalyser();
+          this.analyser.fftSize = _context.size;
           this.source.connect(this.analyser);
           this.second = this.source;
           this.last = this.analyser;
-          if (context.gain !== 1) {
+          if (_context.gain !== 1) {
               this.addGain();
           }
       }
@@ -12828,7 +12824,7 @@ var WebAudioWave = (function () {
        */
       get() {
           let data = new Uint8Array(this.analyser.fftSize);
-          if (this._context.time) {
+          if (this.context.time) {
               this.analyser.getByteTimeDomainData(data);
           }
           else {
@@ -12837,7 +12833,7 @@ var WebAudioWave = (function () {
           let d = Array.from(data)
               .slice(0, Math.floor(data.length / 2))
               .map(a => a / max);
-          if (this._context.db) {
+          if (this.context.db) {
               d = d.map(a => Math.min(1 + Math.log10(a), 1));
           }
           return d;
@@ -12856,8 +12852,8 @@ var WebAudioWave = (function () {
        * 添加增益
        * @param value 值
        */
-      addGain(value = this._context.gain) {
-          let gain = this.context.createGain();
+      addGain(value = this.context.gain) {
+          let gain = this._context.createGain();
           gain.gain.value = value;
           this.add(gain);
       }
@@ -12865,7 +12861,7 @@ var WebAudioWave = (function () {
        * 添加滤波器
        */
       addFilter(type, frequency, q, gain = 1) {
-          let filter = this.context.createBiquadFilter();
+          let filter = this._context.createBiquadFilter();
           filter.type = type;
           filter.frequency.value = frequency;
           filter.Q.value = q;
@@ -12895,7 +12891,7 @@ var WebAudioWave = (function () {
        * @param audio 音频组件
        * @param option 选项
        */
-      constructor(type, audio, option) {
+      constructor(type, audio, option, graphOption) {
           if (!type) {
               throw new Error('Missing parameter: type');
           }
@@ -12907,18 +12903,25 @@ var WebAudioWave = (function () {
           this.context.audio = audio;
           this.animate = new Animate(this.callback.bind(this), this.context.rate);
           this.visualize = new Visualize(this.context);
+          this.audio = new Audio(this.context);
           if (this.context.type === 'bar') {
-              this.graph = new Bar(this.context, this.visualize, this.audio);
+              this.graph = new Bar(this.context, this.visualize, this.audio, graphOption);
           }
           else if (this.context.type === 'curve') {
-              this.graph = new Curve(this.context, this.visualize, this.audio);
+              this.graph = new Curve(this.context, this.visualize, this.audio, graphOption);
           }
           else if (this.context.type === 'circle') {
-              this.graph = new Circle(this.context, this.visualize, this.audio);
+              this.graph = new Circle(this.context, this.visualize, this.audio, graphOption);
           }
           else if (this.context.type === 'ripple') {
-              this.graph = new Ripple(this.context, this.visualize, this.audio);
+              this.graph = new Ripple(this.context, this.visualize, this.audio, graphOption);
           }
+          audio.addEventListener('play', () => {
+              this.play();
+          });
+          audio.addEventListener('pause', () => {
+              this.stop();
+          });
       }
       /**
        * 回调方法
@@ -12930,10 +12933,7 @@ var WebAudioWave = (function () {
        * 播放
        */
       play() {
-          if (!this.audio && this.context.audio && this.graph) {
-              this.audio = new Audio(this.context); // 因为浏览器的音频权限策略，延迟初始化
-              this.graph.audio = this.audio;
-          }
+          this.audio._context.resume();
           this.animate.play();
       }
       /**
@@ -12941,13 +12941,6 @@ var WebAudioWave = (function () {
        */
       stop() {
           this.animate.stop();
-      }
-      /**
-       * 配置
-       * @param option 选项
-       */
-      config(option) {
-          this.graph?.config(option);
       }
   }
 

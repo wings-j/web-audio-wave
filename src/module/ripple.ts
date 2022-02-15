@@ -8,46 +8,42 @@ import { mean } from 'lodash-es'
 import { FilterType } from '../core/audio'
 import Context from '../type/context'
 
-const option = {
+const preset = {
   color: '#000000',
   dynamicColor: null as [string, string] | null,
   width: 1,
-  dynamicWidth: null as [number, number] | null,
   fill: false,
   threshold: 0,
-  period: Context.rate, // 扩散周期，帧数
+  period: Context.rate, // 扩散时间，帧数
   interval: Context.rate, // 产生间隔，帧数
   minRadius: 0,
   maxRadius: 0,
+  timeFunction: (v: number) => v,
   filter: '' as '' | FilterType,
   filterFrequency: 0,
   filterQ: 0,
   filterGain: 1
 }
 
-type Option = typeof option
+type Option = typeof preset
 
 /**
  * 单元
  */
 class Unit {
-  private time = 0
-  private period: number
-  private minRadius: number
-  private maxRadius: number
+  private option: Option
   private color: string
+  private time = 0
 
   get finished() {
-    return this.time >= this.period
+    return this.time >= this.option.period
   }
   get phase() {
-    return Math.min(this.time / this.period, 1)
+    return Math.min(this.time / this.option.period, 1)
   }
 
-  constructor(period: number, minRadius: number, maxRadius: number, color: string) {
-    this.period = period
-    this.minRadius = minRadius
-    this.maxRadius = maxRadius
+  constructor(option: Option, color: string) {
+    this.option = option
     this.color = color
   }
 
@@ -61,7 +57,7 @@ class Unit {
    * 数据
    */
   get() {
-    let radius = (this.maxRadius - this.minRadius) * this.phase + this.minRadius
+    let radius = (this.option.maxRadius - this.option.minRadius) * this.phase + this.option.minRadius
     let color =
       this.color +
       Math.floor(255 * (1 - this.phase))
@@ -82,10 +78,6 @@ class Ripple extends Graph<Option> {
   private units = new Set<Unit>()
   private count = 0
 
-  private get maxRadius() {
-    return Math.min(this.context.width, this.context.height) / 2
-  }
-
   /**
    * 构造方法
    * @param context 上下文
@@ -95,26 +87,31 @@ class Ripple extends Graph<Option> {
   constructor(
     context: ConstructorParameters<typeof Graph>[0],
     visualize: ConstructorParameters<typeof Graph>[1],
-    audio: ConstructorParameters<typeof Graph>[2]
+    audio: ConstructorParameters<typeof Graph>[2],
+    option: Option
   ) {
     super(context, visualize, audio)
 
-    this.config(option)
-
-    this.option.period = context.rate
-    this.option.interval = context.rate
+    this.config(
+      Object.assign({}, preset, { period: context.rate, interval: context.rate, maxRadius: Math.min(this.context.width, this.context.height) / 2 }, option)
+    )
   }
 
   /**
    * 配置
    * @param option 选项
    */
-  config(option?: Partial<Option>) {
+  protected config(option?: Partial<Option>) {
     super.config(option)
 
     let brush = this.visualize.brush
     brush.lineWidth = this.option.width
+
+    if (this.option.filter) {
+      this.audio?.addFilter(this.option.filter, this.option.filterFrequency, this.option.filterQ, this.option.filterGain)
+    }
   }
+
   /**
    * 更新
    */
@@ -128,7 +125,13 @@ class Ripple extends Graph<Option> {
 
       if (average >= this.option.threshold) {
         this.count = 0
-        this.units.add(new Unit(this.option.period, this.option.minRadius, this.option.maxRadius || this.maxRadius, this.option.color))
+
+        let color = this.option.color
+        if (this.option.dynamicColor?.length === 2) {
+          color = CalcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average)
+        }
+
+        this.units.add(new Unit(this.option, color))
       }
     }
 

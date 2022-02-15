@@ -5,14 +5,14 @@
 import Graph from '../type/graph'
 import CalcDeltaColor from '../util/calc-delta-color'
 
-const option = {
+const preset = {
   color: '#000000',
   gradientColor: null as string[] | null,
   dynamicColor: null as [string, string] | null,
   gap: 0
 }
 
-type Option = typeof option
+type Option = typeof preset
 
 /**
  * 类
@@ -27,18 +27,19 @@ class Bar extends Graph<Option> {
   constructor(
     context: ConstructorParameters<typeof Graph>[0],
     visualize: ConstructorParameters<typeof Graph>[1],
-    audio: ConstructorParameters<typeof Graph>[2]
+    audio: ConstructorParameters<typeof Graph>[2],
+    option?: Option
   ) {
     super(context, visualize, audio)
 
-    this.config(option)
+    this.config(Object.assign({}, preset, option))
   }
 
   /**
    * 配置
    * @param option 选项
    */
-  config(option?: Partial<Option>) {
+  protected config(option?: Partial<Option>) {
     super.config(option)
 
     this.visualize.brush.fillStyle = this.option.color
@@ -52,6 +53,7 @@ class Bar extends Graph<Option> {
       this.visualize.brush.fillStyle = gradient
     }
   }
+
   /**
    * 更新
    */

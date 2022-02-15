@@ -25,11 +25,12 @@
           'ripple',
           { size: 256 },
           {
-            color: '#ff00f0',
-            width: 3,
+            dynamicColor: ['#00ffff', '#ff00f0'],
+            width: 5,
             period: 120,
             interval: 30,
-            threshold: 0.3
+            threshold: 0.3,
+            fill: true
           }
         )
       })

@@ -1,6 +1,6 @@
 {
   "name": "@wings-j/web-audio-wave",
-  "version": "2.0.0",
+  "version": "1.1.1",
   "description": "Web音频波形，频域可视化",
   "author": "wings-j",
   "license": "GPL-3.0-or-later",
@@ -29,7 +29,6 @@
     "@types/jest": "^27.0.2",
     "@types/lodash-es": "^4.17.5",
     "babel-jest": "^27.2.2",
-    "colornames": "^1.1.1",
     "jest": "^27.2.2",
     "lodash-es": "^4.17.21",
     "rollup": "^2.51.1",

@@ -7,17 +7,17 @@ declare type FilterType = 'highpass' | 'bandpass' | 'lowshelf' | 'highshelf' | '
  * 类
  */
 declare class Audio {
-    private _context;
     private context;
+    _context: AudioContext;
     private source;
     private analyser;
     private second;
     private last;
     /**
      * 构造方法
-     * @param context 上下文
+     * @param _context 上下文
      */
-    constructor(context: Context);
+    constructor(_context: Context);
     /**
      * 获取数据
      * @return 数据

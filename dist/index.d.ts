@@ -13,7 +13,7 @@ declare class WebAudioWave {
     private context;
     private animate;
     private visualize;
-    private audio?;
+    private audio;
     private graph?;
     get canvas(): HTMLCanvasElement;
     /**
@@ -22,7 +22,7 @@ declare class WebAudioWave {
      * @param audio 音频组件
      * @param option 选项
      */
-    constructor(type: string, audio: HTMLAudioElement, option?: Option);
+    constructor(type: string, audio: HTMLAudioElement, option?: Option, graphOption?: GraphOption);
     /**
      * 回调方法
      */
@@ -35,10 +35,5 @@ declare class WebAudioWave {
      * 停止
      */
     stop(): void;
-    /**
-     * 配置
-     * @param option 选项
-     */
-    config(option: GraphOption): void;
 }
 export default WebAudioWave;

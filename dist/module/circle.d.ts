@@ -2,7 +2,7 @@
  * 圆形
  */
 import Graph from '../type/graph';
-declare const option: {
+declare const preset: {
     color: string;
     gradientColor: string[] | null;
     dynamicColor: [string, string] | null;
@@ -10,7 +10,7 @@ declare const option: {
     fill: boolean;
     average: boolean;
 };
-declare type Option = typeof option;
+declare type Option = typeof preset;
 /**
  * 类
  */
@@ -22,12 +22,12 @@ declare class Circle extends Graph<Option> {
      * @param audio 音频
      * @param visualize 可视化
      */
-    constructor(context: ConstructorParameters<typeof Graph>[0], visualize: ConstructorParameters<typeof Graph>[1], audio: ConstructorParameters<typeof Graph>[2]);
+    constructor(context: ConstructorParameters<typeof Graph>[0], visualize: ConstructorParameters<typeof Graph>[1], audio: ConstructorParameters<typeof Graph>[2], option?: Option);
     /**
      * 配置
      * @param option 选项
      */
-    config(option?: Partial<Option>): void;
+    protected config(option?: Partial<Option>): void;
     /**
      * 更新
      */

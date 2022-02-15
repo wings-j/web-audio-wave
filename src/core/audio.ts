@@ -12,8 +12,8 @@ type FilterType = 'highpass' | 'bandpass' | 'lowshelf' | 'highshelf' | 'peaking'
  * 类
  */
 class Audio {
-  private _context: Context
-  private context: AudioContext
+  private context: Context
+  _context: AudioContext
   private source: MediaElementAudioSourceNode // 头结点
   private analyser: AnalyserNode // 尾结点
   private second: AudioNode // 最后第二个结点
@@ -21,21 +21,21 @@ class Audio {
 
   /**
    * 构造方法
-   * @param context 上下文
+   * @param _context 上下文
    */
-  constructor(context: Context) {
-    this._context = context
-    this.context = new AudioContext()
-    this.source = this.context.createMediaElementSource(context.audio)
-    this.source.connect(this.context.destination)
-    this.analyser = this.context.createAnalyser()
-    this.analyser.fftSize = context.size
+  constructor(_context: Context) {
+    this.context = _context
+    this._context = new AudioContext()
+    this.source = this._context.createMediaElementSource(_context.audio)
+    this.source.connect(this._context.destination)
+    this.analyser = this._context.createAnalyser()
+    this.analyser.fftSize = _context.size
     this.source.connect(this.analyser)
 
     this.second = this.source
     this.last = this.analyser
 
-    if (context.gain !== 1) {
+    if (_context.gain !== 1) {
       this.addGain()
     }
   }
@@ -47,7 +47,7 @@ class Audio {
   get() {
     let data = new Uint8Array(this.analyser.fftSize)
 
-    if (this._context.time) {
+    if (this.context.time) {
       this.analyser.getByteTimeDomainData(data)
     } else {
       this.analyser.getByteFrequencyData(data)
@@ -57,7 +57,7 @@ class Audio {
       .slice(0, Math.floor(data.length / 2))
       .map(a => a / max)
 
-    if (this._context.db) {
+    if (this.context.db) {
       d = d.map(a => Math.min(1 + Math.log10(a), 1))
     }
 
@@ -77,8 +77,8 @@ class Audio {
    * 添加增益
    * @param value 值
    */
-  addGain(value = this._context.gain) {
-    let gain = this.context.createGain()
+  addGain(value = this.context.gain) {
+    let gain = this._context.createGain()
     gain.gain.value = value
 
     this.add(gain)
@@ -87,7 +87,7 @@ class Audio {
    * 添加滤波器
    */
   addFilter(type: 'highpass' | 'bandpass' | 'lowshelf' | 'highshelf' | 'peaking' | 'notch' | 'allpass', frequency: number, q: number, gain = 1) {
-    let filter = this.context.createBiquadFilter()
+    let filter = this._context.createBiquadFilter()
     filter.type = type
     filter.frequency.value = frequency
     filter.Q.value = q
