@@ -126,3 +126,56 @@ option：可视化配置
 | width         | 线宽     | number                   | 1         |
 | fill          | 填充     | boolean                  | false     |
 | average       | 平均值   | boolean                  | false     |
+
+### circle
+
+| 名称            | 说明                               | 类型                              | 默认值    |
+| --------------- | ---------------------------------- | --------------------------------- | --------- |
+| color           | 颜色                               | string                            | "#000000" |
+| dynamicColor    | 动态颜色                           | [string, string] \| null          | null      |
+| width           | 线宽                               | number                            | 1         |
+| fill            | 填充                               | boolean                           | false     |
+| threshold       | 阈值                               | number                            | 0         |
+| period          | 动画帧数                           | number                            | 60        |
+| interval        | 最小间隔帧数                       | number                            | 60        |
+| minRadius       | 最小半径                           | number                            | 0         |
+| maxRadius       | 最大半径。默认为全局设置宽高的一半 | number                            | 0         |
+| ease            | 缓动函数                           | ((v: number) => number) \| string | undefined |
+| filter          | 过滤器                             | string                            | ''        |
+| filterFrequency | 过滤器频率                         | number                            | 0         |
+| filterQ         | 过滤器 Q 值                        | number                            | 0         |
+| filterGain      | 过滤器增益                         | number                            | 1         |
+
+可选的缓动函数：
+
+- linear
+- sineIn
+- sineOut
+- sineInOut
+- quadIn
+- quadOut
+- quatInOut
+- cubicIn
+- cubicOut
+- cubitInOut
+- quartIn
+- quartOut
+- quartInOut
+- quintIn
+- quintOut
+- quintInOut
+- expoIn
+- expoOut
+- expoInOut
+- circIn
+- circOut
+- circInOut
+- backIn
+- backOut
+- backInOut
+- elasticIn
+- elasticOut
+- elasticInOut
+- bounceIn
+- bounceOut
+- bounceInOut

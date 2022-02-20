@@ -2,7 +2,6 @@
  * 波纹
  */
 import Graph from '../type/graph';
-import { FilterType } from '../core/audio';
 declare const preset: {
     color: string;
     dynamicColor: [string, string] | null;
@@ -13,8 +12,8 @@ declare const preset: {
     interval: number;
     minRadius: number;
     maxRadius: number;
-    timeFunction: (v: number) => number;
-    filter: "" | FilterType;
+    ease: ((v: number) => number) | "linear" | "sineIn" | "sineOut" | "sineInOut" | "quadIn" | "quadOut" | "quadInOut" | "cubicIn" | "cubicOut" | "cubicInOut" | "quartIn" | "quartOut" | "quartInOut" | "quintIn" | "quintOut" | "quintInOut" | "expoIn" | "expoOut" | "expoInOut" | "circIn" | "circOut" | "circInOut" | "backIn" | "backOut" | "backInOut" | "elasticIn" | "elasticOut" | "elasticInOut" | "bounceIn" | "bounceOut" | "bounceInOut" | undefined;
+    filter: "" | BiquadFilterType;
     filterFrequency: number;
     filterQ: number;
     filterGain: number;

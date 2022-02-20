@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Circle</title>
+    <title>Ripple</title>
 
     <style>
       body {
@@ -28,9 +28,12 @@
             dynamicColor: ['#00ffff', '#ff00f0'],
             width: 5,
             period: 120,
-            interval: 30,
+            interval: 10,
             threshold: 0.3,
-            fill: true
+            fill: true,
+            ease: 'cubicOut',
+            filter: 'highpass',
+            filterFrequency: '10000'
           }
         )
       })

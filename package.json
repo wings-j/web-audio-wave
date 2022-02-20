@@ -1,6 +1,6 @@
 {
   "name": "@wings-j/web-audio-wave",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "Web音频波形，频域可视化",
   "author": "wings-j",
   "license": "GPL-3.0-or-later",
@@ -40,7 +40,7 @@
   "dependencies": {
     "@babel/runtime-corejs3": "^7.15.4",
     "@wings-j/canvas": "^3.0.0",
-    "@wings-j/web-sdk": "^2.2.0",
+    "@wings-j/web-sdk": "^3.0.0",
     "core-js": "^3.18.2",
     "lodash-es": "^4.17.21"
   }

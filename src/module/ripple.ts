@@ -5,8 +5,8 @@
 import Graph from '../type/graph'
 import CalcDeltaColor from '../util/calc-delta-color'
 import { mean } from 'lodash-es'
-import { FilterType } from '../core/audio'
 import Context from '../type/context'
+import { Ease } from '@wings-j/web-sdk'
 
 const preset = {
   color: '#000000',
@@ -18,8 +18,8 @@ const preset = {
   interval: Context.rate, // 产生间隔，帧数
   minRadius: 0,
   maxRadius: 0,
-  timeFunction: (v: number) => v,
-  filter: '' as '' | FilterType,
+  ease: undefined as undefined | ((v: number) => number) | keyof typeof Ease,
+  filter: '' as '' | BiquadFilterType,
   filterFrequency: 0,
   filterQ: 0,
   filterGain: 1
@@ -57,10 +57,19 @@ class Unit {
    * 数据
    */
   get() {
-    let radius = (this.option.maxRadius - this.option.minRadius) * this.phase + this.option.minRadius
+    let phase = this.phase
+    if (this.option.ease) {
+      if (typeof this.option.ease === 'string') {
+        phase = Ease[this.option.ease](phase)
+      } else {
+        phase = this.option.ease(phase)
+      }
+    }
+
+    let radius = (this.option.maxRadius - this.option.minRadius) * phase + this.option.minRadius
     let color =
       this.color +
-      Math.floor(255 * (1 - this.phase))
+      Math.floor(255 * (1 - phase))
         .toString(16)
         .padStart(2, '0')
 

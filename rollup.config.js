@@ -5,9 +5,16 @@ import PackageJson from './package.json'
 import { getBabelOutputPlugin } from '@rollup/plugin-babel'
 import RollupPluginCommonjs from '@rollup/plugin-commonjs'
 
-let config
-if (process.argv.includes('-w')) {
-  config = {
+export default [
+  {
+    input: Path.resolve(__dirname, './src/index.ts'),
+    external: Object.keys(PackageJson.dependencies || {}),
+    plugins: [RollupPluginNodeResolve(), RollupPluginTypescript2(), getBabelOutputPlugin({ configFile: Path.resolve(__dirname, 'babel.config.js') })],
+    output: {
+      file: PackageJson.module
+    }
+  },
+  {
     input: Path.resolve(__dirname, './src/index.ts'),
     plugins: [RollupPluginNodeResolve(), RollupPluginCommonjs(), RollupPluginTypescript2()],
     output: {
@@ -16,15 +23,4 @@ if (process.argv.includes('-w')) {
       name: 'WebAudioWave'
     }
   }
-} else {
-  config = {
-    input: Path.resolve(__dirname, './src/index.ts'),
-    external: Object.keys(PackageJson.dependencies || {}),
-    plugins: [RollupPluginNodeResolve(), RollupPluginTypescript2(), getBabelOutputPlugin({ configFile: Path.resolve(__dirname, 'babel.config.js') })],
-    output: {
-      file: PackageJson.module
-    }
-  }
-}
-
-export default config
+]

@@ -2,7 +2,6 @@
  * 分析
  */
 import { Context } from '../type/context';
-declare type FilterType = 'highpass' | 'bandpass' | 'lowshelf' | 'highshelf' | 'peaking' | 'notch' | 'allpass';
 /**
  * 类
  */
@@ -36,7 +35,6 @@ declare class Audio {
     /**
      * 添加滤波器
      */
-    addFilter(type: 'highpass' | 'bandpass' | 'lowshelf' | 'highshelf' | 'peaking' | 'notch' | 'allpass', frequency: number, q: number, gain?: number): void;
+    addFilter(type: BiquadFilterType, frequency: number, q: number, gain?: number): void;
 }
 export default Audio;
-export { FilterType };

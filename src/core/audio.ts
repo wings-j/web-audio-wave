@@ -6,8 +6,6 @@ import { Context } from '../type/context'
 
 const max = 256 // 2**8
 
-type FilterType = 'highpass' | 'bandpass' | 'lowshelf' | 'highshelf' | 'peaking' | 'notch' | 'allpass'
-
 /**
  * 类
  */
@@ -86,7 +84,7 @@ class Audio {
   /**
    * 添加滤波器
    */
-  addFilter(type: 'highpass' | 'bandpass' | 'lowshelf' | 'highshelf' | 'peaking' | 'notch' | 'allpass', frequency: number, q: number, gain = 1) {
+  addFilter(type: BiquadFilterType, frequency: number, q: number, gain = 1) {
     let filter = this._context.createBiquadFilter()
     filter.type = type
     filter.frequency.value = frequency
@@ -98,4 +96,3 @@ class Audio {
 }
 
 export default Audio
-export { FilterType }

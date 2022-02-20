@@ -5,6 +5,7 @@ import _Symbol from "@babel/runtime-corejs3/core-js-stable/symbol";
 import _getIteratorMethod from "@babel/runtime-corejs3/core-js/get-iterator-method";
 import _Array$isArray from "@babel/runtime-corejs3/core-js-stable/array/is-array";
 import _toConsumableArray from "@babel/runtime-corejs3/helpers/toConsumableArray";
+import _assertThisInitialized from "@babel/runtime-corejs3/helpers/assertThisInitialized";
 import _get from "@babel/runtime-corejs3/helpers/get";
 import _inherits from "@babel/runtime-corejs3/helpers/inherits";
 import _possibleConstructorReturn from "@babel/runtime-corejs3/helpers/possibleConstructorReturn";
@@ -15,7 +16,7 @@ import _defineProperty from "@babel/runtime-corejs3/helpers/defineProperty";
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof _Symbol !== "undefined" && _getIteratorMethod(o) || o["@@iterator"]; if (!it) { if (_Array$isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
-function _unsupportedIterableToArray(o, minLen) { var _context12; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = _sliceInstanceProperty(_context12 = Object.prototype.toString.call(o)).call(_context12, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return _Array$from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _unsupportedIterableToArray(o, minLen) { var _context15; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = _sliceInstanceProperty(_context15 = Object.prototype.toString.call(o)).call(_context15, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return _Array$from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
@@ -61,10 +62,15 @@ import _padStartInstanceProperty from "@babel/runtime-corejs3/core-js-stable/ins
 import _Array$from from "@babel/runtime-corejs3/core-js-stable/array/from";
 import _reverseInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/reverse";
 import _fillInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/fill";
+import _Set from "@babel/runtime-corejs3/core-js-stable/set";
+import _filterInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/filter";
+import _valuesInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/values";
 import _mapInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/map";
+import _Math$log from "@babel/runtime-corejs3/core-js-stable/math/log10";
 import _bindInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/bind";
 import { mean, merge } from 'lodash-es';
-import { Animate } from '@wings-j/web-sdk';
+import { PathCurve } from '@wings-j/canvas';
+import { Ease, Animate } from '@wings-j/web-sdk';
 /**
  * 上下文
  */
@@ -72,12 +78,14 @@ import { Animate } from '@wings-j/web-sdk';
 var context = {
   type: '',
   audio: document.createElement('audio'),
+  width: 1024,
+  height: 1024,
   rate: 60,
+  time: false,
   size: 512,
   gain: 1,
   pow: 1,
-  width: 1024,
-  height: 1024,
+  db: false,
   effect: {
     trace: 1
   }
@@ -99,9 +107,8 @@ var Graph = /*#__PURE__*/function () {
    * @param context 上下文
    * @param audio 音频
    * @param visualize 可视化
-   * @param option 选项
    */
-  function Graph(context, visualize, audio, option) {
+  function Graph(context, visualize, audio) {
     _classCallCheck(this, Graph);
 
     _defineProperty(this, "context", void 0);
@@ -115,7 +122,6 @@ var Graph = /*#__PURE__*/function () {
     this.context = context;
     this.visualize = visualize;
     this.audio = audio;
-    this.config(option);
   }
   /**
    * 配置
@@ -146,7 +152,7 @@ var Graph = /*#__PURE__*/function () {
 
 
 function calcDeltaColor(start, end, delta) {
-  var _context, _context2, _context3, _context4, _context5;
+  var _context2, _context3, _context4, _context5, _context6;
 
   var sr = _parseInt(_sliceInstanceProperty(start).call(start, 1, 3), 16);
 
@@ -164,7 +170,7 @@ function calcDeltaColor(start, end, delta) {
   var dg = eg - sg;
   var db = eb - sb;
 
-  var result = _concatInstanceProperty(_context = _concatInstanceProperty(_context2 = "#".concat(_padStartInstanceProperty(_context3 = Math.round(sr + delta * dr).toString(16)).call(_context3, 2, '0'))).call(_context2, _padStartInstanceProperty(_context4 = Math.round(sg + delta * dg).toString(16)).call(_context4, 2, '0'))).call(_context, _padStartInstanceProperty(_context5 = Math.round(sb + delta * db).toString(16)).call(_context5, 2, '0'));
+  var result = _concatInstanceProperty(_context2 = _concatInstanceProperty(_context3 = "#".concat(_padStartInstanceProperty(_context4 = Math.round(sr + delta * dr).toString(16)).call(_context4, 2, '0'))).call(_context3, _padStartInstanceProperty(_context5 = Math.round(sg + delta * dg).toString(16)).call(_context5, 2, '0'))).call(_context2, _padStartInstanceProperty(_context6 = Math.round(sb + delta * db).toString(16)).call(_context6, 2, '0'));
 
   return result;
 }
@@ -172,10 +178,16 @@ function calcDeltaColor(start, end, delta) {
  * 柱形
  */
 
+
+var preset$3 = {
+  color: '#000000',
+  gradientColor: null,
+  dynamicColor: null,
+  gap: 0
+};
 /**
  * 类
  */
-
 
 var Bar = /*#__PURE__*/function (_Graph) {
   _inherits(Bar, _Graph);
@@ -188,10 +200,16 @@ var Bar = /*#__PURE__*/function (_Graph) {
    * @param audio 音频
    * @param visualize 可视化
    */
-  function Bar(context, visualize, audio) {
+  function Bar(context, visualize, audio, option) {
+    var _this;
+
     _classCallCheck(this, Bar);
 
-    return _super.call(this, context, visualize, audio);
+    _this = _super.call(this, context, visualize, audio);
+
+    _this.config(_Object$assign({}, preset$3, option));
+
+    return _this;
   }
   /**
    * 配置
@@ -227,27 +245,27 @@ var Bar = /*#__PURE__*/function (_Graph) {
     value: function update() {
       var _this$audio$get,
           _this$audio,
-          _this = this;
+          _this2 = this;
 
       var data = _Array$from((_this$audio$get = (_this$audio = this.audio) === null || _this$audio === void 0 ? void 0 : _this$audio.get()) !== null && _this$audio$get !== void 0 ? _this$audio$get : []);
 
       this.visualize.update(function () {
         var length = data.length;
-        var width = _this.context.width / length;
+        var width = _this2.context.width / length;
 
         for (var i = 0; i < length; i++) {
-          var _this$option$dynamicC;
+          var _this2$option$dynamic;
 
-          var x = -_this.context.width / 2 + i * width;
-          var y = _this.context.height / 2;
-          var w = width - _this.option.gap;
-          var h = -(data[i] * _this.context.height);
+          var x = -_this2.context.width / 2 + i * width;
+          var y = _this2.context.height / 2;
+          var w = width - _this2.option.gap;
+          var h = -(data[i] * _this2.context.height);
 
-          if (((_this$option$dynamicC = _this.option.dynamicColor) === null || _this$option$dynamicC === void 0 ? void 0 : _this$option$dynamicC.length) === 2) {
-            _this.visualize.brush.fillStyle = calcDeltaColor(_this.option.dynamicColor[0], _this.option.dynamicColor[1], data[i]);
+          if (((_this2$option$dynamic = _this2.option.dynamicColor) === null || _this2$option$dynamic === void 0 ? void 0 : _this2$option$dynamic.length) === 2) {
+            _this2.visualize.brush.fillStyle = calcDeltaColor(_this2.option.dynamicColor[0], _this2.option.dynamicColor[1], data[i]);
           }
 
-          _this.visualize.brush.fillRect(x, y, w, h);
+          _this2.visualize.brush.fillRect(x, y, w, h);
         }
       });
     }
@@ -256,89 +274,23 @@ var Bar = /*#__PURE__*/function (_Graph) {
   return Bar;
 }(Graph);
 /**
- * 画曲线
- */
-
-/**
- * 计算控制点
- * @param points 点数组，[{x:float,y:float}]
- * @param i 点索引
- * @param a 系数a
- * @param b 系数b
- * @return 控制点，{pa:{x:float,y:float},pb:{x:float,y:float}}
- */
-
-
-function calcControlPoint(points, i, a, b) {
-  var pax;
-  var pay;
-
-  if (i < 1) {
-    //处理极端情形
-    pax = points[0][0] + (points[1][0] - points[0][0]) * a;
-    pay = points[0][1] + (points[1][1] - points[0][1]) * a;
-  } else {
-    pax = points[i][0] + (points[i + 1][0] - points[i - 1][0]) * a;
-    pay = points[i][1] + (points[i + 1][1] - points[i - 1][1]) * a;
-  }
-
-  var pbx;
-  var pby;
-
-  if (i > points.length - 3) {
-    //处理极端情形
-    var last = points.length - 1;
-    pbx = points[last][0] - (points[last][0] - points[last - 1][0]) * b;
-    pby = points[last][1] - (points[last][1] - points[last - 1][1]) * b;
-  } else {
-    pbx = points[i + 1][0] - (points[i + 2][0] - points[i][0]) * b;
-    pby = points[i + 1][1] - (points[i + 2][1] - points[i][1]) * b;
-  }
-
-  return {
-    pa: [pax, pay],
-    pb: [pbx, pby]
-  };
-}
-/**
- * 函数
- * @param points 点数组
- * @param type 类型
- * @param a 系数a。可省略
- * @param b 系数b。可省略
- * @return 路径
- */
-
-
-function generatePath(points, type) {
-  var _ref = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
-      _ref$a = _ref.a,
-      a = _ref$a === void 0 ? 0.25 : _ref$a,
-      _ref$b = _ref.b,
-      b = _ref$b === void 0 ? 0.25 : _ref$b;
-
-  var path = new Path2D();
-  path.moveTo(points[0][0], points[0][1]);
-
-  for (var i = 1, l = points.length; i < l; i++) {
-    if (type === 'bezier') {
-      var ctrlPoint = calcControlPoint(points, i - 1, a, b);
-      path.bezierCurveTo(ctrlPoint.pa[0], ctrlPoint.pa[1], ctrlPoint.pb[0], ctrlPoint.pb[1], points[i][0], points[i][1]);
-    } else {
-      path.lineTo(points[i][0], points[i][1]);
-    }
-  }
-
-  return path;
-}
-/**
  * 曲线
  */
 
+
+var preset$2 = {
+  color: '#000000',
+  gradientColor: null,
+  dynamicColor: null,
+  width: 1,
+  mirror: false,
+  reverse: false,
+  backforth: false,
+  smooth: false
+};
 /**
  * 类
  */
-
 
 var Curve = /*#__PURE__*/function (_Graph2) {
   _inherits(Curve, _Graph2);
@@ -351,10 +303,16 @@ var Curve = /*#__PURE__*/function (_Graph2) {
    * @param audio 音频
    * @param visualize 可视化
    */
-  function Curve(context, visualize, audio) {
+  function Curve(context, visualize, audio, option) {
+    var _this3;
+
     _classCallCheck(this, Curve);
 
-    return _super2.call(this, context, visualize, audio);
+    _this3 = _super2.call(this, context, visualize, audio);
+
+    _this3.config(_Object$assign({}, preset$2, option));
+
+    return _this3;
   }
   /**
    * 配置
@@ -392,7 +350,7 @@ var Curve = /*#__PURE__*/function (_Graph2) {
     value: function update() {
       var _this$audio$get2,
           _this$audio2,
-          _this2 = this;
+          _this4 = this;
 
       var data = _Array$from((_this$audio$get2 = (_this$audio2 = this.audio) === null || _this$audio2 === void 0 ? void 0 : _this$audio2.get()) !== null && _this$audio$get2 !== void 0 ? _this$audio$get2 : []);
 
@@ -403,41 +361,41 @@ var Curve = /*#__PURE__*/function (_Graph2) {
       }
 
       if (this.option.mirror) {
-        var _context6;
+        var _context7;
 
-        d = _concatInstanceProperty(d).call(d, _reverseInstanceProperty(_context6 = _Array$from(d)).call(_context6));
+        d = _concatInstanceProperty(d).call(d, _reverseInstanceProperty(_context7 = _Array$from(d)).call(_context7));
       }
 
       var brush = this.visualize.brush;
       this.visualize.update(function () {
-        var _this2$option$dynamic;
+        var _this4$option$dynamic;
 
-        if (((_this2$option$dynamic = _this2.option.dynamicColor) === null || _this2$option$dynamic === void 0 ? void 0 : _this2$option$dynamic.length) === 2) {
+        if (((_this4$option$dynamic = _this4.option.dynamicColor) === null || _this4$option$dynamic === void 0 ? void 0 : _this4$option$dynamic.length) === 2) {
           var average = mean(data);
-          brush.strokeStyle = calcDeltaColor(_this2.option.dynamicColor[0], _this2.option.dynamicColor[1], average);
+          brush.strokeStyle = calcDeltaColor(_this4.option.dynamicColor[0], _this4.option.dynamicColor[1], average);
         }
 
         var points = [];
-        var dw = _this2.context.width / d.length;
-        var startX = -_this2.context.width / 2;
+        var dw = _this4.context.width / d.length;
+        var startX = -_this4.context.width / 2;
         var direction = 1;
 
         for (var i = 0, l = d.length; i < l; i++) {
           var x = startX + dw * i;
-          var y = -(direction * d[i] * _this2.context.height) / 2;
+          var y = -(direction * d[i] * _this4.context.height) / 2;
           points.push([x, y]);
 
-          if (_this2.option.backforth) {
+          if (_this4.option.backforth) {
             direction *= -1;
           }
         }
 
         var path;
 
-        if (_this2.option.smooth) {
-          path = generatePath(points, 'bezier');
+        if (_this4.option.smooth) {
+          path = PathCurve(points, 'bezier');
         } else {
-          path = generatePath(points);
+          path = PathCurve(points);
         }
 
         brush.stroke(path);
@@ -451,10 +409,18 @@ var Curve = /*#__PURE__*/function (_Graph2) {
  * 圆形
  */
 
+
+var preset$1 = {
+  color: '#000000',
+  gradientColor: null,
+  dynamicColor: null,
+  width: 1,
+  fill: false,
+  average: false
+};
 /**
  * 类
  */
-
 
 var Circle = /*#__PURE__*/function (_Graph3) {
   _inherits(Circle, _Graph3);
@@ -467,10 +433,16 @@ var Circle = /*#__PURE__*/function (_Graph3) {
    * @param audio 音频
    * @param visualize 可视化
    */
-  function Circle(context, visualize, audio) {
+  function Circle(context, visualize, audio, option) {
+    var _this5;
+
     _classCallCheck(this, Circle);
 
-    return _super3.call(this, context, visualize, audio);
+    _this5 = _super3.call(this, context, visualize, audio);
+
+    _this5.config(_Object$assign({}, preset$1, option));
+
+    return _this5;
   }
   /**
    * 配置
@@ -492,6 +464,7 @@ var Circle = /*#__PURE__*/function (_Graph3) {
 
       var brush = this.visualize.brush;
       brush.strokeStyle = this.option.color;
+      brush.fillStyle = this.option.color;
       brush.lineWidth = this.option.width;
 
       if ((_this$option$gradient3 = this.option.gradientColor) !== null && _this$option$gradient3 !== void 0 && _this$option$gradient3.length) {
@@ -514,47 +487,47 @@ var Circle = /*#__PURE__*/function (_Graph3) {
     value: function update() {
       var _this$audio$get3,
           _this$audio3,
-          _this3 = this;
+          _this6 = this;
 
       var brush = this.visualize.brush;
       var data = (_this$audio$get3 = (_this$audio3 = this.audio) === null || _this$audio3 === void 0 ? void 0 : _this$audio3.get()) !== null && _this$audio$get3 !== void 0 ? _this$audio$get3 : [];
       this.visualize.update(function () {
-        if (_this3.option.average) {
-          var _this3$option$dynamic;
+        if (_this6.option.average) {
+          var _this6$option$dynamic;
 
           var average = mean(data);
           brush.beginPath();
-          brush.moveTo(_this3.maxRadius * average, 0);
-          brush.arc(0, 0, _this3.maxRadius * average, 0, 360);
+          brush.moveTo(_this6.maxRadius * average, 0);
+          brush.arc(0, 0, _this6.maxRadius * average, 0, 360);
           brush.closePath();
 
-          if (((_this3$option$dynamic = _this3.option.dynamicColor) === null || _this3$option$dynamic === void 0 ? void 0 : _this3$option$dynamic.length) === 2) {
-            var color = calcDeltaColor(_this3.option.dynamicColor[0], _this3.option.dynamicColor[1], average);
+          if (((_this6$option$dynamic = _this6.option.dynamicColor) === null || _this6$option$dynamic === void 0 ? void 0 : _this6$option$dynamic.length) === 2) {
+            var color = calcDeltaColor(_this6.option.dynamicColor[0], _this6.option.dynamicColor[1], average);
             brush.fillStyle = color;
           }
 
-          if (_fillInstanceProperty(_this3.option)) {
+          if (_fillInstanceProperty(_this6.option)) {
             _fillInstanceProperty(brush).call(brush);
           } else {
             brush.stroke();
           }
         } else {
-          if (_fillInstanceProperty(_this3.option)) {
+          if (_fillInstanceProperty(_this6.option)) {
             var _iterator = _createForOfIteratorHelper(data),
                 _step;
 
             try {
               for (_iterator.s(); !(_step = _iterator.n()).done;) {
-                var _this3$option$dynamic2;
+                var _this6$option$dynamic2;
 
                 var a = _step.value;
                 brush.beginPath();
-                brush.moveTo(_this3.maxRadius * a, 0);
-                brush.arc(0, 0, _this3.maxRadius * a, 0, 360);
+                brush.moveTo(_this6.maxRadius * a, 0);
+                brush.arc(0, 0, _this6.maxRadius * a, 0, 360);
                 brush.closePath();
 
-                if (((_this3$option$dynamic2 = _this3.option.dynamicColor) === null || _this3$option$dynamic2 === void 0 ? void 0 : _this3$option$dynamic2.length) === 2) {
-                  var _color = calcDeltaColor(_this3.option.dynamicColor[0], _this3.option.dynamicColor[1], a);
+                if (((_this6$option$dynamic2 = _this6.option.dynamicColor) === null || _this6$option$dynamic2 === void 0 ? void 0 : _this6$option$dynamic2.length) === 2) {
+                  var _color = calcDeltaColor(_this6.option.dynamicColor[0], _this6.option.dynamicColor[1], a);
 
                   brush.fillStyle = _color;
                 }
@@ -572,16 +545,16 @@ var Circle = /*#__PURE__*/function (_Graph3) {
 
             try {
               for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-                var _this3$option$dynamic3;
+                var _this6$option$dynamic3;
 
                 var _a = _step2.value;
                 brush.beginPath();
-                brush.moveTo(_this3.maxRadius * _a, 0);
-                brush.arc(0, 0, _this3.maxRadius * _a, 0, 360);
+                brush.moveTo(_this6.maxRadius * _a, 0);
+                brush.arc(0, 0, _this6.maxRadius * _a, 0, 360);
                 brush.closePath();
 
-                if (((_this3$option$dynamic3 = _this3.option.dynamicColor) === null || _this3$option$dynamic3 === void 0 ? void 0 : _this3$option$dynamic3.length) === 2) {
-                  var _color2 = calcDeltaColor(_this3.option.dynamicColor[0], _this3.option.dynamicColor[1], _a);
+                if (((_this6$option$dynamic3 = _this6.option.dynamicColor) === null || _this6$option$dynamic3 === void 0 ? void 0 : _this6$option$dynamic3.length) === 2) {
+                  var _color2 = calcDeltaColor(_this6.option.dynamicColor[0], _this6.option.dynamicColor[1], _a);
 
                   brush.strokeStyle = _color2;
                 }
@@ -600,6 +573,228 @@ var Circle = /*#__PURE__*/function (_Graph3) {
   }]);
 
   return Circle;
+}(Graph);
+/**
+ * 波纹
+ */
+
+
+var preset = {
+  color: '#000000',
+  dynamicColor: null,
+  width: 1,
+  fill: false,
+  threshold: 0,
+  period: context.rate,
+  interval: context.rate,
+  minRadius: 0,
+  maxRadius: 0,
+  ease: undefined,
+  filter: '',
+  filterFrequency: 0,
+  filterQ: 0,
+  filterGain: 1
+};
+/**
+ * 单元
+ */
+
+var Unit = /*#__PURE__*/function () {
+  function Unit(option, color) {
+    _classCallCheck(this, Unit);
+
+    _defineProperty(this, "option", void 0);
+
+    _defineProperty(this, "color", void 0);
+
+    _defineProperty(this, "time", 0);
+
+    this.option = option;
+    this.color = color;
+  }
+  /**
+   * 更新
+   */
+
+
+  _createClass(Unit, [{
+    key: "finished",
+    get: function get() {
+      return this.time >= this.option.period;
+    }
+  }, {
+    key: "phase",
+    get: function get() {
+      return Math.min(this.time / this.option.period, 1);
+    }
+  }, {
+    key: "update",
+    value: function update() {
+      this.time++;
+    }
+    /**
+     * 数据
+     */
+
+  }, {
+    key: "get",
+    value: function get() {
+      var _context8;
+
+      var phase = this.phase;
+
+      if (this.option.ease) {
+        if (typeof this.option.ease === 'string') {
+          phase = Ease[this.option.ease](phase);
+        } else {
+          phase = this.option.ease(phase);
+        }
+      }
+
+      var radius = (this.option.maxRadius - this.option.minRadius) * phase + this.option.minRadius;
+
+      var color = this.color + _padStartInstanceProperty(_context8 = Math.floor(255 * (1 - phase)).toString(16)).call(_context8, 2, '0');
+
+      return {
+        radius: radius,
+        color: color
+      };
+    }
+  }]);
+
+  return Unit;
+}();
+/**
+ * 类
+ */
+
+
+var Ripple = /*#__PURE__*/function (_Graph4) {
+  _inherits(Ripple, _Graph4);
+
+  var _super4 = _createSuper(Ripple);
+
+  /**
+   * 构造方法
+   * @param context 上下文
+   * @param audio 音频
+   * @param visualize 可视化
+   */
+  function Ripple(context, visualize, audio, option) {
+    var _this7;
+
+    _classCallCheck(this, Ripple);
+
+    _this7 = _super4.call(this, context, visualize, audio);
+
+    _defineProperty(_assertThisInitialized(_this7), "units", new _Set());
+
+    _defineProperty(_assertThisInitialized(_this7), "count", 0);
+
+    _this7.config(_Object$assign({}, preset, {
+      period: context.rate,
+      interval: context.rate,
+      maxRadius: Math.min(_this7.context.width, _this7.context.height) / 2
+    }, option));
+
+    return _this7;
+  }
+  /**
+   * 配置
+   * @param option 选项
+   */
+
+
+  _createClass(Ripple, [{
+    key: "config",
+    value: function config(option) {
+      _get(_getPrototypeOf(Ripple.prototype), "config", this).call(this, option);
+
+      var brush = this.visualize.brush;
+      brush.lineWidth = this.option.width;
+
+      if (_filterInstanceProperty(this.option)) {
+        var _this$audio4;
+
+        (_this$audio4 = this.audio) === null || _this$audio4 === void 0 ? void 0 : _this$audio4.addFilter(_filterInstanceProperty(this.option), this.option.filterFrequency, this.option.filterQ, this.option.filterGain);
+      }
+    }
+    /**
+     * 更新
+     */
+
+  }, {
+    key: "update",
+    value: function update() {
+      var _this8 = this;
+
+      this.count++;
+      var brush = this.visualize.brush;
+
+      if (this.count >= this.option.interval) {
+        var _this$audio$get4, _this$audio5;
+
+        var data = (_this$audio$get4 = (_this$audio5 = this.audio) === null || _this$audio5 === void 0 ? void 0 : _this$audio5.get()) !== null && _this$audio$get4 !== void 0 ? _this$audio$get4 : [];
+        var average = mean(data);
+
+        if (average >= this.option.threshold) {
+          var _this$option$dynamicC;
+
+          this.count = 0;
+          var color = this.option.color;
+
+          if (((_this$option$dynamicC = this.option.dynamicColor) === null || _this$option$dynamicC === void 0 ? void 0 : _this$option$dynamicC.length) === 2) {
+            color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
+          }
+
+          this.units.add(new Unit(this.option, color));
+        }
+      }
+
+      this.visualize.update(function () {
+        var _context9;
+
+        var _iterator3 = _createForOfIteratorHelper(_valuesInstanceProperty(_context9 = _this8.units).call(_context9)),
+            _step3;
+
+        try {
+          for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+            var a = _step3.value;
+
+            var _a$get = a.get(),
+                radius = _a$get.radius,
+                _color3 = _a$get.color;
+
+            brush.beginPath();
+            brush.moveTo(radius, 0);
+            brush.arc(0, 0, radius, 0, 360);
+            brush.closePath();
+
+            if (_fillInstanceProperty(_this8.option)) {
+              brush.fillStyle = _color3;
+
+              _fillInstanceProperty(brush).call(brush);
+            } else {
+              brush.strokeStyle = _color3;
+              brush.stroke();
+            }
+
+            a.update();
+
+            if (a.finished) {
+              _this8.units["delete"](a);
+            }
+          }
+        } catch (err) {
+          _iterator3.e(err);
+        } finally {
+          _iterator3.f();
+        }
+      });
+    }
+  }]);
+
+  return Ripple;
 }(Graph);
 /**
  * 可视化
@@ -659,16 +854,16 @@ var Visualize = /*#__PURE__*/function () {
   }, {
     key: "update",
     value: function update(draw) {
-      var _this$o, _this$c, _this$c2, _context8;
+      var _this$o, _this$c, _this$c2, _context11;
 
       (_this$o = this.o).clearRect.apply(_this$o, _toConsumableArray(this.wrap));
 
       if (this.context.effect.trace < 1) {
-        var _this$o2, _context7;
+        var _this$o2, _context10;
 
         this.o.globalAlpha = this.context.effect.trace;
 
-        (_this$o2 = this.o).drawImage.apply(_this$o2, _concatInstanceProperty(_context7 = [this.canvas]).call(_context7, _toConsumableArray(this.wrap)));
+        (_this$o2 = this.o).drawImage.apply(_this$o2, _concatInstanceProperty(_context10 = [this.canvas]).call(_context10, _toConsumableArray(this.wrap)));
 
         this.o.globalAlpha = 1;
       }
@@ -677,7 +872,7 @@ var Visualize = /*#__PURE__*/function () {
 
       (_this$c = this.c).clearRect.apply(_this$c, _toConsumableArray(this.wrap));
 
-      (_this$c2 = this.c).drawImage.apply(_this$c2, _concatInstanceProperty(_context8 = [this.offscreen]).call(_context8, _toConsumableArray(this.wrap)));
+      (_this$c2 = this.c).drawImage.apply(_this$c2, _concatInstanceProperty(_context11 = [this.offscreen]).call(_context11, _toConsumableArray(this.wrap)));
     }
   }]);
 
@@ -687,23 +882,6 @@ var Visualize = /*#__PURE__*/function () {
  * 分析
  */
 
-/**
- * 滤波类型
- */
-
-
-var Type;
-
-(function (Type) {
-  Type["lowpass"] = "lowpass";
-  Type["highpass"] = "highpass";
-  Type["bandpass"] = "bandpass";
-  Type["lowshelf"] = "lowshelf";
-  Type["highshelf"] = "highshelf";
-  Type["peaking"] = "peaking";
-  Type["notch"] = "notch";
-  Type["allpass"] = "allpass";
-})(Type || (Type = {}));
 
 var max = 256; // 2**8
 
@@ -712,66 +890,119 @@ var max = 256; // 2**8
  */
 
 var Audio = /*#__PURE__*/function () {
+  // 头结点
   // 尾结点
+  // 最后第二个结点
+  // 最后第一个结点
 
   /**
    * 构造方法
-   * @param context 上下文
+   * @param _context 上下文
    */
-  function Audio(context) {
+  function Audio(_context) {
     _classCallCheck(this, Audio);
 
     _defineProperty(this, "context", void 0);
+
+    _defineProperty(this, "_context", void 0);
 
     _defineProperty(this, "source", void 0);
 
     _defineProperty(this, "analyser", void 0);
 
-    this.context = new AudioContext();
-    this.source = this.context.createMediaElementSource(context.audio);
-    this.source.connect(this.context.destination);
-    this.analyser = this.context.createAnalyser();
-    this.analyser.fftSize = context.size;
-    var nodes = [];
-    nodes.push(this.source);
-    var gain = this.context.createGain();
-    gain.gain.value = context.gain;
-    nodes.push(gain);
-    nodes.push(this.analyser);
+    _defineProperty(this, "second", void 0);
 
-    for (var i = 0; i < nodes.length - 1; i++) {
-      nodes[i].connect(nodes[i + 1]);
+    _defineProperty(this, "last", void 0);
+
+    this.context = _context;
+    this._context = new AudioContext();
+    this.source = this._context.createMediaElementSource(_context.audio);
+    this.source.connect(this._context.destination);
+    this.analyser = this._context.createAnalyser();
+    this.analyser.fftSize = _context.size;
+    this.source.connect(this.analyser);
+    this.second = this.source;
+    this.last = this.analyser;
+
+    if (_context.gain !== 1) {
+      this.addGain();
     }
   }
   /**
    * 获取数据
+   * @return 数据
    */
 
 
   _createClass(Audio, [{
     key: "get",
     value: function get() {
-      return Audio.get(this.analyser);
-    }
-  }], [{
-    key: "get",
-    value:
-    /**
-     * 获取数据
-     * @param analyser 分析器
-     * @return 数据
-     */
-    function get(analyser) {
-      var _context9, _context10;
+      var _context12, _context13;
 
-      var data = new Uint8Array(analyser.fftSize);
-      analyser.getByteFrequencyData(data);
+      var data = new Uint8Array(this.analyser.fftSize);
 
-      var output = _sliceInstanceProperty(_context9 = _mapInstanceProperty(_context10 = _Array$from(data)).call(_context10, function (a) {
+      if (this.context.time) {
+        this.analyser.getByteTimeDomainData(data);
+      } else {
+        this.analyser.getByteFrequencyData(data);
+      }
+
+      var d = _mapInstanceProperty(_context12 = _sliceInstanceProperty(_context13 = _Array$from(data)).call(_context13, 0, Math.floor(data.length / 2))).call(_context12, function (a) {
         return a / max;
-      })).call(_context9, 0, Math.floor(data.length / 2));
+      });
 
-      return output;
+      if (this.context.db) {
+        d = _mapInstanceProperty(d).call(d, function (a) {
+          return Math.min(1 + _Math$log(a), 1);
+        });
+      }
+
+      return d;
+    }
+    /**
+     * 添加结点
+     * @param node 结点
+     */
+
+  }, {
+    key: "add",
+    value: function add(node) {
+      this.second.disconnect(this.last);
+      this.second.connect(node);
+      node.connect(this.last);
+      this.second = node;
+    }
+    /**
+     * 添加增益
+     * @param value 值
+     */
+
+  }, {
+    key: "addGain",
+    value: function addGain() {
+      var value = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.context.gain;
+
+      var gain = this._context.createGain();
+
+      gain.gain.value = value;
+      this.add(gain);
+    }
+    /**
+     * 添加滤波器
+     */
+
+  }, {
+    key: "addFilter",
+    value: function addFilter(type, frequency, q) {
+      var gain = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+
+      var filter = this._context.createBiquadFilter();
+
+      filter.type = type;
+      filter.frequency.value = frequency;
+      filter.Q.value = q;
+      filter.gain.value = gain;
+      this.add(filter);
     }
   }]);
 
@@ -793,8 +1024,9 @@ var WebAudioWave = /*#__PURE__*/function () {
    * @param audio 音频组件
    * @param option 选项
    */
-  function WebAudioWave(type, audio, option) {
-    var _context11;
+  function WebAudioWave(type, audio, option, graphOption) {
+    var _context14,
+        _this9 = this;
 
     _classCallCheck(this, WebAudioWave);
 
@@ -819,16 +1051,26 @@ var WebAudioWave = /*#__PURE__*/function () {
     this.context = merge({}, context, option);
     this.context.type = type;
     this.context.audio = audio;
-    this.animate = new Animate(_bindInstanceProperty(_context11 = this.callback).call(_context11, this), this.context.rate);
+    this.animate = new Animate(_bindInstanceProperty(_context14 = this.callback).call(_context14, this), this.context.rate);
     this.visualize = new Visualize(this.context);
+    this.audio = new Audio(this.context);
 
     if (this.context.type === 'bar') {
-      this.graph = new Bar(this.context, this.visualize, this.audio);
+      this.graph = new Bar(this.context, this.visualize, this.audio, graphOption);
     } else if (this.context.type === 'curve') {
-      this.graph = new Curve(this.context, this.visualize, this.audio);
+      this.graph = new Curve(this.context, this.visualize, this.audio, graphOption);
     } else if (this.context.type === 'circle') {
-      this.graph = new Circle(this.context, this.visualize, this.audio);
+      this.graph = new Circle(this.context, this.visualize, this.audio, graphOption);
+    } else if (this.context.type === 'ripple') {
+      this.graph = new Ripple(this.context, this.visualize, this.audio, graphOption);
     }
+
+    audio.addEventListener('play', function () {
+      _this9.play();
+    });
+    audio.addEventListener('pause', function () {
+      _this9.stop();
+    });
   }
   /**
    * 回调方法
@@ -854,11 +1096,7 @@ var WebAudioWave = /*#__PURE__*/function () {
   }, {
     key: "play",
     value: function play() {
-      if (!this.audio && this.context.audio && this.graph) {
-        this.audio = new Audio(this.context); // 因为浏览器的音频权限策略，延迟初始化
-
-        this.graph.audio = this.audio;
-      }
+      this.audio._context.resume();
 
       this.animate.play();
     }
@@ -870,18 +1108,6 @@ var WebAudioWave = /*#__PURE__*/function () {
     key: "stop",
     value: function stop() {
       this.animate.stop();
-    }
-    /**
-     * 配置
-     * @param option 选项
-     */
-
-  }, {
-    key: "config",
-    value: function config(option) {
-      var _this$graph2;
-
-      (_this$graph2 = this.graph) === null || _this$graph2 === void 0 ? void 0 : _this$graph2.config(option);
     }
   }]);
 
