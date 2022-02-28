@@ -18,11 +18,7 @@ const preset = {
   interval: Context.rate, // 产生间隔，帧数
   minRadius: 0,
   maxRadius: 0,
-  ease: undefined as undefined | ((v: number) => number) | keyof typeof Ease,
-  filter: '' as '' | BiquadFilterType,
-  filterFrequency: 0,
-  filterQ: 0,
-  filterGain: 1
+  ease: undefined as undefined | ((v: number) => number) | keyof typeof Ease
 }
 
 type Option = typeof preset
@@ -115,10 +111,6 @@ class Ripple extends Graph<Option> {
 
     let brush = this.visualize.brush
     brush.lineWidth = this.option.width
-
-    if (this.option.filter) {
-      this.audio?.addFilter(this.option.filter, this.option.filterFrequency, this.option.filterQ, this.option.filterGain)
-    }
   }
 
   /**

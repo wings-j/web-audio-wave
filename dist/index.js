@@ -63,11 +63,11 @@ import _Array$from from "@babel/runtime-corejs3/core-js-stable/array/from";
 import _reverseInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/reverse";
 import _fillInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/fill";
 import _Set from "@babel/runtime-corejs3/core-js-stable/set";
-import _filterInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/filter";
 import _valuesInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/values";
 import _mapInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/map";
 import _Math$log from "@babel/runtime-corejs3/core-js-stable/math/log10";
 import _bindInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/bind";
+import _filterInstanceProperty from "@babel/runtime-corejs3/core-js-stable/instance/filter";
 import { mean, merge } from 'lodash-es';
 import { PathCurve } from '@wings-j/canvas';
 import { Ease, Animate } from '@wings-j/web-sdk';
@@ -88,6 +88,12 @@ var context = {
   db: false,
   effect: {
     trace: 1
+  },
+  filter: {
+    type: '',
+    frequency: 0,
+    q: 0,
+    gain: 1
   }
 };
 
@@ -589,11 +595,7 @@ var preset = {
   interval: context.rate,
   minRadius: 0,
   maxRadius: 0,
-  ease: undefined,
-  filter: '',
-  filterFrequency: 0,
-  filterQ: 0,
-  filterGain: 1
+  ease: undefined
 };
 /**
  * 单元
@@ -712,12 +714,6 @@ var Ripple = /*#__PURE__*/function (_Graph4) {
 
       var brush = this.visualize.brush;
       brush.lineWidth = this.option.width;
-
-      if (_filterInstanceProperty(this.option)) {
-        var _this$audio4;
-
-        (_this$audio4 = this.audio) === null || _this$audio4 === void 0 ? void 0 : _this$audio4.addFilter(_filterInstanceProperty(this.option), this.option.filterFrequency, this.option.filterQ, this.option.filterGain);
-      }
     }
     /**
      * 更新
@@ -732,9 +728,9 @@ var Ripple = /*#__PURE__*/function (_Graph4) {
       var brush = this.visualize.brush;
 
       if (this.count >= this.option.interval) {
-        var _this$audio$get4, _this$audio5;
+        var _this$audio$get4, _this$audio4;
 
-        var data = (_this$audio$get4 = (_this$audio5 = this.audio) === null || _this$audio5 === void 0 ? void 0 : _this$audio5.get()) !== null && _this$audio$get4 !== void 0 ? _this$audio$get4 : [];
+        var data = (_this$audio$get4 = (_this$audio4 = this.audio) === null || _this$audio4 === void 0 ? void 0 : _this$audio4.get()) !== null && _this$audio$get4 !== void 0 ? _this$audio$get4 : [];
         var average = mean(data);
 
         if (average >= this.option.threshold) {
@@ -1054,6 +1050,10 @@ var WebAudioWave = /*#__PURE__*/function () {
     this.animate = new Animate(_bindInstanceProperty(_context14 = this.callback).call(_context14, this), this.context.rate);
     this.visualize = new Visualize(this.context);
     this.audio = new Audio(this.context);
+
+    if (_filterInstanceProperty(this.context).type) {
+      this.audio.addFilter(_filterInstanceProperty(this.context).type, _filterInstanceProperty(this.context).frequency, _filterInstanceProperty(this.context).q, _filterInstanceProperty(this.context).gain);
+    }
 
     if (this.context.type === 'bar') {
       this.graph = new Bar(this.context, this.visualize, this.audio, graphOption);

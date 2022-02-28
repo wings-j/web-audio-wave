@@ -13,10 +13,6 @@ declare const preset: {
     minRadius: number;
     maxRadius: number;
     ease: ((v: number) => number) | "linear" | "sineIn" | "sineOut" | "sineInOut" | "quadIn" | "quadOut" | "quadInOut" | "cubicIn" | "cubicOut" | "cubicInOut" | "quartIn" | "quartOut" | "quartInOut" | "quintIn" | "quintOut" | "quintInOut" | "expoIn" | "expoOut" | "expoInOut" | "circIn" | "circOut" | "circInOut" | "backIn" | "backOut" | "backInOut" | "elasticIn" | "elasticOut" | "elasticInOut" | "bounceIn" | "bounceOut" | "bounceInOut" | undefined;
-    filter: "" | BiquadFilterType;
-    filterFrequency: number;
-    filterQ: number;
-    filterGain: number;
 };
 declare type Option = typeof preset;
 /**

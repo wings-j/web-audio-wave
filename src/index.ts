@@ -51,6 +51,10 @@ class WebAudioWave {
     this.visualize = new Visualize(this.context)
     this.audio = new Audio(this.context)
 
+    if (this.context.filter.type) {
+      this.audio.addFilter(this.context.filter.type, this.context.filter.frequency, this.context.filter.q, this.context.filter.gain)
+    }
+
     if (this.context.type === 'bar') {
       this.graph = new Bar(this.context, this.visualize, this.audio, graphOption as BarOption)
     } else if (this.context.type === 'curve') {

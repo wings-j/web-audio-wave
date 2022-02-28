@@ -23,7 +23,13 @@
       document.addEventListener('DOMContentLoaded', () => {
         initiate(
           'ripple',
-          { size: 256 },
+          {
+            size: 256,
+            filter: {
+              type: 'highpass',
+              frequency: '10000'
+            }
+          },
           {
             dynamicColor: ['#00ffff', '#ff00f0'],
             width: 5,
@@ -31,9 +37,7 @@
             interval: 10,
             threshold: 0.3,
             fill: true,
-            ease: 'cubicOut',
-            filter: 'highpass',
-            filterFrequency: '10000'
+            ease: 'cubicOut'
           }
         )
       })

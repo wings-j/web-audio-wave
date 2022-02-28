@@ -15,6 +15,12 @@ declare const context: {
     effect: {
         trace: number;
     };
+    filter: {
+        type: "" | BiquadFilterType;
+        frequency: number;
+        q: number;
+        gain: number;
+    };
 };
 declare type Context = typeof context;
 declare type Option = {

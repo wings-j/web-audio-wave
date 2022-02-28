@@ -15,6 +15,12 @@ const context = {
   db: false,
   effect: {
     trace: 1
+  },
+  filter: {
+    type: '' as '' | BiquadFilterType,
+    frequency: 0,
+    q: 0,
+    gain: 1
   }
 }
 
