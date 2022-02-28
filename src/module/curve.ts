@@ -15,7 +15,8 @@ const preset = {
   mirror: false,
   reverse: false,
   backforth: false,
-  smooth: false
+  smooth: false,
+  round: false
 }
 
 type Option = typeof preset
@@ -40,12 +41,11 @@ class Curve extends Graph<Option> {
 
     this.config(Object.assign({}, preset, option))
   }
-
   /**
    * 配置
    * @param option 选项
    */
-  protected config(option: Partial<Option>) {
+  config(option: Partial<Option>) {
     super.config(option)
 
     let brush = this.visualize.brush

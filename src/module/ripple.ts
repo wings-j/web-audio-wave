@@ -106,13 +106,12 @@ class Ripple extends Graph<Option> {
    * 配置
    * @param option 选项
    */
-  protected config(option?: Partial<Option>) {
+  config(option?: Partial<Option>) {
     super.config(option)
 
     let brush = this.visualize.brush
     brush.lineWidth = this.option.width
   }
-
   /**
    * 更新
    */

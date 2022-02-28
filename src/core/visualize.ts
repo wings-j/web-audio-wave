@@ -44,7 +44,7 @@ class Visualize {
    * 更新
    * @param draw 绘制
    */
-  update(draw: () => void) {
+  update(draw: (brush: CanvasRenderingContext2D) => void) {
     this.o.clearRect(...this.wrap)
 
     if (this.context.effect.trace < 1) {
@@ -53,7 +53,7 @@ class Visualize {
       this.o.globalAlpha = 1
     }
 
-    draw()
+    draw(this.o)
 
     this.c.clearRect(...this.wrap)
     this.c.drawImage(this.offscreen, ...this.wrap)

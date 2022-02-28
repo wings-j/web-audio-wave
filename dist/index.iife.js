@@ -1,4 +1,4 @@
-var WebAudioWave = (function () {
+var WebAudioWave = (function (exports) {
   'use strict';
 
   /**
@@ -6950,7 +6950,8 @@ var WebAudioWave = (function () {
       mirror: false,
       reverse: false,
       backforth: false,
-      smooth: false
+      smooth: false,
+      round: false
   };
   /**
    * 类
@@ -13048,7 +13049,7 @@ var WebAudioWave = (function () {
               this.o.drawImage(this.canvas, ...this.wrap);
               this.o.globalAlpha = 1;
           }
-          draw();
+          draw(this.o);
           this.c.clearRect(...this.wrap);
           this.c.drawImage(this.offscreen, ...this.wrap);
       }
@@ -13213,8 +13214,21 @@ var WebAudioWave = (function () {
       stop() {
           this.animate.stop();
       }
+      /**
+       * 配置
+       * @param option 选项
+       */
+      config(option) {
+          this.graph?.config(option);
+      }
   }
 
-  return WebAudioWave;
+  exports.Audio = Audio;
+  exports.Visualize = Visualize;
+  exports["default"] = WebAudioWave;
 
-})();
+  Object.defineProperty(exports, '__esModule', { value: true });
+
+  return exports;
+
+})({});

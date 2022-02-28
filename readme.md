@@ -14,22 +14,22 @@ npm install @wings-j/web-audio-wave
 import WebAudioWave from '@wings-j/web-audio-wave'
 
 let audio = document.querySelector('audio')
-
-let webAudioWave = new WebAudioWave('bar', audio, {
-  rate: 60,
-  size: 512,
-  width: 1200,
-  height: 800
-})
-webAudioWave.config({
-  color: 'skyblue',
-  gap: 1
-})
+let webAudioWave = new WebAudioWave(
+  'bar',
+  audio,
+  {
+    rate: 60,
+    size: 512,
+    width: 1200,
+    height: 800
+  },
+  {
+    color: 'skyblue',
+    gap: 1
+  }
+)
 
 document.body.append(webAudioWave.canvas)
-audio.addEventListener('play', () => {
-  webAudioWave.play()
-})
 ```
 
 # API
@@ -59,7 +59,7 @@ WebAudioWave.prototype.stop()
 ## 配置类型
 
 ```ts
-WebAudioWave.prototype.config(option: VisualizeOption)
+WebAudioWave.prototype.config(option: GraphOption)
 ```
 
 option：可视化配置

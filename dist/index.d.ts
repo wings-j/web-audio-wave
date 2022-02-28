@@ -5,6 +5,8 @@ import { Option } from './type/context';
 import { Option as BarOption } from './module/bar';
 import { Option as CurveOption } from './module/curve';
 import { Option as CircleOption } from './module/circle';
+import Visualize from './core/visualize';
+import Audio from './core/audio';
 declare type GraphOption = Partial<BarOption | CurveOption | CircleOption>;
 /**
  * 类
@@ -35,5 +37,11 @@ declare class WebAudioWave {
      * 停止
      */
     stop(): void;
+    /**
+     * 配置
+     * @param option 选项
+     */
+    config(option: GraphOption): void;
 }
 export default WebAudioWave;
+export { Visualize, Audio };

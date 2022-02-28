@@ -22,6 +22,6 @@ declare class Visualize {
      * 更新
      * @param draw 绘制
      */
-    update(draw: () => void): void;
+    update(draw: (brush: CanvasRenderingContext2D) => void): void;
 }
 export default Visualize;

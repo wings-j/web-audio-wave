@@ -93,6 +93,14 @@ class WebAudioWave {
   stop() {
     this.animate.stop()
   }
+  /**
+   * 配置
+   * @param option 选项
+   */
+  config(option: GraphOption) {
+    this.graph?.config(option)
+  }
 }
 
 export default WebAudioWave
+export { Visualize, Audio }

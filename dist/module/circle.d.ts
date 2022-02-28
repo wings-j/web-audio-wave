@@ -27,7 +27,7 @@ declare class Circle extends Graph<Option> {
      * 配置
      * @param option 选项
      */
-    protected config(option?: Partial<Option>): void;
+    config(option?: Partial<Option>): void;
     /**
      * 更新
      */

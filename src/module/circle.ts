@@ -46,7 +46,7 @@ class Circle extends Graph<Option> {
    * 配置
    * @param option 选项
    */
-  protected config(option?: Partial<Option>) {
+  config(option?: Partial<Option>) {
     super.config(option)
 
     let brush = this.visualize.brush
@@ -64,7 +64,6 @@ class Circle extends Graph<Option> {
       brush.fillStyle = gradient
     }
   }
-
   /**
    * 更新
    */

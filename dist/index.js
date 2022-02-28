@@ -292,7 +292,8 @@ var preset$2 = {
   mirror: false,
   reverse: false,
   backforth: false,
-  smooth: false
+  smooth: false,
+  round: false
 };
 /**
  * 类
@@ -864,7 +865,7 @@ var Visualize = /*#__PURE__*/function () {
         this.o.globalAlpha = 1;
       }
 
-      draw();
+      draw(this.o);
 
       (_this$c = this.c).clearRect.apply(_this$c, _toConsumableArray(this.wrap));
 
@@ -1109,9 +1110,21 @@ var WebAudioWave = /*#__PURE__*/function () {
     value: function stop() {
       this.animate.stop();
     }
+    /**
+     * 配置
+     * @param option 选项
+     */
+
+  }, {
+    key: "config",
+    value: function config(option) {
+      var _this$graph2;
+
+      (_this$graph2 = this.graph) === null || _this$graph2 === void 0 ? void 0 : _this$graph2.config(option);
+    }
   }]);
 
   return WebAudioWave;
 }();
 
-export { WebAudioWave as default };
+export { Audio, Visualize, WebAudioWave as default };

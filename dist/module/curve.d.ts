@@ -11,6 +11,7 @@ declare const preset: {
     reverse: boolean;
     backforth: boolean;
     smooth: boolean;
+    round: boolean;
 };
 declare type Option = typeof preset;
 /**
@@ -28,7 +29,7 @@ declare class Curve extends Graph<Option> {
      * 配置
      * @param option 选项
      */
-    protected config(option: Partial<Option>): void;
+    config(option: Partial<Option>): void;
     /**
      * 绘制
      */
