@@ -20,7 +20,8 @@ export default [
     output: {
       file: PackageJson.browser,
       format: 'iife',
-      name: 'WebAudioWave'
+      name: 'WebAudioWave',
+      exports: 'named'
     }
   }
 ]

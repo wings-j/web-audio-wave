@@ -1,7 +1,7 @@
 function initiate(type, base, config) {
   let audio = document.querySelector('audio')
 
-  let webAudioWave = new WebAudioWave(
+  let webAudioWave = new WebAudioWave.default(
     type,
     audio,
     {

@@ -10,11 +10,39 @@ npm install @wings-j/web-audio-wave
 
 # 使用
 
+## ESM
+
 ```js
 import WebAudioWave from '@wings-j/web-audio-wave'
 
 let audio = document.querySelector('audio')
 let webAudioWave = new WebAudioWave(
+  'bar',
+  audio,
+  {
+    rate: 60,
+    size: 512,
+    width: 1200,
+    height: 800
+  },
+  {
+    color: 'skyblue',
+    gap: 1
+  }
+)
+
+document.body.append(webAudioWave.canvas)
+```
+
+## IIFE
+
+```html
+<script src="@wings-j/web-audio-wave/dist/index.iife.js"></script>
+```
+
+```js
+let audio = document.querySelector('audio')
+let webAudioWave = new WebAudioWave.default(
   'bar',
   audio,
   {
