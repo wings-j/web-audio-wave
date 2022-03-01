@@ -9,6 +9,7 @@ declare const context: {
     rate: number;
     time: boolean;
     size: number;
+    slice: number[];
     gain: number;
     pow: number;
     db: boolean;

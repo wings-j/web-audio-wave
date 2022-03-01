@@ -12,6 +12,7 @@ var WebAudioWave = (function (exports) {
       rate: 60,
       time: false,
       size: 512,
+      slice: [0, 512],
       gain: 1,
       pow: 1,
       db: false,
@@ -91,7 +92,7 @@ var WebAudioWave = (function (exports) {
   /**
    * 柱形
    */
-  const preset$3 = {
+  const preset$4 = {
       color: '#000000',
       gradientColor: null,
       dynamicColor: null,
@@ -109,7 +110,7 @@ var WebAudioWave = (function (exports) {
        */
       constructor(context, visualize, audio, option) {
           super(context, visualize, audio);
-          this.config(Object.assign({}, preset$3, option));
+          this.config(Object.assign({}, preset$4, option));
       }
       /**
        * 配置
@@ -6922,7 +6923,9 @@ var WebAudioWave = (function (exports) {
         _ref$a = _ref.a,
         a = _ref$a === void 0 ? 0.25 : _ref$a,
         _ref$b = _ref.b,
-        b = _ref$b === void 0 ? 0.25 : _ref$b;
+        b = _ref$b === void 0 ? 0.25 : _ref$b,
+        _ref$close = _ref.close,
+        close = _ref$close === void 0 ? false : _ref$close;
 
     var path = new Path2D();
     path.moveTo(points[0][0], points[0][1]);
@@ -6936,13 +6939,17 @@ var WebAudioWave = (function (exports) {
       }
     }
 
+    if (close) {
+      path.lineTo(points[0][0], points[0][1]);
+    }
+
     return path;
   }
 
   /**
    * 曲线
    */
-  const preset$2 = {
+  const preset$3 = {
       color: '#000000',
       gradientColor: null,
       dynamicColor: null,
@@ -6950,8 +6957,7 @@ var WebAudioWave = (function (exports) {
       mirror: false,
       reverse: false,
       backforth: false,
-      smooth: false,
-      round: false
+      smooth: false
   };
   /**
    * 类
@@ -6965,7 +6971,7 @@ var WebAudioWave = (function (exports) {
        */
       constructor(context, visualize, audio, option) {
           super(context, visualize, audio);
-          this.config(Object.assign({}, preset$2, option));
+          this.config(Object.assign({}, preset$3, option));
       }
       /**
        * 配置
@@ -7014,22 +7020,16 @@ var WebAudioWave = (function (exports) {
                       direction *= -1;
                   }
               }
-              let path;
-              if (this.option.smooth) {
-                  path = pathCurve(points, 'bezier');
-              }
-              else {
-                  path = pathCurve(points);
-              }
+              let path = pathCurve(points, this.option.smooth ? 'bezier' : undefined);
               brush.stroke(path);
           });
       }
   }
 
   /**
-   * 圆形
+   * 圆圈
    */
-  const preset$1 = {
+  const preset$2 = {
       color: '#000000',
       gradientColor: null,
       dynamicColor: null,
@@ -7052,7 +7052,7 @@ var WebAudioWave = (function (exports) {
        */
       constructor(context, visualize, audio, option) {
           super(context, visualize, audio);
-          this.config(Object.assign({}, preset$1, option));
+          this.config(Object.assign({}, preset$2, option));
       }
       /**
        * 配置
@@ -12877,7 +12877,7 @@ var WebAudioWave = (function (exports) {
   /**
    * 波纹
    */
-  const preset = {
+  const preset$1 = {
       color: '#000000',
       dynamicColor: null,
       width: 1,
@@ -12950,7 +12950,7 @@ var WebAudioWave = (function (exports) {
        */
       constructor(context, visualize, audio, option) {
           super(context, visualize, audio);
-          this.config(Object.assign({}, preset, { period: context.rate, interval: context.rate, maxRadius: Math.min(this.context.width, this.context.height) / 2 }, option));
+          this.config(Object.assign({}, preset$1, { period: context.rate, interval: context.rate, maxRadius: Math.min(this.context.width, this.context.height) / 2 }, option));
       }
       /**
        * 配置
@@ -13000,6 +13000,89 @@ var WebAudioWave = (function (exports) {
                   }
               }
           });
+      }
+  }
+
+  /**
+   * 轮环
+   */
+  const preset = {
+      color: '#000000',
+      gradientColor: null,
+      dynamicColor: null,
+      width: 1,
+      period: context.rate * 10,
+      base: 0,
+      amplitude: 0,
+      smooth: false,
+      clockwise: true,
+      rotate: 0
+  };
+  /**
+   * 类
+   */
+  class Round extends Graph {
+      time = 0;
+      /**
+       * 构造方法
+       * @param context 上下文
+       * @param audio 音频
+       * @param visualize 可视化
+       */
+      constructor(context, visualize, audio, option) {
+          super(context, visualize, audio);
+          this.config(Object.assign({}, preset, {
+              period: context.rate * 10,
+              base: Math.min(this.context.width, this.context.height) / 4,
+              amplitude: Math.min(this.context.width, this.context.height) / 4
+          }, option));
+      }
+      /**
+       * 配置
+       * @param option 选项
+       */
+      config(option) {
+          super.config(option);
+          let brush = this.visualize.brush;
+          brush.strokeStyle = this.option.color;
+          brush.lineWidth = this.option.width;
+          if (this.option.gradientColor?.length) {
+              let gradient = brush.createLinearGradient(this.visualize.wrap[0], 0, this.visualize.wrap[0] + this.visualize.wrap[2], 0);
+              for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
+                  gradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i]);
+              }
+              brush.strokeStyle = gradient;
+          }
+      }
+      /**
+       * 更新
+       */
+      update() {
+          let data = Array.from(this.audio?.get() ?? []);
+          let brush = this.visualize.brush;
+          this.visualize.update(() => {
+              let offset = Math.PI * 2 * (this.time / this.option.period);
+              let delta = (Math.PI * 2) / data.length;
+              let direction = 1;
+              let points = data.map((a, i) => {
+                  let radian = i * delta * (this.option.clockwise ? 1 : -1) + offset * this.option.rotate;
+                  let radius = a * this.option.amplitude * direction + this.option.base;
+                  let x = Math.cos(radian) * radius;
+                  let y = Math.sin(radian) * radius;
+                  direction *= -1;
+                  return [x, y];
+              });
+              let path = pathCurve(points, this.option.smooth ? 'bezier' : undefined, { close: true });
+              if (this.option.dynamicColor?.length === 2) {
+                  let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], mean(data));
+                  brush.strokeStyle = color;
+              }
+              brush.stroke(path);
+          });
+          this.time++;
+          if (this.time >= this.option.period) {
+              this.time = 0;
+          }
       }
   }
 
@@ -13079,7 +13162,7 @@ var WebAudioWave = (function (exports) {
           this.source = this._context.createMediaElementSource(_context.audio);
           this.source.connect(this._context.destination);
           this.analyser = this._context.createAnalyser();
-          this.analyser.fftSize = _context.size;
+          this.analyser.fftSize = _context.size * 2; // *2
           this.source.connect(this.analyser);
           this.second = this.source;
           this.last = this.analyser;
@@ -13100,7 +13183,8 @@ var WebAudioWave = (function (exports) {
               this.analyser.getByteFrequencyData(data);
           }
           let d = Array.from(data)
-              .slice(0, Math.floor(data.length / 2))
+              .slice(0, Math.floor(data.length / 2)) // /2
+              .slice(...this.context.slice)
               .map(a => a / max);
           if (this.context.db) {
               d = d.map(a => Math.min(1 + Math.log10(a), 1));
@@ -13187,6 +13271,9 @@ var WebAudioWave = (function (exports) {
           }
           else if (this.context.type === 'ripple') {
               this.graph = new Ripple(this.context, this.visualize, this.audio, graphOption);
+          }
+          else if (this.context.type === 'round') {
+              this.graph = new Round(this.context, this.visualize, this.audio, graphOption);
           }
           audio.addEventListener('play', () => {
               this.play();

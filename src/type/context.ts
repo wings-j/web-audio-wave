@@ -10,6 +10,7 @@ const context = {
   rate: 60,
   time: false,
   size: 512,
+  slice: [0, 512],
   gain: 1,
   pow: 1,
   db: false,

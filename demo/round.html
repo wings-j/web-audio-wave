@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Curve</title>
+    <title>Round</title>
 
     <style>
       body {
@@ -22,15 +22,13 @@
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         initiate(
-          'curve',
-          { size: 256, effect: { trace: 0.9 } },
+          'round',
+          { size: 1024, slice: [0, 512] },
           {
-            gradientColor: ['#00ffff', '#ff00f0'],
-            width: 2,
-            mirror: true,
-            reverse: true,
-            backforth: true,
-            smooth: true
+            dynamicColor: ['#ff00f0', '#00ffff'],
+            width: 1,
+            amplitude: 100,
+            rotate: -1
           }
         )
       })

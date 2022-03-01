@@ -11,7 +11,6 @@ declare const preset: {
     reverse: boolean;
     backforth: boolean;
     smooth: boolean;
-    round: boolean;
 };
 declare type Option = typeof preset;
 /**

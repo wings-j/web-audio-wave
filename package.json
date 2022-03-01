@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@babel/runtime-corejs3": "^7.15.4",
-    "@wings-j/canvas": "^3.0.0",
+    "@wings-j/canvas": "^3.1.0",
     "@wings-j/web-sdk": "^3.0.0",
     "core-js": "^3.18.2",
     "lodash-es": "^4.17.21"

@@ -15,8 +15,7 @@ const preset = {
   mirror: false,
   reverse: false,
   backforth: false,
-  smooth: false,
-  round: false
+  smooth: false
 }
 
 type Option = typeof preset
@@ -49,6 +48,7 @@ class Curve extends Graph<Option> {
     super.config(option)
 
     let brush = this.visualize.brush
+
     brush.strokeStyle = this.option.color
     brush.lineWidth = this.option.width
 
@@ -95,13 +95,7 @@ class Curve extends Graph<Option> {
           direction *= -1
         }
       }
-
-      let path: Path2D
-      if (this.option.smooth) {
-        path = PathCurve(points, 'bezier')
-      } else {
-        path = PathCurve(points)
-      }
+      let path = PathCurve(points, this.option.smooth ? 'bezier' : undefined)
 
       brush.stroke(path)
     })

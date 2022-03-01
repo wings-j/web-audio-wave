@@ -98,26 +98,27 @@ option：可视化配置
 
 - bar：柱形
 - curve：曲线
-- circle：圆环
+- circle：圆圈
 - ripple：波纹
 
 ## 通用配置（Option）
 
-| 名称             | 说明                    | 类型    | 默认值 |
-| ---------------- | ----------------------- | ------- | ------ |
-| width            | SVG 宽度                | number  | 1024   |
-| height           | SVG 高度                | number  | 1024   |
-| rate             | 帧率                    | number  | 60     |
-| time             | 时域                    | boolean | false  |
-| size             | FFT 长度                | number  | 512    |
-| pow              | 对 FFT 的值做幂运算的幂 | number  | 1      |
-| gain             | 增益                    | number  | 1      |
-| db               | 分贝                    | boolean | false  |
-| effect.trace     | 轨迹。[0,1]             | number  | 1      |
-| filter.type      | 过滤器类型              | string  | ''     |
-| filter.frequency | 过滤器频率              | number  | 0      |
-| filter.q         | 过滤器 Q 值             | number  | 0      |
-| filter.gain      | 过滤器增益              | number  | 1      |
+| 名称             | 说明                    | 类型             | 默认值   |
+| ---------------- | ----------------------- | ---------------- | -------- |
+| width            | SVG 宽度                | number           | 1024     |
+| height           | SVG 高度                | number           | 1024     |
+| rate             | 帧率                    | number           | 60       |
+| time             | 时域                    | boolean          | false    |
+| size             | FFT 长度                | number           | 512      |
+| slice            | 剪切                    | [number, number] | [0, 512] |
+| pow              | 对 FFT 的值做幂运算的幂 | number           | 1        |
+| gain             | 增益                    | number           | 1        |
+| db               | 分贝                    | boolean          | false    |
+| effect.trace     | 轨迹。[0,1]             | number           | 1        |
+| filter.type      | 过滤器类型              | string           | ''       |
+| filter.frequency | 过滤器频率              | number           | 0        |
+| filter.q         | 过滤器 Q 值             | number           | 0        |
+| filter.gain      | 过滤器增益              | number           | 1        |
 
 可选的滤波器类型：[BiquadFilterNode](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode)。
 

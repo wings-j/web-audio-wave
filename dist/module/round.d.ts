@@ -1,5 +1,5 @@
 /**
- * 圆圈
+ * 轮环
  */
 import Graph from '../type/graph';
 declare const preset: {
@@ -7,15 +7,19 @@ declare const preset: {
     gradientColor: string[] | null;
     dynamicColor: [string, string] | null;
     width: number;
-    fill: boolean;
-    average: boolean;
+    period: number;
+    base: number;
+    amplitude: number;
+    smooth: boolean;
+    clockwise: boolean;
+    rotate: number;
 };
 declare type Option = typeof preset;
 /**
  * 类
  */
-declare class Circle extends Graph<Option> {
-    private get maxRadius();
+declare class Round extends Graph<Option> {
+    private time;
     /**
      * 构造方法
      * @param context 上下文
@@ -33,5 +37,5 @@ declare class Circle extends Graph<Option> {
      */
     update(): void;
 }
-export default Circle;
+export default Round;
 export { Option };

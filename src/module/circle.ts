@@ -1,5 +1,5 @@
 /**
- * 圆形
+ * 圆圈
  */
 
 import Graph from '../type/graph'

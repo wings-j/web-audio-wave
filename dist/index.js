@@ -83,6 +83,7 @@ var context = {
   rate: 60,
   time: false,
   size: 512,
+  slice: [0, 512],
   gain: 1,
   pow: 1,
   db: false,
@@ -185,7 +186,7 @@ function calcDeltaColor(start, end, delta) {
  */
 
 
-var preset$3 = {
+var preset$4 = {
   color: '#000000',
   gradientColor: null,
   dynamicColor: null,
@@ -213,7 +214,7 @@ var Bar = /*#__PURE__*/function (_Graph) {
 
     _this = _super.call(this, context, visualize, audio);
 
-    _this.config(_Object$assign({}, preset$3, option));
+    _this.config(_Object$assign({}, preset$4, option));
 
     return _this;
   }
@@ -284,7 +285,7 @@ var Bar = /*#__PURE__*/function (_Graph) {
  */
 
 
-var preset$2 = {
+var preset$3 = {
   color: '#000000',
   gradientColor: null,
   dynamicColor: null,
@@ -292,8 +293,7 @@ var preset$2 = {
   mirror: false,
   reverse: false,
   backforth: false,
-  smooth: false,
-  round: false
+  smooth: false
 };
 /**
  * 类
@@ -317,7 +317,7 @@ var Curve = /*#__PURE__*/function (_Graph2) {
 
     _this3 = _super2.call(this, context, visualize, audio);
 
-    _this3.config(_Object$assign({}, preset$2, option));
+    _this3.config(_Object$assign({}, preset$3, option));
 
     return _this3;
   }
@@ -397,14 +397,7 @@ var Curve = /*#__PURE__*/function (_Graph2) {
           }
         }
 
-        var path;
-
-        if (_this4.option.smooth) {
-          path = PathCurve(points, 'bezier');
-        } else {
-          path = PathCurve(points);
-        }
-
+        var path = PathCurve(points, _this4.option.smooth ? 'bezier' : undefined);
         brush.stroke(path);
       });
     }
@@ -413,11 +406,11 @@ var Curve = /*#__PURE__*/function (_Graph2) {
   return Curve;
 }(Graph);
 /**
- * 圆形
+ * 圆圈
  */
 
 
-var preset$1 = {
+var preset$2 = {
   color: '#000000',
   gradientColor: null,
   dynamicColor: null,
@@ -447,7 +440,7 @@ var Circle = /*#__PURE__*/function (_Graph3) {
 
     _this5 = _super3.call(this, context, visualize, audio);
 
-    _this5.config(_Object$assign({}, preset$1, option));
+    _this5.config(_Object$assign({}, preset$2, option));
 
     return _this5;
   }
@@ -586,7 +579,7 @@ var Circle = /*#__PURE__*/function (_Graph3) {
  */
 
 
-var preset = {
+var preset$1 = {
   color: '#000000',
   dynamicColor: null,
   width: 1,
@@ -694,7 +687,7 @@ var Ripple = /*#__PURE__*/function (_Graph4) {
 
     _defineProperty(_assertThisInitialized(_this7), "count", 0);
 
-    _this7.config(_Object$assign({}, preset, {
+    _this7.config(_Object$assign({}, preset$1, {
       period: context.rate,
       interval: context.rate,
       maxRadius: Math.min(_this7.context.width, _this7.context.height) / 2
@@ -792,6 +785,133 @@ var Ripple = /*#__PURE__*/function (_Graph4) {
   }]);
 
   return Ripple;
+}(Graph);
+/**
+ * 轮环
+ */
+
+
+var preset = {
+  color: '#000000',
+  gradientColor: null,
+  dynamicColor: null,
+  width: 1,
+  period: context.rate * 10,
+  base: 0,
+  amplitude: 0,
+  smooth: false,
+  clockwise: true,
+  rotate: 0
+};
+/**
+ * 类
+ */
+
+var Round = /*#__PURE__*/function (_Graph5) {
+  _inherits(Round, _Graph5);
+
+  var _super5 = _createSuper(Round);
+
+  /**
+   * 构造方法
+   * @param context 上下文
+   * @param audio 音频
+   * @param visualize 可视化
+   */
+  function Round(context, visualize, audio, option) {
+    var _this9;
+
+    _classCallCheck(this, Round);
+
+    _this9 = _super5.call(this, context, visualize, audio);
+
+    _defineProperty(_assertThisInitialized(_this9), "time", 0);
+
+    _this9.config(_Object$assign({}, preset, {
+      period: context.rate * 10,
+      base: Math.min(_this9.context.width, _this9.context.height) / 4,
+      amplitude: Math.min(_this9.context.width, _this9.context.height) / 4
+    }, option));
+
+    return _this9;
+  }
+  /**
+   * 配置
+   * @param option 选项
+   */
+
+
+  _createClass(Round, [{
+    key: "config",
+    value: function config(option) {
+      var _this$option$gradient4;
+
+      _get(_getPrototypeOf(Round.prototype), "config", this).call(this, option);
+
+      var brush = this.visualize.brush;
+      brush.strokeStyle = this.option.color;
+      brush.lineWidth = this.option.width;
+
+      if ((_this$option$gradient4 = this.option.gradientColor) !== null && _this$option$gradient4 !== void 0 && _this$option$gradient4.length) {
+        var gradient = brush.createLinearGradient(this.visualize.wrap[0], 0, this.visualize.wrap[0] + this.visualize.wrap[2], 0);
+
+        for (var i = 0, l = this.option.gradientColor.length; i < l; i++) {
+          gradient.addColorStop(1 / (l - 1) * i, this.option.gradientColor[i]);
+        }
+
+        brush.strokeStyle = gradient;
+      }
+    }
+    /**
+     * 更新
+     */
+
+  }, {
+    key: "update",
+    value: function update() {
+      var _this$audio$get5,
+          _this$audio5,
+          _this10 = this;
+
+      var data = _Array$from((_this$audio$get5 = (_this$audio5 = this.audio) === null || _this$audio5 === void 0 ? void 0 : _this$audio5.get()) !== null && _this$audio$get5 !== void 0 ? _this$audio$get5 : []);
+
+      var brush = this.visualize.brush;
+      this.visualize.update(function () {
+        var _this10$option$dynami;
+
+        var offset = Math.PI * 2 * (_this10.time / _this10.option.period);
+        var delta = Math.PI * 2 / data.length;
+        var direction = 1;
+
+        var points = _mapInstanceProperty(data).call(data, function (a, i) {
+          var radian = i * delta * (_this10.option.clockwise ? 1 : -1) + offset * _this10.option.rotate;
+          var radius = a * _this10.option.amplitude * direction + _this10.option.base;
+          var x = Math.cos(radian) * radius;
+          var y = Math.sin(radian) * radius;
+          direction *= -1;
+          return [x, y];
+        });
+
+        var path = PathCurve(points, _this10.option.smooth ? 'bezier' : undefined, {
+          close: true
+        });
+
+        if (((_this10$option$dynami = _this10.option.dynamicColor) === null || _this10$option$dynami === void 0 ? void 0 : _this10$option$dynami.length) === 2) {
+          var color = calcDeltaColor(_this10.option.dynamicColor[0], _this10.option.dynamicColor[1], mean(data));
+          brush.strokeStyle = color;
+        }
+
+        brush.stroke(path);
+      });
+      this.time++;
+
+      if (this.time >= this.option.period) {
+        this.time = 0;
+      }
+    }
+  }]);
+
+  return Round;
 }(Graph);
 /**
  * 可视化
@@ -916,7 +1036,8 @@ var Audio = /*#__PURE__*/function () {
     this.source = this._context.createMediaElementSource(_context.audio);
     this.source.connect(this._context.destination);
     this.analyser = this._context.createAnalyser();
-    this.analyser.fftSize = _context.size;
+    this.analyser.fftSize = _context.size * 2; // *2
+
     this.source.connect(this.analyser);
     this.second = this.source;
     this.last = this.analyser;
@@ -934,7 +1055,7 @@ var Audio = /*#__PURE__*/function () {
   _createClass(Audio, [{
     key: "get",
     value: function get() {
-      var _context12, _context13;
+      var _context12, _Array$from$slice, _context13;
 
       var data = new Uint8Array(this.analyser.fftSize);
 
@@ -944,7 +1065,8 @@ var Audio = /*#__PURE__*/function () {
         this.analyser.getByteFrequencyData(data);
       }
 
-      var d = _mapInstanceProperty(_context12 = _sliceInstanceProperty(_context13 = _Array$from(data)).call(_context13, 0, Math.floor(data.length / 2))).call(_context12, function (a) {
+      var d = _mapInstanceProperty(_context12 = _sliceInstanceProperty(_Array$from$slice = _sliceInstanceProperty(_context13 = _Array$from(data)).call(_context13, 0, Math.floor(data.length / 2)) // /2
+      ).apply(_Array$from$slice, _toConsumableArray(_sliceInstanceProperty(this.context)))).call(_context12, function (a) {
         return a / max;
       });
 
@@ -1023,7 +1145,7 @@ var WebAudioWave = /*#__PURE__*/function () {
    */
   function WebAudioWave(type, audio, option, graphOption) {
     var _context14,
-        _this9 = this;
+        _this11 = this;
 
     _classCallCheck(this, WebAudioWave);
 
@@ -1064,13 +1186,15 @@ var WebAudioWave = /*#__PURE__*/function () {
       this.graph = new Circle(this.context, this.visualize, this.audio, graphOption);
     } else if (this.context.type === 'ripple') {
       this.graph = new Ripple(this.context, this.visualize, this.audio, graphOption);
+    } else if (this.context.type === 'round') {
+      this.graph = new Round(this.context, this.visualize, this.audio, graphOption);
     }
 
     audio.addEventListener('play', function () {
-      _this9.play();
+      _this11.play();
     });
     audio.addEventListener('pause', function () {
-      _this9.stop();
+      _this11.stop();
     });
   }
   /**

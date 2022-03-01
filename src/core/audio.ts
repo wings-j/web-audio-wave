@@ -27,7 +27,7 @@ class Audio {
     this.source = this._context.createMediaElementSource(_context.audio)
     this.source.connect(this._context.destination)
     this.analyser = this._context.createAnalyser()
-    this.analyser.fftSize = _context.size
+    this.analyser.fftSize = _context.size * 2 // *2
     this.source.connect(this.analyser)
 
     this.second = this.source
@@ -52,7 +52,8 @@ class Audio {
     }
 
     let d = Array.from(data)
-      .slice(0, Math.floor(data.length / 2))
+      .slice(0, Math.floor(data.length / 2)) // /2
+      .slice(...this.context.slice)
       .map(a => a / max)
 
     if (this.context.db) {
