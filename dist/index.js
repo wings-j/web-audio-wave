@@ -799,6 +799,7 @@ var preset = {
   mirror: false,
   period: context.rate * 10,
   base: Math.min(context.width, context.height) / 4,
+  baseDynamic: false,
   amplitude: Math.min(context.width, context.height) / 4,
   smooth: false,
   clockwise: true,
@@ -843,6 +844,11 @@ var Round = /*#__PURE__*/function (_Graph5) {
 
 
   _createClass(Round, [{
+    key: "maxRadius",
+    get: function get() {
+      return Math.min(this.context.width, this.context.height) / 2;
+    }
+  }, {
     key: "config",
     value: function config(option) {
       var _this$option$gradient4;
@@ -854,7 +860,7 @@ var Round = /*#__PURE__*/function (_Graph5) {
       brush.lineWidth = this.option.width;
 
       if ((_this$option$gradient4 = this.option.gradientColor) !== null && _this$option$gradient4 !== void 0 && _this$option$gradient4.length) {
-        var gradient = brush.createLinearGradient(this.visualize.wrap[0], 0, this.visualize.wrap[0] + this.visualize.wrap[2], 0);
+        var gradient = brush.createRadialGradient(0, 0, 0, 0, 0, this.maxRadius);
 
         for (var i = 0, l = this.option.gradientColor.length; i < l; i++) {
           gradient.addColorStop(1 / (l - 1) * i, this.option.gradientColor[i]);
@@ -884,17 +890,19 @@ var Round = /*#__PURE__*/function (_Graph5) {
         d = _concatInstanceProperty(d).call(d, _reverseInstanceProperty(_context10 = _Array$from(d)).call(_context10));
       }
 
+      var average = mean(data);
       var brush = this.visualize.brush;
       this.visualize.update(function () {
         var _this10$option$dynami;
 
         var offset = Math.PI * 2 * (_this10.time / _this10.option.period);
         var delta = Math.PI * 2 / d.length;
+        var base = _this10.option.base + (_this10.option.baseDynamic ? average * _this10.option.amplitude : 0);
         var direction = 1;
 
         var points = _mapInstanceProperty(d).call(d, function (a, i) {
           var radian = i * delta * (_this10.option.clockwise ? 1 : -1) + offset * _this10.option.rotate;
-          var radius = a * _this10.option.amplitude * direction + _this10.option.base;
+          var radius = a * _this10.option.amplitude * direction + base;
           var x = Math.cos(radian) * radius;
           var y = Math.sin(radian) * radius;
           direction *= -1;
@@ -906,7 +914,7 @@ var Round = /*#__PURE__*/function (_Graph5) {
         });
 
         if (((_this10$option$dynami = _this10.option.dynamicColor) === null || _this10$option$dynami === void 0 ? void 0 : _this10$option$dynami.length) === 2) {
-          var color = calcDeltaColor(_this10.option.dynamicColor[0], _this10.option.dynamicColor[1], mean(data));
+          var color = calcDeltaColor(_this10.option.dynamicColor[0], _this10.option.dynamicColor[1], average);
           brush.strokeStyle = color;
         }
 

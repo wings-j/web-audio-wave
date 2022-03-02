@@ -10,6 +10,7 @@ declare const preset: {
     mirror: boolean;
     period: number;
     base: number;
+    baseDynamic: boolean;
     amplitude: number;
     smooth: boolean;
     clockwise: boolean;
@@ -21,6 +22,7 @@ declare type Option = typeof preset;
  */
 declare class Round extends Graph<Option> {
     private time;
+    private get maxRadius();
     /**
      * 构造方法
      * @param context 上下文

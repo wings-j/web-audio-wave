@@ -13014,6 +13014,7 @@ var WebAudioWave = (function (exports) {
       mirror: false,
       period: context.rate * 10,
       base: Math.min(context.width, context.height) / 4,
+      baseDynamic: false,
       amplitude: Math.min(context.width, context.height) / 4,
       smooth: false,
       clockwise: true,
@@ -13024,6 +13025,9 @@ var WebAudioWave = (function (exports) {
    */
   class Round extends Graph {
       time = 0;
+      get maxRadius() {
+          return Math.min(this.context.width, this.context.height) / 2;
+      }
       /**
        * 构造方法
        * @param context 上下文
@@ -13048,7 +13052,7 @@ var WebAudioWave = (function (exports) {
           brush.strokeStyle = this.option.color;
           brush.lineWidth = this.option.width;
           if (this.option.gradientColor?.length) {
-              let gradient = brush.createLinearGradient(this.visualize.wrap[0], 0, this.visualize.wrap[0] + this.visualize.wrap[2], 0);
+              let gradient = brush.createRadialGradient(0, 0, 0, 0, 0, this.maxRadius);
               for (let i = 0, l = this.option.gradientColor.length; i < l; i++) {
                   gradient.addColorStop((1 / (l - 1)) * i, this.option.gradientColor[i]);
               }
@@ -13064,14 +13068,16 @@ var WebAudioWave = (function (exports) {
           if (this.option.mirror) {
               d = d.concat(Array.from(d).reverse());
           }
+          let average = mean(data);
           let brush = this.visualize.brush;
           this.visualize.update(() => {
               let offset = Math.PI * 2 * (this.time / this.option.period);
               let delta = (Math.PI * 2) / d.length;
+              let base = this.option.base + (this.option.baseDynamic ? average * this.option.amplitude : 0);
               let direction = 1;
               let points = d.map((a, i) => {
                   let radian = i * delta * (this.option.clockwise ? 1 : -1) + offset * this.option.rotate;
-                  let radius = a * this.option.amplitude * direction + this.option.base;
+                  let radius = a * this.option.amplitude * direction + base;
                   let x = Math.cos(radian) * radius;
                   let y = Math.sin(radian) * radius;
                   direction *= -1;
@@ -13079,7 +13085,7 @@ var WebAudioWave = (function (exports) {
               });
               let path = pathCurve(points, this.option.smooth ? 'bezier' : undefined, { close: true });
               if (this.option.dynamicColor?.length === 2) {
-                  let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], mean(data));
+                  let color = calcDeltaColor(this.option.dynamicColor[0], this.option.dynamicColor[1], average);
                   brush.strokeStyle = color;
               }
               brush.stroke(path);
