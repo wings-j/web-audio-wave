@@ -66,7 +66,7 @@ class Curve extends Graph<Option> {
    * 绘制
    */
   update() {
-    let data = Array.from(this.audio?.get() ?? [])
+    let data = this.audio?.get() ?? []
     let d = Array.from(data)
     if (this.option.reverse) {
       d.reverse()

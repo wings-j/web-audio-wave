@@ -13,9 +13,10 @@ const preset = {
   gradientColor: null as string[] | null,
   dynamicColor: null as [string, string] | null,
   width: 1,
+  mirror: false,
   period: Context.rate * 10, // 旋转周期，帧数
-  base: 0, // 基础半径
-  amplitude: 0, // 振幅
+  base: Math.min(Context.width, Context.height) / 4, // 基础半径
+  amplitude: Math.min(Context.width, Context.height) / 4, // 振幅
   smooth: false,
   clockwise: true,
   rotate: 0
@@ -82,15 +83,19 @@ class Round extends Graph<Option> {
    * 更新
    */
   update() {
-    let data = Array.from(this.audio?.get() ?? [])
+    let data = this.audio?.get() ?? []
+    let d = Array.from(data)
+    if (this.option.mirror) {
+      d = d.concat(Array.from(d).reverse())
+    }
     let brush = this.visualize.brush
 
     this.visualize.update(() => {
       let offset = Math.PI * 2 * (this.time / this.option.period)
-      let delta = (Math.PI * 2) / data.length
+      let delta = (Math.PI * 2) / d.length
 
       let direction = 1
-      let points = data.map((a, i) => {
+      let points = d.map((a, i) => {
         let radian = i * delta * (this.option.clockwise ? 1 : -1) + offset * this.option.rotate
         let radius = a * this.option.amplitude * direction + this.option.base
         let x = Math.cos(radian) * radius

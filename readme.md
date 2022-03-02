@@ -130,6 +130,40 @@ option：可视化配置
 2. `gradientColor`
 3. `color`
 
+参数`ease`表示缓动函数，可选值有：
+
+- linear
+- sineIn
+- sineOut
+- sineInOut
+- quadIn
+- quadOut
+- quatInOut
+- cubicIn
+- cubicOut
+- cubitInOut
+- quartIn
+- quartOut
+- quartInOut
+- quintIn
+- quintOut
+- quintInOut
+- expoIn
+- expoOut
+- expoInOut
+- circIn
+- circOut
+- circInOut
+- backIn
+- backOut
+- backInOut
+- elasticIn
+- elasticOut
+- elasticInOut
+- bounceIn
+- bounceOut
+- bounceInOut
+
 ### bar
 
 | 名称          | 说明     | 类型                     | 默认值    |
@@ -178,36 +212,24 @@ option：可视化配置
 | maxRadius    | 最大半径。默认为全局设置宽高的一半 | number                            | 0         |
 | ease         | 缓动函数                           | ((v: number) => number) \| string | undefined |
 
-可选的缓动函数：
+### round
 
-- linear
-- sineIn
-- sineOut
-- sineInOut
-- quadIn
-- quadOut
-- quatInOut
-- cubicIn
-- cubicOut
-- cubitInOut
-- quartIn
-- quartOut
-- quartInOut
-- quintIn
-- quintOut
-- quintInOut
-- expoIn
-- expoOut
-- expoInOut
-- circIn
-- circOut
-- circInOut
-- backIn
-- backOut
-- backInOut
-- elasticIn
-- elasticOut
-- elasticInOut
-- bounceIn
-- bounceOut
-- bounceInOut
+| 名称          | 说明       | 类型                     | 默认值    |
+| ------------- | ---------- | ------------------------ | --------- |
+| color         | 颜色       | string                   | "#000000" |
+| gradientColor | 渐变颜色   | string[] \| null         | null      |
+| dynamicColor  | 动态颜色   | [string, string] \| null | null      |
+| width         | 线宽       | number                   | 1         |
+| mirror        | 镜像       | boolean                  | false     |
+| period        | 动画帧数   | number                   | 600       |
+| base          | 基础半径   | number                   | 256       |
+| amplitude     | 幅度半径   | number                   | 256       |
+| smooth        | 平滑       | boolean                  | false     |
+| clockwise     | 顺时针渲染 | boolean                  | true      |
+| rotate        | 旋转       | number                   | 0         |
+
+`rotate`可选值：
+
+- `0`：无旋转
+- `1`：顺时针旋转
+- `-1`：逆时针旋转

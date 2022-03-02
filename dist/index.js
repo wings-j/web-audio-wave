@@ -16,7 +16,7 @@ import _defineProperty from "@babel/runtime-corejs3/helpers/defineProperty";
 
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof _Symbol !== "undefined" && _getIteratorMethod(o) || o["@@iterator"]; if (!it) { if (_Array$isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
-function _unsupportedIterableToArray(o, minLen) { var _context15; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = _sliceInstanceProperty(_context15 = Object.prototype.toString.call(o)).call(_context15, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return _Array$from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+function _unsupportedIterableToArray(o, minLen) { var _context16; if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = _sliceInstanceProperty(_context16 = Object.prototype.toString.call(o)).call(_context16, 8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return _Array$from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
@@ -359,7 +359,7 @@ var Curve = /*#__PURE__*/function (_Graph2) {
           _this$audio2,
           _this4 = this;
 
-      var data = _Array$from((_this$audio$get2 = (_this$audio2 = this.audio) === null || _this$audio2 === void 0 ? void 0 : _this$audio2.get()) !== null && _this$audio$get2 !== void 0 ? _this$audio$get2 : []);
+      var data = (_this$audio$get2 = (_this$audio2 = this.audio) === null || _this$audio2 === void 0 ? void 0 : _this$audio2.get()) !== null && _this$audio$get2 !== void 0 ? _this$audio$get2 : [];
 
       var d = _Array$from(data);
 
@@ -796,9 +796,10 @@ var preset = {
   gradientColor: null,
   dynamicColor: null,
   width: 1,
+  mirror: false,
   period: context.rate * 10,
-  base: 0,
-  amplitude: 0,
+  base: Math.min(context.width, context.height) / 4,
+  amplitude: Math.min(context.width, context.height) / 4,
   smooth: false,
   clockwise: true,
   rotate: 0
@@ -873,17 +874,25 @@ var Round = /*#__PURE__*/function (_Graph5) {
           _this$audio5,
           _this10 = this;
 
-      var data = _Array$from((_this$audio$get5 = (_this$audio5 = this.audio) === null || _this$audio5 === void 0 ? void 0 : _this$audio5.get()) !== null && _this$audio$get5 !== void 0 ? _this$audio$get5 : []);
+      var data = (_this$audio$get5 = (_this$audio5 = this.audio) === null || _this$audio5 === void 0 ? void 0 : _this$audio5.get()) !== null && _this$audio$get5 !== void 0 ? _this$audio$get5 : [];
+
+      var d = _Array$from(data);
+
+      if (this.option.mirror) {
+        var _context10;
+
+        d = _concatInstanceProperty(d).call(d, _reverseInstanceProperty(_context10 = _Array$from(d)).call(_context10));
+      }
 
       var brush = this.visualize.brush;
       this.visualize.update(function () {
         var _this10$option$dynami;
 
         var offset = Math.PI * 2 * (_this10.time / _this10.option.period);
-        var delta = Math.PI * 2 / data.length;
+        var delta = Math.PI * 2 / d.length;
         var direction = 1;
 
-        var points = _mapInstanceProperty(data).call(data, function (a, i) {
+        var points = _mapInstanceProperty(d).call(d, function (a, i) {
           var radian = i * delta * (_this10.option.clockwise ? 1 : -1) + offset * _this10.option.rotate;
           var radius = a * _this10.option.amplitude * direction + _this10.option.base;
           var x = Math.cos(radian) * radius;
@@ -971,16 +980,16 @@ var Visualize = /*#__PURE__*/function () {
   }, {
     key: "update",
     value: function update(draw) {
-      var _this$o, _this$c, _this$c2, _context11;
+      var _this$o, _this$c, _this$c2, _context12;
 
       (_this$o = this.o).clearRect.apply(_this$o, _toConsumableArray(this.wrap));
 
       if (this.context.effect.trace < 1) {
-        var _this$o2, _context10;
+        var _this$o2, _context11;
 
         this.o.globalAlpha = this.context.effect.trace;
 
-        (_this$o2 = this.o).drawImage.apply(_this$o2, _concatInstanceProperty(_context10 = [this.canvas]).call(_context10, _toConsumableArray(this.wrap)));
+        (_this$o2 = this.o).drawImage.apply(_this$o2, _concatInstanceProperty(_context11 = [this.canvas]).call(_context11, _toConsumableArray(this.wrap)));
 
         this.o.globalAlpha = 1;
       }
@@ -989,7 +998,7 @@ var Visualize = /*#__PURE__*/function () {
 
       (_this$c = this.c).clearRect.apply(_this$c, _toConsumableArray(this.wrap));
 
-      (_this$c2 = this.c).drawImage.apply(_this$c2, _concatInstanceProperty(_context11 = [this.offscreen]).call(_context11, _toConsumableArray(this.wrap)));
+      (_this$c2 = this.c).drawImage.apply(_this$c2, _concatInstanceProperty(_context12 = [this.offscreen]).call(_context12, _toConsumableArray(this.wrap)));
     }
   }]);
 
@@ -1055,7 +1064,7 @@ var Audio = /*#__PURE__*/function () {
   _createClass(Audio, [{
     key: "get",
     value: function get() {
-      var _context12, _Array$from$slice, _context13;
+      var _context13, _Array$from$slice, _context14;
 
       var data = new Uint8Array(this.analyser.fftSize);
 
@@ -1065,8 +1074,8 @@ var Audio = /*#__PURE__*/function () {
         this.analyser.getByteFrequencyData(data);
       }
 
-      var d = _mapInstanceProperty(_context12 = _sliceInstanceProperty(_Array$from$slice = _sliceInstanceProperty(_context13 = _Array$from(data)).call(_context13, 0, Math.floor(data.length / 2)) // /2
-      ).apply(_Array$from$slice, _toConsumableArray(_sliceInstanceProperty(this.context)))).call(_context12, function (a) {
+      var d = _mapInstanceProperty(_context13 = _sliceInstanceProperty(_Array$from$slice = _sliceInstanceProperty(_context14 = _Array$from(data)).call(_context14, 0, Math.floor(data.length / 2)) // /2
+      ).apply(_Array$from$slice, _toConsumableArray(_sliceInstanceProperty(this.context)))).call(_context13, function (a) {
         return a / max;
       });
 
@@ -1144,7 +1153,7 @@ var WebAudioWave = /*#__PURE__*/function () {
    * @param option 选项
    */
   function WebAudioWave(type, audio, option, graphOption) {
-    var _context14,
+    var _context15,
         _this11 = this;
 
     _classCallCheck(this, WebAudioWave);
@@ -1170,7 +1179,7 @@ var WebAudioWave = /*#__PURE__*/function () {
     this.context = merge({}, context, option);
     this.context.type = type;
     this.context.audio = audio;
-    this.animate = new Animate(_bindInstanceProperty(_context14 = this.callback).call(_context14, this), this.context.rate);
+    this.animate = new Animate(_bindInstanceProperty(_context15 = this.callback).call(_context15, this), this.context.rate);
     this.visualize = new Visualize(this.context);
     this.audio = new Audio(this.context);
 

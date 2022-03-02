@@ -7,6 +7,7 @@ declare const preset: {
     gradientColor: string[] | null;
     dynamicColor: [string, string] | null;
     width: number;
+    mirror: boolean;
     period: number;
     base: number;
     amplitude: number;
