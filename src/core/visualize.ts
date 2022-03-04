@@ -47,7 +47,7 @@ class Visualize {
   update(draw: (brush: CanvasRenderingContext2D) => void) {
     this.o.clearRect(...this.wrap)
 
-    if (this.context.effect.trace < 1) {
+    if (this.context.effect?.trace < 1) {
       this.o.globalAlpha = this.context.effect.trace
       this.o.drawImage(this.canvas, ...this.wrap)
       this.o.globalAlpha = 1

@@ -76,7 +76,7 @@ class Audio {
    * 添加增益
    * @param value 值
    */
-  addGain(value = this.context.gain) {
+  addGain(value = this.context.gain ?? 1) {
     let gain = this._context.createGain()
     gain.gain.value = value
 
