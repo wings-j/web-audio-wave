@@ -53,7 +53,7 @@ class Audio {
 
     let d = Array.from(data)
       .slice(0, Math.floor(data.length / 2)) // /2
-      .slice(...this.context.slice)
+      .slice(...(this.context.slice ?? [0]))
       .map(a => a / max)
 
     if (this.context.db) {

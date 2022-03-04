@@ -32,12 +32,15 @@ class Visualize {
     this.offscreen = document.createElement('canvas')
     this.o = this.offscreen.getContext('2d')!
 
-    this.canvas.setAttribute('width', context.width.toString())
-    this.canvas.setAttribute('height', context.height.toString())
-    this.c.translate(context.width / 2, context.height / 2)
-    this.offscreen.setAttribute('width', context.width.toString())
-    this.offscreen.setAttribute('height', context.height.toString())
-    this.o.translate(context.width / 2, context.height / 2)
+    let width = context.width ?? 0
+    let height = context.height ?? 0
+
+    this.canvas.setAttribute('width', width.toString())
+    this.canvas.setAttribute('height', height.toString())
+    this.c.translate(width / 2, height / 2)
+    this.offscreen.setAttribute('width', width.toString())
+    this.offscreen.setAttribute('height', height.toString())
+    this.o.translate(width / 2, height / 2)
   }
 
   /**
@@ -48,7 +51,7 @@ class Visualize {
     this.o.clearRect(...this.wrap)
 
     if (this.context.effect?.trace < 1) {
-      this.o.globalAlpha = this.context.effect.trace
+      this.o.globalAlpha = this.context.effect.trace ?? 1
       this.o.drawImage(this.canvas, ...this.wrap)
       this.o.globalAlpha = 1
     }
