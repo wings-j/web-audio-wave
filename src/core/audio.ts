@@ -19,21 +19,21 @@ class Audio {
 
   /**
    * 构造方法
-   * @param _context 上下文
+   * @param context 上下文
    */
-  constructor(_context: Context) {
-    this.context = _context
+  constructor(context: Context) {
+    this.context = context
     this._context = new AudioContext()
-    this.source = this._context.createMediaElementSource(_context.audio)
+    this.source = this._context.createMediaElementSource(context.audio)
     this.source.connect(this._context.destination)
     this.analyser = this._context.createAnalyser()
-    this.analyser.fftSize = _context.size * 2 // *2
+    this.analyser.fftSize = context.size * 2 // *2
     this.source.connect(this.analyser)
 
     this.second = this.source
     this.last = this.analyser
 
-    if (_context.gain !== 1) {
+    if (context.gain !== 1) {
       this.addGain()
     }
   }
