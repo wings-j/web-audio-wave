@@ -12854,12 +12854,14 @@ var WebAudioWave = (function (exports) {
           this.c = this.canvas.getContext('2d');
           this.offscreen = document.createElement('canvas');
           this.o = this.offscreen.getContext('2d');
-          this.canvas.setAttribute('width', context.width.toString());
-          this.canvas.setAttribute('height', context.height.toString());
-          this.c.translate(context.width / 2, context.height / 2);
-          this.offscreen.setAttribute('width', context.width.toString());
-          this.offscreen.setAttribute('height', context.height.toString());
-          this.o.translate(context.width / 2, context.height / 2);
+          let width = context.width ?? 0;
+          let height = context.height ?? 0;
+          this.canvas.setAttribute('width', width.toString());
+          this.canvas.setAttribute('height', height.toString());
+          this.c.translate(width / 2, height / 2);
+          this.offscreen.setAttribute('width', width.toString());
+          this.offscreen.setAttribute('height', height.toString());
+          this.o.translate(width / 2, height / 2);
       }
       /**
        * 更新
@@ -12867,8 +12869,8 @@ var WebAudioWave = (function (exports) {
        */
       update(draw) {
           this.o.clearRect(...this.wrap);
-          if (this.context.effect.trace < 1) {
-              this.o.globalAlpha = this.context.effect.trace;
+          if (this.context.effect?.trace < 1) {
+              this.o.globalAlpha = this.context.effect.trace ?? 1;
               this.o.drawImage(this.canvas, ...this.wrap);
               this.o.globalAlpha = 1;
           }
@@ -12894,19 +12896,19 @@ var WebAudioWave = (function (exports) {
       last; // 最后第一个结点
       /**
        * 构造方法
-       * @param _context 上下文
+       * @param context 上下文
        */
-      constructor(_context) {
-          this.context = _context;
+      constructor(context) {
+          this.context = context;
           this._context = new AudioContext();
-          this.source = this._context.createMediaElementSource(_context.audio);
+          this.source = this._context.createMediaElementSource(context.audio);
           this.source.connect(this._context.destination);
           this.analyser = this._context.createAnalyser();
-          this.analyser.fftSize = _context.size * 2; // *2
+          this.analyser.fftSize = context.size * 2; // *2
           this.source.connect(this.analyser);
           this.second = this.source;
           this.last = this.analyser;
-          if (_context.gain !== 1) {
+          if (context.gain !== 1) {
               this.addGain();
           }
       }
@@ -12924,7 +12926,7 @@ var WebAudioWave = (function (exports) {
           }
           let d = Array.from(data)
               .slice(0, Math.floor(data.length / 2)) // /2
-              .slice(...this.context.slice)
+              .slice(...(this.context.slice ?? [0]))
               .map(a => a / max);
           if (this.context.db) {
               d = d.map(a => Math.min(1 + Math.log10(a), 1));
@@ -12945,7 +12947,7 @@ var WebAudioWave = (function (exports) {
        * 添加增益
        * @param value 值
        */
-      addGain(value = this.context.gain) {
+      addGain(value = this.context.gain ?? 1) {
           let gain = this._context.createGain();
           gain.gain.value = value;
           this.add(gain);

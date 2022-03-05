@@ -14,9 +14,9 @@ declare class Audio {
     private last;
     /**
      * 构造方法
-     * @param _context 上下文
+     * @param context 上下文
      */
-    constructor(_context: Context);
+    constructor(context: Context);
     /**
      * 获取数据
      * @return 数据
