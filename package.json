@@ -1,6 +1,6 @@
 {
   "name": "@wings-j/web-audio-wave",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Web音频波形，频域可视化",
   "author": "wings-j",
   "license": "GPL-3.0-or-later",
