@@ -1,14 +1,12 @@
-Web 音频波形，频域可视化。
+Web audio visualization.
 
-基于 Canvas。
+Based on canvas。
 
-# 安装
+# Usage
 
-```bash
+```sh
 npm install @wings-j/web-audio-wave
 ```
-
-# 使用
 
 ## ESM
 
@@ -62,75 +60,69 @@ document.body.append(webAudioWave.canvas)
 
 # API
 
-## 类
+## `WebAudioWave(type: string, audio: HTMLAudioElement, option?: Option)`
 
-```ts
-WebAudioWave(type: string, audio: HTMLAudioElement, option?: Option)
-```
+Parameters:
 
-- type：类型
-- audio：音频元素
-- option：通用选项
+- `type`：type of animation
+- `audio`：HTMLAudioElement
+- `option`：common options
 
-## 播放
+## `play()`
 
-```ts
-WebAudioWave.prototype.play()
-```
+Play animation.
 
-## 停止
+## `stop()`
 
-```ts
-WebAudioWave.prototype.stop()
-```
+Stop animation.
 
-## 配置类型
+## `config(option: GraphOption)`
 
-```ts
-WebAudioWave.prototype.config(option: GraphOption)
-```
+Config animation.
 
-option：可视化配置
+Parameters:
 
-# 配置
+- `option`：options
 
-## 类型
+# Configuration
 
-- bar：柱形
-- curve：曲线
-- circle：圆圈
-- ripple：波纹
+## types
 
-## 通用配置（Option）
+- bar
+- curve
+- circle
+- ripple
 
-| 名称             | 说明                    | 类型             | 默认值   |
+## Common option (`Option`)
+
+| Name             | Demonstration                    | Type             | Default   |
 | ---------------- | ----------------------- | ---------------- | -------- |
-| width            | SVG 宽度                | number           | 1024     |
-| height           | SVG 高度                | number           | 1024     |
-| rate             | 帧率                    | number           | 60       |
-| time             | 时域                    | boolean          | false    |
-| size             | FFT 长度                | number           | 512      |
-| slice            | 剪切                    | [number, number] | [0, 512] |
-| pow              | 对 FFT 的值做幂运算的幂 | number           | 1        |
-| gain             | 增益                    | number           | 1        |
-| db               | 分贝                    | boolean          | false    |
-| effect.trace     | 轨迹。[0,1]             | number           | 1        |
-| filter.type      | 过滤器类型              | string           | ''       |
-| filter.frequency | 过滤器频率              | number           | 0        |
-| filter.q         | 过滤器 Q 值             | number           | 0        |
-| filter.gain      | 过滤器增益              | number           | 1        |
+| width            | width of canvas               | number           | 1024     |
+| height           | width of canvas                | number           | 1024     |
+| rate             | frame rate                    | number           | 60       |
+| time             | time domain                    | boolean          | false    |
+| size             | FFT size                | number           | 512      |
+| slice            | slice the data                    | [number, number] | [0, 512] |
+| pow              | pow the data | number           | 1        |
+| gain             | gain of the audio                    | number           | 1        |
+| db               | db unit for data                    | boolean          | false    |
+| effect.trace     | trace effect. [0,1]             | number           | 1        |
+| filter.type      | type of the filter              | string           | ''       |
+| filter.frequency | frequency of the filter              | number           | 0        |
+| filter.q         | Q of the filter             | number           | 0        |
+| filter.gain      | gain of the filter              | number           | 1        |
 
-可选的滤波器类型：[BiquadFilterNode](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode)。
+Optional filter types: [BiquadFilterNode](https://developer.mozilla.org/en-US/docs/Web/API/BiquadFilterNode).
 
-## 类型配置（VisualizeOption）
+## Type option (`VisualizeOption`)
 
-颜色选项用 6 位 HEX 表示，并且有优先级，从高到低：
+Options about color are in format of hex. And they have priorities, from high to low:
 
-1. `dynamicColor`
-2. `gradientColor`
-3. `color`
+1. dynamicColor
+2. gradientColor
+3. color
 
-参数`ease`表示缓动函数，可选值有：
+Option `ease` is easing function, optional values：
 
 - linear
 - sineIn
@@ -166,70 +158,70 @@ option：可视化配置
 
 ### bar
 
-| 名称          | 说明     | 类型                     | 默认值    |
+| Name          | Demonstration     | Type                     | Default    |
 | ------------- | -------- | ------------------------ | --------- |
-| color         | 颜色     | string                   | "#000000" |
-| gradientColor | 渐变颜色 | string[] \| null         | null      |
-| dynamicColor  | 动态颜色 | [string, string] \| null | null      |
-| gap           | 柱形间距 | number                   | 0         |
+| color         | Single color     | string                   | "#000000" |
+| gradientColor | Grident colors | string[] \| null         | null      |
+| dynamicColor  | Dynamic colors | [string, string] \| null | null      |
+| gap           | Gap between bars | number                   | 0         |
 
 ### curve
 
-| 名称          | 说明     | 类型                     | 默认值    |
+| Name          | Demonstration     | Type                     | Default    |
 | ------------- | -------- | ------------------------ | --------- |
-| color         | 颜色     | string                   | "#000000" |
-| gradientColor | 渐变颜色 | string[] \| null         | null      |
-| dynamicColor  | 动态颜色 | [string, string] \| null | null      |
-| width         | 线宽     | number                   | 1         |
-| mirror        | 镜像     | boolean                  | false     |
-| reverse       | 反转     | boolean                  | false     |
-| backforth     | 来回     | boolean                  | false     |
-| smooth        | 平滑     | boolean                  | false     |
+| color         | Single color     | string                   | "#000000" |
+| gradientColor | Grident colors | string[] \| null         | null      |
+| dynamicColor  | Dynamic colors | [string, string] \| null | null      |
+| width         | Width of lines     | number                   | 1         |
+| mirror        | Two mirrored curve     | boolean                  | false     |
+| reverse       | Reversed direction     | boolean                  | false     |
+| backforth     | Backforthed data     | boolean                  | false     |
+| smooth        | Smoothed curve     | boolean                  | false     |
 
 ### circle
 
-| 名称          | 说明     | 类型                     | 默认值    |
+| Name          | Demonstration     | Type                     | Default    |
 | ------------- | -------- | ------------------------ | --------- |
-| color         | 颜色     | string                   | "#000000" |
-| gradientColor | 渐变颜色 | string[] \| null         | null      |
-| dynamicColor  | 动态颜色 | [string, string] \| null | null      |
-| width         | 线宽     | number                   | 1         |
-| fill          | 填充     | boolean                  | false     |
-| average       | 平均值   | boolean                  | false     |
+| color         | Single color     | string                   | "#000000" |
+| gradientColor | Grident colors | string[] \| null         | null      |
+| dynamicColor  | Dynamic colors | [string, string] \| null | null      |
+| width         | Width of line     | number                   | 1         |
+| fill          | Fill the shape with the color     | boolean                  | false     |
+| average       | Take the average as the value   | boolean                  | false     |
 
 ### ripple
 
-| 名称         | 说明                               | 类型                              | 默认值    |
+| Name         | Demonstration                               | Type                              | Default    |
 | ------------ | ---------------------------------- | --------------------------------- | --------- |
-| color        | 颜色                               | string                            | "#000000" |
-| dynamicColor | 动态颜色                           | [string, string] \| null          | null      |
-| width        | 线宽                               | number                            | 1         |
-| fill         | 填充                               | boolean                           | false     |
-| threshold    | 阈值                               | number                            | 0         |
-| period       | 动画帧数                           | number                            | 60        |
-| interval     | 最小间隔帧数                       | number                            | 60        |
-| minRadius    | 最小半径                           | number                            | 0         |
-| maxRadius    | 最大半径。默认为全局设置宽高的一半 | number                            | 0         |
-| ease         | 缓动函数                           | ((v: number) => number) \| string | undefined |
+| color        | Single color                               | string                            | "#000000" |
+| dynamicColor | Dynamic colors                          | [string, string] \| null          | null      |
+| width        | Width of lines                               | number                            | 1         |
+| fill         | Fill the shape with the color                              | boolean                           | false     |
+| threshold    | Threshold value to trigger the ripple                               | number                            | 0         |
+| period       | Period of a trigger                          | number                            | 60        |
+| interval     | Minium frame between two trigger                       | number                            | 60        |
+| minRadius    | Minium radius                           | number                            | 0         |
+| maxRadius    | Maximum. Defaul value is the half of the gloabl width or height | number                            | 0         |
+| ease         | Easing function                           | ((v: number) => number) \| string | undefined |
 
 ### round
 
-| 名称          | 说明       | 类型                     | 默认值    |
+| Name          | Demonstration       | Type                     | Default    |
 | ------------- | ---------- | ------------------------ | --------- |
-| color         | 颜色       | string                   | "#000000" |
-| gradientColor | 渐变颜色   | string[] \| null         | null      |
-| dynamicColor  | 动态颜色   | [string, string] \| null | null      |
-| width         | 线宽       | number                   | 1         |
-| mirror        | 镜像       | boolean                  | false     |
-| period        | 动画帧数   | number                   | 600       |
-| base          | 基础半径   | number                   | 256       |
-| amplitude     | 幅度半径   | number                   | 256       |
-| smooth        | 平滑       | boolean                  | false     |
-| clockwise     | 顺时针渲染 | boolean                  | true      |
-| rotate        | 旋转       | number                   | 0         |
+| color         | single color       | string                   | "#000000" |
+| gradientColor | grident colors   | string[] \| null         | null      |
+| dynamicColor  | dynamic colors   | [string, string] \| null | null      |
+| width         | width of lines       | number                   | 1         |
+| mirror        | mirrored shape       | boolean                  | false     |
+| period        | Period of a rotation   | number                   | 600       |
+| base          | Basic radius   | number                   | 256       |
+| amplitude     | Amplitude radius   | number                   | 256       |
+| smooth        | Smoothed curve       | boolean                  | false     |
+| clockwise     | Clockwise rotation | boolean                  | true      |
+| rotate        | Rotating       | number                   | 0         |
 
-`rotate`可选值：
+`rotate` optional values：
 
-- `0`：无旋转
-- `1`：顺时针旋转
-- `-1`：逆时针旋转
+- `0`：no rotation
+- `1`：clockwise
+- `-1`：counterclockwise
